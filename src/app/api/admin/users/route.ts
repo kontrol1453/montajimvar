@@ -6,24 +6,25 @@ import bcrypt from "bcryptjs";
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
-  if (!session?.user || (session.user as any).role !== "ADMIN") {
+  if (!session?.user || !(session.user as any).roles?.includes("ADMIN")) {
     return NextResponse.json({ error: "Yetkisiz erişim." }, { status: 403 });
   }
 
   try {
-    const { name, email, password, role } = await request.json();
+    const { name, email, password, roles } = await request.json();
 
-    if (!name || !email || !password || !role) {
+    if (!name || !email || !password || !roles || !Array.isArray(roles) || roles.length === 0) {
       return NextResponse.json(
-        { error: "Ad, e-posta, şifre ve rol zorunludur." },
+        { error: "Ad, e-posta, şifre ve en az bir rol zorunludur." },
         { status: 400 }
       );
     }
 
     const validRoles = ["CUSTOMER", "ASSEMBLER", "MANUFACTURER", "ADMIN"];
-    if (!validRoles.includes(role)) {
+    const invalid = roles.filter((r: string) => !validRoles.includes(r));
+    if (invalid.length > 0) {
       return NextResponse.json(
-        { error: "Geçersiz kullanıcı rolü." },
+        { error: `Geçersiz roller: ${invalid.join(", ")}` },
         { status: 400 }
       );
     }
@@ -46,8 +47,8 @@ export async function POST(request: Request) {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const user = await prisma.user.create({
-      data: { name, email, password: hashedPassword, role },
-      select: { id: true, name: true, email: true, role: true, createdAt: true },
+      data: { name, email, password: hashedPassword, roles },
+      select: { id: true, name: true, email: true, roles: true, createdAt: true },
     });
 
     return NextResponse.json(user, { status: 201 });
@@ -62,7 +63,7 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   const session = await getServerSession(authOptions);
-  if (!session?.user || (session.user as any).role !== "ADMIN") {
+  if (!session?.user || !(session.user as any).roles?.includes("ADMIN")) {
     return NextResponse.json({ error: "Yetkisiz erişim." }, { status: 403 });
   }
 

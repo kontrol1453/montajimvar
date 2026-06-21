@@ -28,7 +28,7 @@ export async function PUT(request: Request) {
         email: true,
         phone: true,
         city: true,
-        role: true,
+        roles: true,
         avatar: true,
       },
     });

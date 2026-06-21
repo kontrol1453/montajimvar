@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
-  if (!session?.user || (session.user as any).role !== "ADMIN") {
+  if (!session?.user || !(session.user as any).roles?.includes("ADMIN")) {
     return NextResponse.json({ error: "Yetkisiz erişim." }, { status: 403 });
   }
 
@@ -21,7 +21,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
-  if (!session?.user || (session.user as any).role !== "ADMIN") {
+  if (!session?.user || !(session.user as any).roles?.includes("ADMIN")) {
     return NextResponse.json({ error: "Yetkisiz erişim." }, { status: 403 });
   }
 
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   const session = await getServerSession(authOptions);
-  if (!session?.user || (session.user as any).role !== "ADMIN") {
+  if (!session?.user || !(session.user as any).roles?.includes("ADMIN")) {
     return NextResponse.json({ error: "Yetkisiz erişim." }, { status: 403 });
   }
 
@@ -101,7 +101,7 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   const session = await getServerSession(authOptions);
-  if (!session?.user || (session.user as any).role !== "ADMIN") {
+  if (!session?.user || !(session.user as any).roles?.includes("ADMIN")) {
     return NextResponse.json({ error: "Yetkisiz erişim." }, { status: 403 });
   }
 
