@@ -10,7 +10,7 @@ export default async function DashboardPage() {
   if (!session?.user) redirect("/auth/giris");
 
   const userId = (session.user as any).id;
-  const role = (session.user as any).role;
+  const roles: string[] = (session.user as any).roles || [];
 
   const [messageCount, unreadCount, profile] = await Promise.all([
     prisma.message.count({ where: { receiverId: userId } }),
@@ -56,7 +56,7 @@ export default async function DashboardPage() {
             <div>
               <p className="text-sm text-sub-text">Profilim</p>
               <p className="text-sm font-medium text-white">
-                {role === "CUSTOMER" ? "Müşteri" : role === "ASSEMBLER" ? "Montajcı" : "Üretici"}
+                {roles.includes("CUSTOMER") ? "Müşteri" : roles.includes("ASSEMBLER") ? "Montajcı" : roles.includes("MANUFACTURER") ? "Üretici" : "-"}
               </p>
             </div>
           </div>
@@ -90,7 +90,7 @@ export default async function DashboardPage() {
               </div>
             </Link>
 
-            {(role === "ASSEMBLER" || role === "MANUFACTURER") && (
+            {(roles.includes("ASSEMBLER") || roles.includes("MANUFACTURER")) && (
               <Link
                 href="/dashboard/firma"
                 className="flex items-center gap-3 p-3 rounded-lg hover:bg-dark-section transition"
@@ -111,9 +111,9 @@ export default async function DashboardPage() {
 
         <Card>
           <h2 className="text-lg font-semibold text-white mb-4">
-            {role === "CUSTOMER" ? "Firma Ara" : "Gelen Mesajlar"}
+            {roles.includes("CUSTOMER") ? "Firma Ara" : "Gelen Mesajlar"}
           </h2>
-          {role === "CUSTOMER" ? (
+          {roles.includes("CUSTOMER") ? (
             <div>
               <p className="text-sm text-muted-text mb-4">
                 İhtiyacınıza uygun montaj firmalarını bulmak için arama yapın.

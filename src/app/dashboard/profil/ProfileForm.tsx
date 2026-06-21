@@ -14,7 +14,7 @@ interface Props {
     name: string;
     email: string;
     phone: string | null;
-    role: string;
+    roles: string[];
     city: string | null;
     avatar: string | null;
   };

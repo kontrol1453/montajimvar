@@ -23,7 +23,7 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [profileOpen]);
 
-  const user = session?.user as { name?: string; email?: string; role?: string; id?: number; avatar?: string } | undefined;
+  const user = session?.user as { name?: string; email?: string; roles?: string[]; id?: number; avatar?: string } | undefined;
 
   return (
     <nav className="bg-dark-bg/85 backdrop-blur-xl border-b border-dark-border sticky top-0 z-50">
@@ -91,13 +91,22 @@ export default function Navbar() {
                     >
                       Profilim
                     </Link>
-                    {(user?.role === "ASSEMBLER" || user?.role === "MANUFACTURER") && (
+                    {(user?.roles?.includes("ASSEMBLER") || user?.roles?.includes("MANUFACTURER")) && (
                       <Link
                         href="/dashboard/firma"
                         className="block px-4 py-2 text-sm text-gray-200 hover:bg-dark-section"
                         onClick={() => setProfileOpen(false)}
                       >
                         Firma Profilim
+                      </Link>
+                    )}
+                    {user?.roles?.includes("ADMIN") && (
+                      <Link
+                        href="/admin"
+                        className="block px-4 py-2 text-sm text-montaj hover:bg-dark-section font-medium"
+                        onClick={() => setProfileOpen(false)}
+                      >
+                        Admin Paneli
                       </Link>
                     )}
                     <hr className="my-1 border-dark-border" />
@@ -186,13 +195,22 @@ export default function Navbar() {
               >
                 Profilim
               </Link>
-              {(user?.role === "ASSEMBLER" || user?.role === "MANUFACTURER") && (
+              {(user?.roles?.includes("ASSEMBLER") || user?.roles?.includes("MANUFACTURER")) && (
                 <Link
                   href="/dashboard/firma"
                   className="block py-2 text-muted-text hover:text-montaj"
                   onClick={() => setMenuOpen(false)}
                 >
                   Firma Profilim
+                </Link>
+              )}
+              {user?.roles?.includes("ADMIN") && (
+                <Link
+                  href="/admin"
+                  className="block py-2 text-montaj font-medium"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Admin Paneli
                 </Link>
               )}
               <button

@@ -12,7 +12,7 @@ export default async function ProfilePage() {
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { id: true, name: true, email: true, phone: true, role: true, city: true, avatar: true },
+    select: { id: true, name: true, email: true, phone: true, roles: true, city: true, avatar: true },
   });
 
   if (!user) redirect("/auth/giris");

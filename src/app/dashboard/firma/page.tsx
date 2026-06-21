@@ -9,9 +9,9 @@ export default async function FirmaPage() {
   if (!session?.user) redirect("/auth/giris");
 
   const userId = (session.user as any).id;
-  const role = (session.user as any).role;
+  const roles: string[] = (session.user as any).roles || [];
 
-  if (role === "CUSTOMER") {
+  if (!roles.includes("ASSEMBLER") && !roles.includes("MANUFACTURER")) {
     redirect("/dashboard");
   }
 
