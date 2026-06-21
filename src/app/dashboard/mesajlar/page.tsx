@@ -38,9 +38,10 @@ export default async function MessagesPage() {
         {messages.length > 0 ? (
           <div className="bg-dark-card rounded-xl border border-dark-border divide-y">
             {messages.map((msg) => (
-              <div
+              <Link
                 key={msg.id}
-                className={`p-4 hover:bg-dark-section transition ${!msg.isRead ? "bg-montaj/5" : ""}`}
+                href={`/dashboard/mesajlar/${msg.senderId}`}
+                className={`block p-4 hover:bg-dark-section transition ${!msg.isRead ? "bg-montaj/5" : ""}`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0 flex-1">
@@ -63,7 +64,7 @@ export default async function MessagesPage() {
                     <p className="text-sm text-muted-text line-clamp-2">{msg.content}</p>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         ) : (
@@ -79,7 +80,11 @@ export default async function MessagesPage() {
         {sentMessages.length > 0 ? (
           <div className="bg-dark-card rounded-xl border border-dark-border divide-y">
             {sentMessages.map((msg) => (
-              <div key={msg.id} className="p-4 hover:bg-dark-section transition">
+              <Link
+                key={msg.id}
+                href={`/dashboard/mesajlar/${msg.receiverId}`}
+                className="block p-4 hover:bg-dark-section transition"
+              >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 mb-1">
@@ -99,7 +104,7 @@ export default async function MessagesPage() {
                     <p className="text-sm text-muted-text line-clamp-2">{msg.content}</p>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         ) : (

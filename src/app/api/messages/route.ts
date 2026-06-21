@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-// Send a message
+// Send a message (profileId = to profile owner, receiverId = direct reply)
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   const senderId = (session.user as any).id;
 
   try {
-    const { profileId, subject, content } = await request.json();
+    const { profileId, receiverId, subject, content } = await request.json();
 
     if (!content) {
       return NextResponse.json(
@@ -22,21 +22,38 @@ export async function POST(request: Request) {
       );
     }
 
-    // Get the profile owner
-    const profile = await prisma.profile.findUnique({
-      where: { id: Number(profileId) },
-    });
+    let targetUserId: number;
 
-    if (!profile) {
-      return NextResponse.json(
-        { error: "Firma profili bulunamadı." },
-        { status: 404 }
-      );
-    }
+    if (profileId) {
+      const profile = await prisma.profile.findUnique({
+        where: { id: Number(profileId) },
+      });
 
-    if (profile.userId === senderId) {
+      if (!profile) {
+        return NextResponse.json(
+          { error: "Firma profili bulunamadı." },
+          { status: 404 }
+        );
+      }
+
+      if (profile.userId === senderId) {
+        return NextResponse.json(
+          { error: "Kendinize mesaj gönderemezsiniz." },
+          { status: 400 }
+        );
+      }
+      targetUserId = profile.userId;
+    } else if (receiverId) {
+      targetUserId = Number(receiverId);
+      if (targetUserId === senderId) {
+        return NextResponse.json(
+          { error: "Kendinize mesaj gönderemezsiniz." },
+          { status: 400 }
+        );
+      }
+    } else {
       return NextResponse.json(
-        { error: "Kendinize mesaj gönderemezsiniz." },
+        { error: "Alıcı belirtilmedi." },
         { status: 400 }
       );
     }
@@ -44,7 +61,7 @@ export async function POST(request: Request) {
     const message = await prisma.message.create({
       data: {
         senderId,
-        receiverId: profile.userId,
+        receiverId: targetUserId,
         subject: subject || "",
         content,
       },
@@ -64,7 +81,7 @@ export async function POST(request: Request) {
   }
 }
 
-// Get messages (inbox/sent)
+// Get messages (inbox/sent/conversation)
 export async function GET(request: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
@@ -74,8 +91,27 @@ export async function GET(request: Request) {
   const userId = (session.user as any).id;
   const { searchParams } = new URL(request.url);
   const type = searchParams.get("type") || "inbox";
+  const conversationWith = searchParams.get("conversationWith");
 
   try {
+    if (conversationWith) {
+      const otherId = Number(conversationWith);
+      const messages = await prisma.message.findMany({
+        where: {
+          OR: [
+            { senderId: userId, receiverId: otherId },
+            { senderId: otherId, receiverId: userId },
+          ],
+        },
+        orderBy: { createdAt: "asc" },
+        include: {
+          sender: { select: { id: true, name: true, avatar: true } },
+          receiver: { select: { id: true, name: true, avatar: true } },
+        },
+      });
+      return NextResponse.json(messages);
+    }
+
     let messages;
     if (type === "sent") {
       messages = await prisma.message.findMany({
