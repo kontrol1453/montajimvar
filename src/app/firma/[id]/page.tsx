@@ -9,6 +9,7 @@ import MessageButton from "./MessageButton";
 import CompanyGallery from "./CompanyGallery";
 import ReviewSection from "@/components/ReviewSection";
 import FavoriteButton from "@/components/FavoriteButton";
+import CompanyMap from "@/components/CompanyMap";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -176,6 +177,20 @@ export default async function CompanyProfilePage({ params }: Props) {
           />
         </div>
       </div>
+
+      {/* Harita */}
+      {profile.latitude && profile.longitude && (
+        <div className="bg-dark-card rounded-xl border border-dark-border p-6 mb-6">
+          <h2 className="text-lg font-semibold text-white mb-4">Konum</h2>
+          <CompanyMap
+            latitude={profile.latitude}
+            longitude={profile.longitude}
+            companyName={profile.companyName}
+            address={profile.address}
+            city={profile.city}
+          />
+        </div>
+      )}
 
       {/* Değerlendirmeler */}
       <div className="mb-6">

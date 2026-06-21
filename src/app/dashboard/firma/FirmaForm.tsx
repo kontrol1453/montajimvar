@@ -19,6 +19,8 @@ interface Props {
     phone: string | null;
     website: string | null;
     whatsapp?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
   } | null;
   categoryIds: number[];
   categories: { id: number; name: string; slug: string; icon: string | null }[];
@@ -37,6 +39,8 @@ export default function FirmaForm({ profile, categoryIds: initialCategoryIds, ca
     phone: profile?.phone || "",
     website: profile?.website || "",
     whatsapp: (profile as any)?.whatsapp || "",
+    latitude: (profile as any)?.latitude ?? "",
+    longitude: (profile as any)?.longitude ?? "",
   });
   const [selectedCategories, setSelectedCategories] = useState<number[]>(
     initialCategoryIds.length > 0
@@ -66,6 +70,8 @@ export default function FirmaForm({ profile, categoryIds: initialCategoryIds, ca
         body: JSON.stringify({
           ...form,
           whatsapp: form.whatsapp || undefined,
+          latitude: form.latitude || undefined,
+          longitude: form.longitude || undefined,
           categoryIds: selectedCategories,
         }),
       });
@@ -213,6 +219,28 @@ export default function FirmaForm({ profile, categoryIds: initialCategoryIds, ca
             onChange={(e) => setForm({ ...form, website: e.target.value })}
           />
         </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Input
+            label="Enlem (Latitude)"
+            type="number"
+            step="any"
+            placeholder="41.0082"
+            value={form.latitude}
+            onChange={(e) => setForm({ ...form, latitude: e.target.value ? Number(e.target.value) : "" })}
+          />
+          <Input
+            label="Boylam (Longitude)"
+            type="number"
+            step="any"
+            placeholder="28.9784"
+            value={form.longitude}
+            onChange={(e) => setForm({ ...form, longitude: e.target.value ? Number(e.target.value) : "" })}
+          />
+        </div>
+        <p className="text-xs text-sub-text -mt-2">
+          Koordinatları bilmiyorsanız boş bırakın. Adresinizi Google Maps&apos;te açıp URL&apos;den koordinatları kopyalayabilirsiniz.
+        </p>
 
         {message.text && (
           <div
