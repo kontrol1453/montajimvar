@@ -41,6 +41,8 @@ model Profile {
   latitude    Float?
   longitude   Float?
   isVerified  Boolean  @default(false)
+  isFeatured  Boolean  @default(false)
+  viewCount   Int      @default(0)
   ratingAvg   Float    @default(0)
   reviewCount Int      @default(0)
   createdAt   DateTime @default(now())
