@@ -38,6 +38,8 @@ model Profile {
   website     String?
   logo        String?
   whatsapp    String?
+  latitude    Float?
+  longitude   Float?
   isVerified  Boolean  @default(false)
   ratingAvg   Float    @default(0)
   reviewCount Int      @default(0)
