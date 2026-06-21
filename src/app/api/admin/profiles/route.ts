@@ -10,11 +10,16 @@ export async function PATCH(request: Request) {
   }
 
   try {
-    const { id, isVerified } = await request.json();
+    const body = await request.json();
+    const { id, isVerified, isFeatured } = body;
+
+    const data: Record<string, unknown> = {};
+    if (isVerified !== undefined) data.isVerified = isVerified;
+    if (isFeatured !== undefined) data.isFeatured = isFeatured;
 
     await prisma.profile.update({
       where: { id: Number(id) },
-      data: { isVerified },
+      data,
     });
 
     return NextResponse.json({ success: true });

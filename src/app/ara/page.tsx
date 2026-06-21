@@ -52,6 +52,8 @@ export default async function SearchPage({ searchParams }: SearchParams) {
   const q = typeof params.q === "string" ? params.q : "";
   const siralama = typeof params.siralama === "string" ? params.siralama : "en_yeni";
   const sayfa = Math.max(1, Number(typeof params.sayfa === "string" ? params.sayfa : "") || 1);
+  const minPuanRaw = typeof params.minPuan === "string" ? params.minPuan : "";
+  const minPuan = minPuanRaw ? Number(minPuanRaw) : 0;
 
   const categories = await prisma.category.findMany({ orderBy: { name: "asc" } });
 
@@ -79,10 +81,14 @@ export default async function SearchPage({ searchParams }: SearchParams) {
     ];
   }
 
+  if (minPuan > 0) {
+    where.ratingAvg = { gte: minPuan };
+  }
+
   // Sorting
-  let orderBy: Record<string, string> = { createdAt: "desc" };
-  if (siralama === "en_eski") orderBy = { createdAt: "asc" };
-  else if (siralama === "puana_gore") orderBy = { ratingAvg: "desc" };
+  let orderBy: Record<string, string>[] = [{ isFeatured: "desc" }, { createdAt: "desc" }];
+  if (siralama === "en_eski") orderBy = [{ isFeatured: "desc" }, { createdAt: "asc" }];
+  else if (siralama === "puana_gore") orderBy = [{ isFeatured: "desc" }, { ratingAvg: "desc" }, { createdAt: "desc" }];
 
   const [profiles, totalCount] = await Promise.all([
     prisma.profile.findMany({
@@ -150,6 +156,17 @@ export default async function SearchPage({ searchParams }: SearchParams) {
             </select>
 
             <select
+              name="minPuan"
+              defaultValue={minPuanRaw}
+              className="px-3 py-2 border border-dark-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-montaj bg-dark-bg text-white"
+            >
+              <option value="">Tüm Puanlar</option>
+              <option value="4">★ 4+</option>
+              <option value="3">★ 3+</option>
+              <option value="2">★ 2+</option>
+            </select>
+
+            <select
               name="siralama"
               defaultValue={siralama}
               className="px-3 py-2 border border-dark-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-montaj bg-dark-bg text-white"
@@ -203,7 +220,7 @@ export default async function SearchPage({ searchParams }: SearchParams) {
         </form>
 
         {/* Active filters */}
-        {(kategoriSlugs.length > 0 || sehir || q) && (
+        {(kategoriSlugs.length > 0 || sehir || q || minPuan > 0) && (
           <div className="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-dark-border">
             <span className="text-xs text-sub-text">Aktif filtreler:</span>
             {kategoriSlugs.map((slug) => {
@@ -212,7 +229,7 @@ export default async function SearchPage({ searchParams }: SearchParams) {
                 <Link
                   key={slug}
                   href={buildQuery(
-                    { kategoriler: kategoriSlugs.filter((s) => s !== slug).join(",") || undefined, sehir, q, siralama, sayfa: undefined },
+                    { kategoriler: kategoriSlugs.filter((s) => s !== slug).join(",") || undefined, sehir, q, minPuan: minPuanRaw || undefined, siralama, sayfa: undefined },
                     {}
                   )}
                   className="inline-flex items-center gap-1 px-2 py-1 bg-montaj/20 text-montaj rounded-full text-xs hover:bg-montaj/30 transition"
@@ -223,10 +240,18 @@ export default async function SearchPage({ searchParams }: SearchParams) {
             })}
             {sehir && (
               <Link
-                href={buildQuery({ kategoriler: kategoriSlugs.join(",") || undefined, q, siralama, sayfa: undefined }, { sehir: undefined })}
+                href={buildQuery({ kategoriler: kategoriSlugs.join(",") || undefined, q, minPuan: minPuanRaw || undefined, siralama, sayfa: undefined }, { sehir: undefined })}
                 className="inline-flex items-center gap-1 px-2 py-1 bg-montaj/20 text-montaj rounded-full text-xs hover:bg-montaj/30 transition"
               >
                 {sehir} ×
+              </Link>
+            )}
+            {minPuan > 0 && (
+              <Link
+                href={buildQuery({ kategoriler: kategoriSlugs.join(",") || undefined, sehir, q, siralama, sayfa: undefined }, { minPuan: undefined })}
+                className="inline-flex items-center gap-1 px-2 py-1 bg-montaj/20 text-montaj rounded-full text-xs hover:bg-montaj/30 transition"
+              >
+                ★ {minPuan}+ ×
               </Link>
             )}
             <Link
@@ -298,7 +323,7 @@ export default async function SearchPage({ searchParams }: SearchParams) {
               {sayfa > 1 && (
                 <Link
                   href={buildQuery(
-                    { kategoriler: kategoriSlugs.join(",") || undefined, sehir, q, siralama, sayfa: String(sayfa - 1) },
+                    { kategoriler: kategoriSlugs.join(",") || undefined, sehir, q, minPuan: minPuanRaw || undefined, siralama, sayfa: String(sayfa - 1) },
                     {}
                   )}
                   className="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-sm text-white hover:border-montaj/50 transition"
@@ -321,7 +346,7 @@ export default async function SearchPage({ searchParams }: SearchParams) {
                   <Link
                     key={pageNum}
                     href={buildQuery(
-                      { kategoriler: kategoriSlugs.join(",") || undefined, sehir, q, siralama, sayfa: String(pageNum) },
+                      { kategoriler: kategoriSlugs.join(",") || undefined, sehir, q, minPuan: minPuanRaw || undefined, siralama, sayfa: String(pageNum) },
                       {}
                     )}
                     className={`w-10 h-10 flex items-center justify-center rounded-lg text-sm transition ${
@@ -337,7 +362,7 @@ export default async function SearchPage({ searchParams }: SearchParams) {
               {sayfa < totalPages && (
                 <Link
                   href={buildQuery(
-                    { kategoriler: kategoriSlugs.join(",") || undefined, sehir, q, siralama, sayfa: String(sayfa + 1) },
+                    { kategoriler: kategoriSlugs.join(",") || undefined, sehir, q, minPuan: minPuanRaw || undefined, siralama, sayfa: String(sayfa + 1) },
                     {}
                   )}
                   className="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-sm text-white hover:border-montaj/50 transition"

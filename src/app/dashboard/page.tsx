@@ -18,6 +18,23 @@ export default async function DashboardPage() {
     prisma.profile.findUnique({ where: { userId } }),
   ]);
 
+  // Analytics for ASSEMBLER/MANUFACTURER
+  let analytics = null;
+  if (profile && (roles.includes("ASSEMBLER") || roles.includes("MANUFACTURER"))) {
+    const [sentMessages, reviewCount, favoriteCount] = await Promise.all([
+      prisma.message.count({ where: { senderId: userId } }),
+      prisma.review.count({ where: { profileId: profile.id } }),
+      prisma.favorite.count({ where: { profileId: profile.id } }),
+    ]);
+    analytics = {
+      viewCount: profile.viewCount,
+      ratingAvg: profile.ratingAvg,
+      sentMessages,
+      reviewCount,
+      favoriteCount,
+    };
+  }
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-2xl font-bold text-white mb-6">Panelim</h1>
@@ -62,6 +79,47 @@ export default async function DashboardPage() {
           </div>
         </Card>
       </div>
+
+      {/* Firma Analitikleri */}
+      {analytics && (
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold text-white mb-4">Firma Analitikleri</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            <Card>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-montaj">{analytics.viewCount}</p>
+                <p className="text-xs text-sub-text mt-1">Profil Görüntülenme</p>
+              </div>
+            </Card>
+            <Card>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-yellow-400">
+                  {analytics.ratingAvg > 0 ? analytics.ratingAvg.toFixed(1) : "—"}
+                </p>
+                <p className="text-xs text-sub-text mt-1">Ortalama Puan</p>
+              </div>
+            </Card>
+            <Card>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-white">{analytics.reviewCount}</p>
+                <p className="text-xs text-sub-text mt-1">Yorum</p>
+              </div>
+            </Card>
+            <Card>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-white">{analytics.sentMessages}</p>
+                <p className="text-xs text-sub-text mt-1">Gönderilen Mesaj</p>
+              </div>
+            </Card>
+            <Card>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-pink-400">{analytics.favoriteCount}</p>
+                <p className="text-xs text-sub-text mt-1">Favoriye Eklenme</p>
+              </div>
+            </Card>
+          </div>
+        </div>
+      )}
 
       {/* Quick Links */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -20,9 +20,14 @@ export default function CompanyCard({ profile }: CompanyCardProps) {
         <div className="w-12 h-12 bg-montaj/20 rounded-lg flex items-center justify-center text-xl font-bold text-montaj">
           {profile.companyName[0]?.toUpperCase() || "?"}
         </div>
-        {profile.isVerified && (
-          <Badge variant="success">Onaylı</Badge>
-        )}
+        <div className="flex items-center gap-1.5">
+          {(profile as any).isFeatured && (
+            <Badge variant="warning">Vitrin</Badge>
+          )}
+          {profile.isVerified && (
+            <Badge variant="success">Onaylı</Badge>
+          )}
+        </div>
       </div>
 
       <h3 className="font-semibold text-white mb-1 line-clamp-1">

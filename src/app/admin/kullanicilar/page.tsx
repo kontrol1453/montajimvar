@@ -35,7 +35,15 @@ export default async function AdminUsersPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-white">Kullanıcılar</h1>
-        <CreateUserForm />
+        <div className="flex items-center gap-2">
+          <a
+            href="/api/admin/export?type=users"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-montaj text-white rounded-lg hover:bg-montaj-dark transition text-sm font-medium"
+          >
+            ⬇ CSV Export
+          </a>
+          <CreateUserForm />
+        </div>
       </div>
 
       <div className="bg-dark-card rounded-xl border border-dark-border overflow-hidden">

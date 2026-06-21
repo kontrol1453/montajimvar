@@ -5,7 +5,7 @@ import CompanyCard from "@/components/CompanyCard";
 async function getFeaturedProfiles() {
   const profiles = await prisma.profile.findMany({
     take: 6,
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
     include: {
       category: true,
       categories: {

@@ -54,6 +54,15 @@ export default async function CompanyProfilePage({ params }: Props) {
     notFound();
   }
 
+  // Increment view count (skip owner's own views)
+  const viewerId = (session?.user as any)?.id;
+  if (viewerId && viewerId !== profile.user.id) {
+    await prisma.profile.update({
+      where: { id: profile.id },
+      data: { viewCount: { increment: 1 } },
+    });
+  }
+
   const roleBadge =
     profile.user.id === (session?.user as any)?.id
       ? null
