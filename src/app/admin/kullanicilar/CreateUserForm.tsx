@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 
-const ROLES = [
+const ALL_ROLES = [
   { value: "CUSTOMER", label: "Müşteri" },
   { value: "ASSEMBLER", label: "Montajcı" },
   { value: "MANUFACTURER", label: "Üretici" },
@@ -20,11 +20,21 @@ export default function CreateUserForm() {
     name: "",
     email: "",
     password: "",
-    role: "CUSTOMER",
   });
+  const [selectedRoles, setSelectedRoles] = useState<string[]>(["CUSTOMER"]);
+
+  function toggleRole(role: string) {
+    setSelectedRoles((prev) =>
+      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
+    );
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (selectedRoles.length === 0) {
+      setError("En az bir rol seçilmelidir.");
+      return;
+    }
     setLoading(true);
     setError("");
 
@@ -32,7 +42,7 @@ export default function CreateUserForm() {
       const res = await fetch("/api/admin/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, roles: selectedRoles }),
       });
 
       const data = await res.json();
@@ -42,7 +52,8 @@ export default function CreateUserForm() {
       }
 
       setOpen(false);
-      setForm({ name: "", email: "", password: "", role: "CUSTOMER" });
+      setForm({ name: "", email: "", password: "" });
+      setSelectedRoles(["CUSTOMER"]);
       router.refresh();
     } catch (err: any) {
       setError(err.message);
@@ -110,18 +121,23 @@ export default function CreateUserForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Rol</label>
-            <select
-              value={form.role}
-              onChange={(e) => setForm({ ...form, role: e.target.value })}
-              className="w-full px-3 py-2 border border-dark-border rounded-lg text-sm bg-dark-bg text-white focus:outline-none focus:ring-2 focus:ring-montaj"
-            >
-              {ROLES.map((r) => (
-                <option key={r.value} value={r.value}>
-                  {r.label}
-                </option>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Roller</label>
+            <div className="space-y-2">
+              {ALL_ROLES.map((role) => (
+                <label
+                  key={role.value}
+                  className="flex items-center gap-3 p-2 rounded-lg border border-dark-border hover:border-montaj/50 transition cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedRoles.includes(role.value)}
+                    onChange={() => toggleRole(role.value)}
+                    className="w-4 h-4 rounded border-dark-border text-montaj focus:ring-montaj bg-dark-bg"
+                  />
+                  <span className="text-sm text-white">{role.label}</span>
+                </label>
               ))}
-            </select>
+            </div>
           </div>
         </div>
 

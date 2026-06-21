@@ -3,15 +3,27 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+const ALL_ROLES = [
+  { value: "CUSTOMER", label: "Müşteri" },
+  { value: "ASSEMBLER", label: "Montajcı" },
+  { value: "MANUFACTURER", label: "Üretici" },
+  { value: "ADMIN", label: "Admin" },
+];
+
 export default function UserActions({
   userId,
   userName,
+  userRoles,
 }: {
   userId: number;
   userName: string;
+  userRoles: string[];
 }) {
   const router = useRouter();
   const [deleting, setDeleting] = useState(false);
+  const [roleEditorOpen, setRoleEditorOpen] = useState(false);
+  const [selectedRoles, setSelectedRoles] = useState<string[]>(userRoles);
+  const [saving, setSaving] = useState(false);
 
   async function handleDelete() {
     if (!confirm(`"${userName}" kullanıcısını silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`)) {
@@ -39,13 +51,108 @@ export default function UserActions({
     }
   }
 
+  function toggleRole(role: string) {
+    setSelectedRoles((prev) =>
+      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
+    );
+  }
+
+  async function handleSaveRoles() {
+    if (selectedRoles.length === 0) {
+      alert("En az bir rol seçilmelidir.");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/roles`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ roles: selectedRoles }),
+      });
+
+      if (res.ok) {
+        setRoleEditorOpen(false);
+        router.refresh();
+      } else {
+        const data = await res.json();
+        alert(data.error || "Roller güncellenemedi.");
+      }
+    } catch {
+      alert("Bir hata oluştu.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
-    <button
-      onClick={handleDelete}
-      disabled={deleting}
-      className="text-xs text-red-400 hover:text-red-300 transition disabled:opacity-50"
-    >
-      {deleting ? "Siliniyor..." : "Sil"}
-    </button>
+    <div className="flex items-center gap-2 justify-end">
+      <button
+        onClick={() => {
+          setSelectedRoles(userRoles);
+          setRoleEditorOpen(true);
+        }}
+        className="text-xs text-montaj hover:text-montaj-dark transition"
+      >
+        Roller
+      </button>
+      <button
+        onClick={handleDelete}
+        disabled={deleting}
+        className="text-xs text-red-400 hover:text-red-300 transition disabled:opacity-50"
+      >
+        {deleting ? "Siliniyor..." : "Sil"}
+      </button>
+
+      {/* Role Editor Modal */}
+      {roleEditorOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-dark-card border border-dark-border rounded-xl p-6 w-full max-w-sm mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white">
+                Roller: {userName}
+              </h3>
+              <button
+                onClick={() => setRoleEditorOpen(false)}
+                className="text-sub-text hover:text-white transition text-xl leading-none"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="space-y-3">
+              {ALL_ROLES.map((role) => (
+                <label
+                  key={role.value}
+                  className="flex items-center gap-3 p-3 rounded-lg border border-dark-border hover:border-montaj/50 transition cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedRoles.includes(role.value)}
+                    onChange={() => toggleRole(role.value)}
+                    className="w-4 h-4 rounded border-dark-border text-montaj focus:ring-montaj bg-dark-bg"
+                  />
+                  <span className="text-sm text-white">{role.label}</span>
+                </label>
+              ))}
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={handleSaveRoles}
+                disabled={saving}
+                className="px-4 py-2 bg-montaj text-white rounded-lg hover:bg-montaj-dark transition text-sm font-medium disabled:opacity-50"
+              >
+                {saving ? "Kaydediliyor..." : "Kaydet"}
+              </button>
+              <button
+                onClick={() => setRoleEditorOpen(false)}
+                className="px-4 py-2 text-sm text-sub-text hover:text-white transition"
+              >
+                İptal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

@@ -11,11 +11,11 @@ const ROLE_LABELS: Record<string, string> = {
   ADMIN: "Admin",
 };
 
-const ROLE_COLORS: Record<string, "default" | "success"> = {
+const ROLE_COLORS: Record<string, "default" | "success" | "warning"> = {
   CUSTOMER: "default",
   ASSEMBLER: "success",
   MANUFACTURER: "success",
-  ADMIN: "default",
+  ADMIN: "warning",
 };
 
 export default async function AdminUsersPage() {
@@ -25,7 +25,7 @@ export default async function AdminUsersPage() {
       id: true,
       name: true,
       email: true,
-      role: true,
+      roles: true,
       city: true,
       createdAt: true,
     },
@@ -61,9 +61,13 @@ export default async function AdminUsersPage() {
                     {user.email}
                   </td>
                   <td className="p-4">
-                    <Badge variant={ROLE_COLORS[user.role] || "default"}>
-                      {ROLE_LABELS[user.role] || user.role}
-                    </Badge>
+                    <div className="flex flex-wrap gap-1">
+                      {(user.roles as string[]).map((r) => (
+                        <Badge key={r} variant={ROLE_COLORS[r] || "default"}>
+                          {ROLE_LABELS[r] || r}
+                        </Badge>
+                      ))}
+                    </div>
                   </td>
                   <td className="p-4 text-sub-text hidden lg:table-cell">
                     {user.city || "-"}
@@ -72,7 +76,7 @@ export default async function AdminUsersPage() {
                     {formatDate(user.createdAt)}
                   </td>
                   <td className="p-4 text-right">
-                    <UserActions userId={user.id} userName={user.name} />
+                    <UserActions userId={user.id} userName={user.name} userRoles={user.roles as string[]} />
                   </td>
                 </tr>
               ))}
