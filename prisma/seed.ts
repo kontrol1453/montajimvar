@@ -45,7 +45,7 @@ async function main() {
       email: "admin@montajimvar.com",
       password,
       phone: "0532 000 00 00",
-      role: "ADMIN",
+      roles: ["ADMIN"],
       city: "İstanbul",
     },
   });
@@ -56,7 +56,7 @@ async function main() {
       email: "musteri@test.com",
       password,
       phone: "0532 111 22 33",
-      role: "CUSTOMER",
+      roles: ["CUSTOMER"],
       city: "İstanbul",
     },
   });
@@ -67,7 +67,7 @@ async function main() {
       email: "montajci@test.com",
       password,
       phone: "0532 222 33 44",
-      role: "ASSEMBLER",
+      roles: ["ASSEMBLER"],
       city: "İstanbul",
     },
   });
@@ -78,7 +78,7 @@ async function main() {
       email: "ali@test.com",
       password,
       phone: "0532 333 44 55",
-      role: "ASSEMBLER",
+      roles: ["ASSEMBLER"],
       city: "Ankara",
     },
   });
@@ -89,7 +89,7 @@ async function main() {
       email: "uretici@test.com",
       password,
       phone: "0532 444 55 66",
-      role: "MANUFACTURER",
+      roles: ["MANUFACTURER"],
       city: "Bursa",
     },
   });

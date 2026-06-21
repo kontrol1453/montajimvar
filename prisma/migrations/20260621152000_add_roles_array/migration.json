@@ -1,0 +1,13 @@
+{
+  "version": "5.2",
+  "steps": [
+    {
+      "tag": "AlterColumnDefault",
+      "model": "User",
+      "column": "roles",
+      "default": {
+        "value": "[\"CUSTOMER\"]"
+      }
+    }
+  ]
+}

@@ -14,7 +14,7 @@ model User {
   password  String
   phone     String?
   avatar    String?
-  role      String    @default("CUSTOMER")
+  roles     String[]  @default(["CUSTOMER"])
   city      String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
