@@ -34,7 +34,8 @@ export const authOptions: NextAuthOptions = {
           id: String(user.id),
           email: user.email,
           name: user.name,
-          role: user.role,
+          roles: user.roles,
+          role: user.roles, // keep for backwards compatibility
           avatar: user.avatar,
         };
       },
@@ -44,7 +45,8 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = Number(user.id);
-        token.role = (user as any).role;
+        token.roles = (user as any).roles;
+        token.role = (user as any).role; // kept for backwards compatibility
         token.avatar = (user as any).avatar;
       }
       return token;
@@ -52,7 +54,8 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         (session.user as any).id = token.id;
-        (session.user as any).role = token.role;
+        (session.user as any).roles = token.roles;
+        (session.user as any).role = token.role; // kept for backwards compatibility
         (session.user as any).avatar = token.avatar;
       }
       return session;

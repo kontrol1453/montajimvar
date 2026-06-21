@@ -21,6 +21,8 @@ export async function POST(request: Request) {
       );
     }
 
+    const roles = [role];
+
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
       return NextResponse.json(
@@ -37,14 +39,14 @@ export async function POST(request: Request) {
         email,
         password: hashedPassword,
         phone,
-        role,
+        roles,
         city,
       },
       select: {
         id: true,
         name: true,
         email: true,
-        role: true,
+        roles: true,
       },
     });
 
