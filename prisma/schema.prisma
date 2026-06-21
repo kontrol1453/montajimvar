@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  phone     String?
+  avatar    String?
+  role      String    @default("CUSTOMER")
+  city      String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  profile          Profile?
+  sentMessages     Message[]      @relation("SentMessages")
+  receivedMessages Message[]      @relation("ReceivedMessages")
+  reviews          Review[]
+  favorites        Favorite[]
+}
+
+model Profile {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @unique
+  companyName String
+  description String   @default("")
+  categoryId  Int
+  city        String
+  address     String?
+  phone       String?
+  website     String?
+  logo        String?
+  whatsapp    String?
+  isVerified  Boolean  @default(false)
+  ratingAvg   Float    @default(0)
+  reviewCount Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user       User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category   Category          @relation(fields: [categoryId], references: [id])
+  images     ProfileImage[]
+  reviews    Review[]
+  favorites  Favorite[]
+  categories ProfileCategory[]
+}
+
+model Category {
+  id         Int       @id @default(autoincrement())
+  name       String    @unique
+  slug       String    @unique
+  icon       String?
+  createdAt  DateTime  @default(now())
+
+  profiles        Profile[]
+  profileCategories ProfileCategory[]
+}
+
+model ProfileCategory {
+  id         Int     @id @default(autoincrement())
+  profileId  Int
+  categoryId Int
+
+  profile  Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, categoryId])
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  senderId   Int
+  receiverId Int
+  subject    String   @default("")
+  content    String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  sender   User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+}
+
+model ProfileImage {
+  id        Int      @id @default(autoincrement())
+  profileId Int
+  url       String
+  alt       String?
+  isLogo    Boolean  @default(false)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  profileId Int
+  userId    Int
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, userId])
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  profileId Int
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, profileId])
+}
+
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  email     String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model RolePermission {
+  id        Int      @id @default(autoincrement())
+  role      String
+  feature   String
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([role, feature])
+}
