@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
 import UnreadBadge from "./UnreadBadge";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -26,7 +27,7 @@ export default function Navbar() {
   const user = session?.user as { name?: string; email?: string; roles?: string[]; id?: number; avatar?: string } | undefined;
 
   return (
-    <nav className="bg-dark-bg/85 backdrop-blur-xl border-b border-dark-border sticky top-0 z-50">
+    <nav className="bg-dark-bg/85 backdrop-blur-xl border-b border-dark-border sticky top-0 z-50" style={{ backgroundColor: "color-mix(in srgb, var(--clr-bg) 85%, transparent)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -40,6 +41,7 @@ export default function Navbar() {
             <Link href="/ara" className="text-muted-text hover:text-montaj transition">
               Firmalar
             </Link>
+            <ThemeToggle />
             {session ? (
               <div className="relative" ref={profileRef}>
                 <button
@@ -156,7 +158,11 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-dark-border bg-dark-bg px-4 py-3 space-y-2">
+        <div className="md:hidden border-t border-dark-border px-4 py-3 space-y-2">
+          <div className="flex items-center justify-between pb-2 border-b border-dark-border mb-2">
+            <span className="text-xs text-sub-text">Menü</span>
+            <ThemeToggle />
+          </div>
           <Link
             href="/ara"
             className="block py-2 text-muted-text hover:text-montaj"

@@ -4,23 +4,75 @@
   --color-montaj: #ff7a00;
   --color-montaj-dark: #e06e00;
   --color-montaj-light: #ff9433;
-  --color-dark-bg: #0d0d0d;
-  --color-dark-section: #121212;
-  --color-dark-card: #181818;
-  --color-dark-border: rgba(255, 255, 255, 0.06);
-  --color-muted-text: #d0d0d0;
-  --color-sub-text: #888;
 }
 
+:root,
+[data-theme="dark"] {
+  --clr-bg: #0d0d0d;
+  --clr-section: #121212;
+  --clr-card: #181818;
+  --clr-border: rgba(255, 255, 255, 0.06);
+  --clr-muted: #d0d0d0;
+  --clr-sub: #888;
+  --clr-text: #ffffff;
+}
+
+[data-theme="light"] {
+  --clr-bg: #f5f5f5;
+  --clr-section: #ffffff;
+  --clr-card: #ffffff;
+  --clr-border: rgba(0, 0, 0, 0.08);
+  --clr-muted: #444444;
+  --clr-sub: #888888;
+  --clr-text: #1a1a1a;
+}
+
+/* Emulate Tailwind v4 dark theme colors via CSS variables */
+.bg-dark-bg { background: var(--clr-bg); }
+.bg-dark-section { background: var(--clr-section); }
+.bg-dark-card { background: var(--clr-card) !important; }
+.border-dark-border { border-color: var(--clr-border); }
+.text-muted-text { color: var(--clr-muted); }
+.text-sub-text { color: var(--clr-sub); }
+.text-white { color: var(--clr-text); }
+.divide-dark-border > :not([hidden]) ~ :not([hidden]) { border-color: var(--clr-border); }
+.hover\:border-dark-border:hover { border-color: var(--clr-border); }
+.hover\:bg-dark-section:hover { background: var(--clr-section); }
+.hover\:bg-dark-card:hover { background: var(--clr-card); }
+
+/* Keep montaj buttons with white text always */
+.bg-montaj.text-white,
+.bg-montaj-dark.text-white,
+button:where(.bg-montaj, .bg-montaj-dark) .text-white {
+  color: #ffffff !important;
+}
+
+/* Base layer */
 @layer base {
   html {
     scroll-behavior: smooth;
   }
   body {
-    @apply antialiased bg-dark-bg text-white;
+    @apply antialiased;
+    background: var(--clr-bg);
+    color: var(--clr-text);
   }
 }
 
+/* Default body transition */
+body,
+.bg-dark-bg,
+.bg-dark-section,
+.bg-dark-card,
+.border-dark-border,
+.text-muted-text,
+.text-sub-text,
+.text-white,
+.divide-dark-border {
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+/* Legacy CSS variables */
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -31,17 +83,4 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
