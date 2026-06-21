@@ -2,6 +2,63 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
+
+export async function POST(request: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user || (session.user as any).role !== "ADMIN") {
+    return NextResponse.json({ error: "Yetkisiz erişim." }, { status: 403 });
+  }
+
+  try {
+    const { name, email, password, role } = await request.json();
+
+    if (!name || !email || !password || !role) {
+      return NextResponse.json(
+        { error: "Ad, e-posta, şifre ve rol zorunludur." },
+        { status: 400 }
+      );
+    }
+
+    const validRoles = ["CUSTOMER", "ASSEMBLER", "MANUFACTURER", "ADMIN"];
+    if (!validRoles.includes(role)) {
+      return NextResponse.json(
+        { error: "Geçersiz kullanıcı rolü." },
+        { status: 400 }
+      );
+    }
+
+    if (password.length < 6) {
+      return NextResponse.json(
+        { error: "Şifre en az 6 karakter olmalıdır." },
+        { status: 400 }
+      );
+    }
+
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) {
+      return NextResponse.json(
+        { error: "Bu e-posta adresi zaten kayıtlı." },
+        { status: 400 }
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    const user = await prisma.user.create({
+      data: { name, email, password: hashedPassword, role },
+      select: { id: true, name: true, email: true, role: true, createdAt: true },
+    });
+
+    return NextResponse.json(user, { status: 201 });
+  } catch (error) {
+    console.error("Admin kullanıcı oluşturma hatası:", error);
+    return NextResponse.json(
+      { error: "Kullanıcı oluşturulurken hata oluştu." },
+      { status: 500 }
+    );
+  }
+}
 
 export async function DELETE(request: Request) {
   const session = await getServerSession(authOptions);

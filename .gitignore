@@ -44,3 +44,9 @@ next-env.d.ts
 
 # local uploads (migrated to Supabase Storage)
 /public/uploads
+
+# local SQLite database (migrated to Neon PostgreSQL)
+/prisma/dev.db
+/dev.db
+
+.vercel

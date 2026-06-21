@@ -7,7 +7,13 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Card from "@/components/ui/Card";
-import { USER_ROLES, TURKISH_CITIES } from "@/lib/utils";
+import { TURKISH_CITIES } from "@/lib/utils";
+
+const PUBLIC_ROLES = [
+  { value: "CUSTOMER", label: "Müşteri", description: "Montaj hizmeti almak istiyorum" },
+  { value: "ASSEMBLER", label: "Montajcı", description: "Montaj hizmeti veriyorum" },
+  { value: "MANUFACTURER", label: "Üretici", description: "Ürünlerimi montajcılarla buluşturmak istiyorum" },
+] as const;
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -76,7 +82,7 @@ export default function RegisterPage() {
               Hesap Türü
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              {USER_ROLES.map((role) => (
+              {PUBLIC_ROLES.map((role) => (
                 <button
                   key={role.value}
                   type="button"

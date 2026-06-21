@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
 import UserActions from "./UserActions";
+import CreateUserForm from "./CreateUserForm";
 
 const ROLE_LABELS: Record<string, string> = {
   CUSTOMER: "Müşteri",
@@ -32,7 +33,10 @@ export default async function AdminUsersPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl font-bold text-white mb-6">Kullanıcılar</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-white">Kullanıcılar</h1>
+        <CreateUserForm />
+      </div>
 
       <div className="bg-dark-card rounded-xl border border-dark-border overflow-hidden">
         <div className="overflow-x-auto">
