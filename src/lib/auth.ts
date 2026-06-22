@@ -73,7 +73,7 @@ export const authOptions: AuthOptions = {
               password: hashedPassword,
             },
           });
-          (user as any).id = String(newUser.id);
+          (user as any).id = newUser.id;
         } else {
           await prisma.user.update({
             where: { id: existingUser.id },
@@ -82,14 +82,14 @@ export const authOptions: AuthOptions = {
               emailVerified: true,
             },
           });
-          (user as any).id = String(existingUser.id);
+          (user as any).id = existingUser.id;
         }
       }
       return true;
     },
     async jwt({ token, user, account }) {
       if (user) {
-        token.id = (user as any).id || Number(user.id);
+        token.id = Number((user as any).id ?? user.id) || 0;
         token.roles = (user as any).roles || ["CUSTOMER"];
         token.role = token.roles;
         token.avatar = (user as any).avatar;
