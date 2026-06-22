@@ -11,16 +11,40 @@ export async function PATCH(request: Request) {
 
   try {
     const body = await request.json();
-    const { id, isVerified, isFeatured } = body;
+    const { id, isVerified, isFeatured, categoryIds } = body;
 
     const data: Record<string, unknown> = {};
     if (isVerified !== undefined) data.isVerified = isVerified;
     if (isFeatured !== undefined) data.isFeatured = isFeatured;
 
-    await prisma.profile.update({
-      where: { id: Number(id) },
-      data,
-    });
+    if (categoryIds !== undefined) {
+      const ids = categoryIds as number[];
+      if (ids.length === 0) {
+        return NextResponse.json(
+          { error: "En az bir kategori seçilmelidir." },
+          { status: 400 }
+        );
+      }
+
+      await prisma.$transaction([
+        prisma.profileCategory.deleteMany({ where: { profileId: Number(id) } }),
+        prisma.profileCategory.createMany({
+          data: ids.map((categoryId) => ({
+            profileId: Number(id),
+            categoryId,
+          })),
+        }),
+        prisma.profile.update({
+          where: { id: Number(id) },
+          data: { categoryId: ids[0] },
+        }),
+      ]);
+    } else {
+      await prisma.profile.update({
+        where: { id: Number(id) },
+        data,
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

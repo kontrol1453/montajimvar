@@ -3,6 +3,7 @@ import { formatDate } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
 import VerifyButton from "./VerifyButton";
 import FeaturedButton from "./FeaturedButton";
+import CategoryEditor from "./CategoryEditor";
 
 export default async function AdminFirmsPage() {
   const profiles = await prisma.profile.findMany({
@@ -92,6 +93,10 @@ export default async function AdminFirmsPage() {
                   </td>
                   <td className="p-4 text-right">
                     <div className="flex items-center justify-end gap-2">
+                      <CategoryEditor
+                        profileId={profile.id}
+                        selectedCategoryIds={profile.categories.map((pc) => pc.categoryId)}
+                      />
                       <FeaturedButton profileId={profile.id} isFeatured={profile.isFeatured} />
                       <VerifyButton
                         profileId={profile.id}
