@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import AdminNav from "./AdminNav";
 
 export default async function AdminLayout({
   children,
@@ -26,23 +27,7 @@ export default async function AdminLayout({
                   Admin
                 </span>
               </Link>
-              <div className="hidden md:flex items-center gap-4 text-sm">
-                <Link href="/admin" className="text-sub-text hover:text-white transition">
-                  Panel
-                </Link>
-                <Link href="/admin/kullanicilar" className="text-sub-text hover:text-white transition">
-                  Kullanıcılar
-                </Link>
-                <Link href="/admin/firmalar" className="text-sub-text hover:text-white transition">
-                  Firmalar
-                </Link>
-                <Link href="/admin/kategoriler" className="text-sub-text hover:text-white transition">
-                  Kategoriler
-                </Link>
-                <Link href="/admin/izinler" className="text-sub-text hover:text-white transition">
-                  İzinler
-                </Link>
-              </div>
+              <AdminNav />
             </div>
             <Link
               href="/"
