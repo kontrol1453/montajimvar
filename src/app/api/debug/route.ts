@@ -68,6 +68,33 @@ export async function POST(request: Request) {
       err4 = e?.message || String(e);
     }
 
+    // Step 5: SMTP send test
+    let sendOk = false;
+    let err5: string | null = null;
+    try {
+      if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+        const nodemailer = await import("nodemailer");
+        const transporter = nodemailer.default.createTransport({
+          host: process.env.SMTP_HOST,
+          port: Number(process.env.SMTP_PORT) || 587,
+          secure: Number(process.env.SMTP_PORT) === 465,
+          auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+          tls: { rejectUnauthorized: false },
+        });
+        await transporter.sendMail({
+          from: process.env.EMAIL_FROM || process.env.SMTP_USER,
+          to: email,
+          subject: "SMTP Test - Montajım Var",
+          html: "<p>Test email from Montajım Var debug endpoint.</p>",
+        });
+        sendOk = true;
+      } else {
+        err5 = "SMTP env eksik (send test atlandi)";
+      }
+    } catch (e: any) {
+      err5 = e?.message || String(e);
+    }
+
     return NextResponse.json({
       importOk,
       err1,
@@ -78,6 +105,8 @@ export async function POST(request: Request) {
       smtpOk,
       smtpEnv,
       err4,
+      sendOk,
+      err5,
     });
   } catch (e: any) {
     return NextResponse.json({ fatal: e?.message || String(e) }, { status: 500 });
