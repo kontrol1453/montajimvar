@@ -117,7 +117,6 @@ export default async function HomePage() {
                   href={`/ara?kategori=${cat.slug}`}
                   className="flex items-center gap-3 p-4 border border-dark-border rounded-xl hover:border-montaj hover:bg-dark-card transition"
                 >
-                  <span className="text-2xl">{cat.icon || "🔧"}</span>
                   <span className="font-medium text-white">{cat.name}</span>
                 </Link>
               ))}

@@ -123,7 +123,6 @@ export default function FirmaForm({ profile, categoryIds: initialCategoryIds, ca
                       : "bg-dark-bg border-dark-border text-gray-300 hover:border-montaj/50"
                   }`}
                 >
-                  {cat.icon && <span className="text-lg">{cat.icon}</span>}
                   <span>{cat.name}</span>
                   {selected && (
                     <svg className="w-3.5 h-3.5 text-montaj ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -153,7 +152,7 @@ export default function FirmaForm({ profile, categoryIds: initialCategoryIds, ca
             <option value="">Ana kategori seçin</option>
             {categories.map((cat) => (
               <option key={cat.id} value={cat.id}>
-                {cat.icon && <span className="text-lg">{cat.icon}</span>} {cat.name}
+                {cat.name}
               </option>
             ))}
           </select>
