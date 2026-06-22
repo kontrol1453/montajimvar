@@ -94,6 +94,10 @@ export const authOptions: AuthOptions = {
         token.role = token.roles;
         token.avatar = (user as any).avatar;
       }
+      // Normalise eski JWT token'lardaki string ID'leri (Prisma Int uyumu)
+      if (typeof token.id === "string") {
+        token.id = Number(token.id) || 0;
+      }
       return token;
     },
     async session({ session, token }) {
