@@ -4,8 +4,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-2xl">🔧</span>
+            <div className="mb-4">
               <span className="font-bold text-xl text-montaj">Montajım Var</span>
             </div>
             <p className="text-sm text-sub-text">
