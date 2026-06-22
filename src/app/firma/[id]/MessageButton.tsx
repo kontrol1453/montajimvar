@@ -75,7 +75,11 @@ export default function MessageButton({ profileId, companyName, isOwner }: Props
   if (success) {
     return (
       <div className="text-center py-4">
-        <div className="text-4xl mb-2">✅</div>
+        <div className="w-14 h-14 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+          <svg className="w-7 h-7 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          </svg>
+        </div>
         <p className="text-green-600 font-medium">Mesajınız gönderildi!</p>
         <p className="text-sm text-gray-500 mt-1">
           {companyName} en kısa sürede size dönüş yapacaktır.

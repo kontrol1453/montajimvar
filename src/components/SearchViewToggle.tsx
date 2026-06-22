@@ -66,24 +66,30 @@ export default function SearchViewToggle({
       {/* View toggle */}
       <div className="flex items-center justify-between mb-4">
         <p className="text-muted-text text-sm">{totalCount} firma bulundu{sehir && ` - ${sehir}`}</p>
-        <div className="flex items-center gap-1 bg-dark-card border border-dark-border rounded-lg p-0.5">
-          <button
-            onClick={() => setViewMode("list")}
-            className={`px-3 py-1.5 rounded-md text-sm transition ${
-              viewMode === "list" ? "bg-montaj text-white" : "text-sub-text hover:text-white"
-            }`}
-          >
-            ☰ Liste
-          </button>
-          <button
-            onClick={() => setViewMode("map")}
-            className={`px-3 py-1.5 rounded-md text-sm transition ${
-              viewMode === "map" ? "bg-montaj text-white" : "text-sub-text hover:text-white"
-            }`}
-          >
-            🗺️ Harita
-          </button>
-        </div>
+          <div className="flex items-center gap-1 bg-dark-card border border-dark-border rounded-lg p-0.5">
+            <button
+              onClick={() => setViewMode("list")}
+              className={`px-3 py-1.5 rounded-md text-sm transition flex items-center gap-1 ${
+                viewMode === "list" ? "bg-montaj text-white" : "text-sub-text hover:text-white"
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+              Liste
+            </button>
+            <button
+              onClick={() => setViewMode("map")}
+              className={`px-3 py-1.5 rounded-md text-sm transition flex items-center gap-1 ${
+                viewMode === "map" ? "bg-montaj text-white" : "text-sub-text hover:text-white"
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" />
+              </svg>
+              Harita
+            </button>
+          </div>
       </div>
 
       {viewMode === "map" ? (
@@ -137,9 +143,11 @@ export default function SearchViewToggle({
                     </div>
                   )}
                   <p className="text-sm text-muted-text line-clamp-2">{profile.description || "Henüz açıklama eklenmemiş."}</p>
-                  {profile.whatsapp && (
-                    <div className="mt-3 flex items-center gap-1 text-sm text-green-400">
-                      <span>💬</span>
+                    {profile.whatsapp && (
+                    <div className="mt-3 flex items-center gap-1.5 text-sm text-green-400">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21.75 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 2.25 14.205 2.25 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                      </svg>
                       <span>WhatsApp ile iletişim</span>
                     </div>
                   )}
@@ -147,8 +155,12 @@ export default function SearchViewToggle({
               ))}
             </div>
           ) : (
-            <div className="text-center py-16">
-              <div className="text-6xl mb-4">🔍</div>
+              <div className="text-center py-16">
+              <div className="w-16 h-16 bg-montaj/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-montaj/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+              </div>
               <h3 className="text-xl font-semibold text-white mb-2">Sonuç bulunamadı</h3>
               <p className="text-muted-text">Filtreleri değiştirip tekrar deneyin.</p>
             </div>

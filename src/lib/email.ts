@@ -27,7 +27,7 @@ function getTransporter() {
 
 function devLog(to: string, subject: string, html: string) {
   const urlMatch = html.match(/https?:\/\/[^\s"']+/);
-  console.log(`\n📧 [DEV EMAIL] To: ${to} | Subject: ${subject}`);
+  console.log(`\n[DEV EMAIL] To: ${to} | Subject: ${subject}`);
   if (urlMatch) {
     console.log(`   Link: ${urlMatch[0]}\n`);
   }
@@ -48,9 +48,9 @@ export async function sendEmail({ to, subject, html }: EmailOptions) {
       subject,
       html,
     });
-    console.log(`\n📬 EMAIL SENT to ${to} | Subject: ${subject}\n`);
+    console.log(`\nEMAIL SENT to ${to} | Subject: ${subject}\n`);
   } catch (err: any) {
-    console.error(`\n❌ EMAIL FAILED to ${to}:`, err?.message || err);
+    console.error(`\nEMAIL FAILED to ${to}:`, err?.message || err);
   }
 }
 
@@ -61,7 +61,7 @@ export function verifyEmailHtml(verifyUrl: string): string {
 <body style="font-family:Arial,sans-serif;background:#f4f4f4;padding:40px 20px;">
   <table align="center" style="max-width:480px;width:100%;background:#fff;border-radius:12px;overflow:hidden;">
     <tr><td style="background:#d97706;padding:24px;text-align:center;">
-      <h1 style="color:#fff;margin:0;font-size:20px;">🔧 Montajım Var</h1>
+      <h1 style="color:#fff;margin:0;font-size:20px;">Montajım Var</h1>
     </td></tr>
     <tr><td style="padding:32px 24px;">
       <h2 style="color:#1a1a1a;margin:0 0 12px;">E-posta Adresinizi Doğrulayın</h2>
@@ -91,7 +91,7 @@ export function resetPasswordHtml(resetUrl: string): string {
 <body style="font-family:Arial,sans-serif;background:#f4f4f4;padding:40px 20px;">
   <table align="center" style="max-width:480px;width:100%;background:#fff;border-radius:12px;overflow:hidden;">
     <tr><td style="background:#d97706;padding:24px;text-align:center;">
-      <h1 style="color:#fff;margin:0;font-size:20px;">🔧 Montajım Var</h1>
+      <h1 style="color:#fff;margin:0;font-size:20px;">Montajım Var</h1>
     </td></tr>
     <tr><td style="padding:32px 24px;">
       <h2 style="color:#1a1a1a;margin:0 0 12px;">Şifre Sıfırlama</h2>
