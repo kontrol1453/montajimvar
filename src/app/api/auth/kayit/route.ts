@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
+import { sendEmail, verifyEmailHtml } from "@/lib/email";
 
 export async function POST(request: Request) {
   try {
@@ -41,8 +43,6 @@ export async function POST(request: Request) {
         phone,
         roles,
         city,
-        // Geçici olarak e-posta doğrulama devre dışı - eklenen kullanıcılar otomatik doğrulanmış sayılır
-        emailVerified: true,
       },
       select: {
         id: true,
@@ -52,9 +52,30 @@ export async function POST(request: Request) {
       },
     });
 
+    // E-posta doğrulama token'ı oluştur ve gönder
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 saat
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        emailVerificationToken: verificationToken,
+        emailVerificationExpires: expiresAt,
+      },
+    });
+
+    const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/auth/email-dogrula?token=${verificationToken}`;
+
+    // SMTP yoksa hata fırlatma (console'a log atar)
+    await sendEmail({
+      to: email,
+      subject: "E-posta adresinizi doğrulayın - Montajım Var",
+      html: verifyEmailHtml(verifyUrl),
+    });
+
     return NextResponse.json(
       { 
-        message: "Kayıt başarılı.",
+        message: "Kayıt başarılı. E-posta adresinize doğrulama linki gönderildi.",
         user,
       },
       { status: 201 }

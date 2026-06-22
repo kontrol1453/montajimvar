@@ -32,10 +32,9 @@ export const authOptions: AuthOptions = {
           throw new Error("Hatalı şifre");
         }
 
-        // NOTE: E-posta doğrulama geçici olarak devre dışı
-        // if (!user.emailVerified) {
-        //   throw new Error("E-posta adresiniz doğrulanmamış. Lütfen e-postanızı kontrol edin.");
-        // }
+        if (!user.emailVerified) {
+          throw new Error("E-posta adresiniz doğrulanmamış. Lütfen e-postanızı kontrol edin.");
+        }
 
         return {
           id: String(user.id),
