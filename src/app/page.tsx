@@ -2,6 +2,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import CompanyCard from "@/components/CompanyCard";
 
+export const dynamic = "force-dynamic";
+
 async function getFeaturedProfiles() {
   const profiles = await prisma.profile.findMany({
     take: 6,
