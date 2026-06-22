@@ -119,11 +119,13 @@ function ResetForm() {
         </form>
       )}
 
-      <p className="text-center text-sm text-muted-text mt-6">
-        <Link href="/auth/giris" className="text-montaj hover:underline">
-          Giriş Sayfasına Dön
-        </Link>
-      </p>
+      {!success && (
+        <p className="text-center text-sm text-muted-text mt-6">
+          <Link href="/auth/giris" className="text-montaj hover:underline">
+            Giriş Sayfasına Dön
+          </Link>
+        </p>
+      )}
     </>
   );
 }
