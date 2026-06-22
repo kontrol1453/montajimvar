@@ -86,6 +86,15 @@ export default function Navbar() {
                     >
                       Favorilerim
                     </Link>
+                    {(user?.roles?.includes("ASSEMBLER") || user?.roles?.includes("MANUFACTURER")) && (
+                      <Link
+                        href="/dashboard/uyelik"
+                        className="block px-4 py-2 text-sm text-amber-400 hover:bg-dark-section font-medium"
+                        onClick={() => setProfileOpen(false)}
+                      >
+                        💎 Üyelik
+                      </Link>
+                    )}
                     <Link
                       href="/dashboard/profil"
                       className="block px-4 py-2 text-sm text-gray-200 hover:bg-dark-section"
@@ -194,6 +203,15 @@ export default function Navbar() {
               >
                 Favorilerim
               </Link>
+              {(user?.roles?.includes("ASSEMBLER") || user?.roles?.includes("MANUFACTURER")) && (
+                <Link
+                  href="/dashboard/uyelik"
+                  className="block py-2 text-amber-400 font-medium"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  💎 Üyelik
+                </Link>
+              )}
               <Link
                 href="/dashboard/profil"
                 className="block py-2 text-muted-text hover:text-montaj"

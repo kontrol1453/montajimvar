@@ -41,6 +41,8 @@ export async function POST(request: Request) {
         phone,
         roles,
         city,
+        // Geçici olarak e-posta doğrulama devre dışı - eklenen kullanıcılar otomatik doğrulanmış sayılır
+        emailVerified: true,
       },
       select: {
         id: true,
@@ -51,7 +53,10 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(
-      { message: "Kayıt başarılı", user },
+      { 
+        message: "Kayıt başarılı.",
+        user,
+      },
       { status: 201 }
     );
   } catch (error) {

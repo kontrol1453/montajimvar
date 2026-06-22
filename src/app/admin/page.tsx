@@ -142,6 +142,19 @@ export default async function AdminDashboardPage() {
             </div>
           </div>
         </Link>
+
+        <Link
+          href="/admin/abonelik-plani"
+          className="bg-dark-card rounded-xl border border-dark-border p-5 hover:border-montaj/50 transition"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">💎</span>
+            <div>
+              <p className="font-medium text-white">Abonelik Planları</p>
+              <p className="text-sm text-sub-text">Premium planları yönetin</p>
+            </div>
+          </div>
+        </Link>
       </div>
     </div>
   );

@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { formatDate } from "@/lib/utils";
 import type { Metadata } from "next";
 import Badge from "@/components/ui/Badge";
@@ -37,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CompanyProfilePage({ params }: Props) {
   const { id } = await params;
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   const profile = await prisma.profile.findUnique({
     where: { id: Number(id) },

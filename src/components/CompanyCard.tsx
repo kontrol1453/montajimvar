@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Profile } from "@prisma/client";
 import Badge from "@/components/ui/Badge";
+import PremiumBadge from "@/components/PremiumBadge";
 
 interface CompanyCardProps {
   profile: Profile & {
@@ -20,7 +21,10 @@ export default function CompanyCard({ profile }: CompanyCardProps) {
         <div className="w-12 h-12 bg-montaj/20 rounded-lg flex items-center justify-center text-xl font-bold text-montaj">
           {profile.companyName[0]?.toUpperCase() || "?"}
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 flex-wrap justify-end">
+          {(profile as any).premiumUntil && new Date((profile as any).premiumUntil) > new Date() && (
+            <PremiumBadge label={(profile as any).subscription?.badgeLabel || "Premium"} color={(profile as any).subscription?.badgeColor || "amber"} />
+          )}
           {(profile as any).isFeatured && (
             <Badge variant="warning">Vitrin</Badge>
           )}

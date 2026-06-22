@@ -1,9 +1,11 @@
-import { NextAuthOptions } from "next-auth";
+import { AuthOptions, getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
+import crypto from "crypto";
 
-export const authOptions: NextAuthOptions = {
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -30,23 +32,66 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Hatalı şifre");
         }
 
+        // NOTE: E-posta doğrulama geçici olarak devre dışı
+        // if (!user.emailVerified) {
+        //   throw new Error("E-posta adresiniz doğrulanmamış. Lütfen e-postanızı kontrol edin.");
+        // }
+
         return {
           id: String(user.id),
           email: user.email,
           name: user.name,
           roles: user.roles,
-          role: user.roles, // keep for backwards compatibility
+          role: user.roles,
           avatar: user.avatar,
         };
       },
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async signIn({ user, account, profile }) {
+      if (account?.provider === "google") {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email! },
+        });
+
+        if (!existingUser) {
+          const randomPassword = crypto.randomBytes(32).toString("hex");
+          const hashedPassword = await bcrypt.hash(randomPassword, 12);
+
+          const newUser = await prisma.user.create({
+            data: {
+              email: user.email!,
+              name: user.name || profile?.name || "Google User",
+              avatar: user.image || (profile as any)?.picture,
+              roles: ["CUSTOMER"],
+              emailVerified: true,
+              password: hashedPassword,
+            },
+          });
+          (user as any).id = String(newUser.id);
+        } else {
+          await prisma.user.update({
+            where: { id: existingUser.id },
+            data: {
+              avatar: user.image || existingUser.avatar,
+              emailVerified: true,
+            },
+          });
+          (user as any).id = String(existingUser.id);
+        }
+      }
+      return true;
+    },
+    async jwt({ token, user, account }) {
       if (user) {
-        token.id = Number(user.id);
-        token.roles = (user as any).roles;
-        token.role = (user as any).role; // kept for backwards compatibility
+        token.id = (user as any).id || Number(user.id);
+        token.roles = (user as any).roles || ["CUSTOMER"];
+        token.role = token.roles;
         token.avatar = (user as any).avatar;
       }
       return token;
@@ -55,7 +100,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         (session.user as any).id = token.id;
         (session.user as any).roles = token.roles;
-        (session.user as any).role = token.role; // kept for backwards compatibility
+        (session.user as any).role = token.role;
         (session.user as any).avatar = token.avatar;
       }
       return session;
@@ -70,3 +115,7 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET || "montajimvar-gizli-anahtar-degistirin",
 };
+
+export async function auth() {
+  return getServerSession(authOptions);
+}

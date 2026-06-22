@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Provider from "@/components/Provider";
+import CookieBanner from "@/components/CookieBanner";
 
 export const metadata: Metadata = {
   title: "Montajım Var - Montaj Firmaları, Üreticiler ve Müşteriler Buluşuyor",
@@ -43,6 +44,7 @@ export default function RootLayout({
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
+          <CookieBanner />
         </Provider>
       </body>
     </html>

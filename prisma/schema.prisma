@@ -8,22 +8,25 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  name      String
-  email     String    @unique
-  password  String
-  phone     String?
-  avatar    String?
-  roles     String[]  @default(["CUSTOMER"])
-  city      String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id                    Int       @id @default(autoincrement())
+  name                  String
+  email                 String    @unique
+  password              String
+  phone                 String?
+  avatar                String?
+  roles                 String[]  @default(["CUSTOMER"])
+  city                  String?
+  emailVerified         Boolean   @default(false)
+  emailVerificationToken String?   @unique
+  emailVerificationExpires DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
-  profile          Profile?
-  sentMessages     Message[]      @relation("SentMessages")
-  receivedMessages Message[]      @relation("ReceivedMessages")
-  reviews          Review[]
-  favorites        Favorite[]
+  profile              Profile?
+  sentMessages         Message[]      @relation("SentMessages")
+  receivedMessages     Message[]      @relation("ReceivedMessages")
+  reviews              Review[]
+  favorites            Favorite[]
 }
 
 model Profile {
@@ -45,15 +48,18 @@ model Profile {
   viewCount   Int      @default(0)
   ratingAvg   Float    @default(0)
   reviewCount Int      @default(0)
+  subscriptionId Int?
+  premiumUntil   DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  user       User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  category   Category          @relation(fields: [categoryId], references: [id])
-  images     ProfileImage[]
-  reviews    Review[]
-  favorites  Favorite[]
-  categories ProfileCategory[]
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category      Category          @relation(fields: [categoryId], references: [id])
+  images        ProfileImage[]
+  reviews       Review[]
+  favorites     Favorite[]
+  categories    ProfileCategory[]
+  subscription  SubscriptionPlan? @relation(fields: [subscriptionId], references: [id])
 }
 
 model Category {
@@ -92,15 +98,20 @@ model Message {
 }
 
 model ProfileImage {
-  id        Int      @id @default(autoincrement())
-  profileId Int
-  url       String
-  alt       String?
-  isLogo    Boolean  @default(false)
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  profileId   Int
+  url         String
+  alt         String?
+  description String?
+  category    String?  // e.g. "before_after", "project", "team", "equipment"
+  tags        String   @default("[]") // JSON array
+  isLogo      Boolean  @default(false)
+  isFeatured  Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
 }
 
 model Review {
@@ -135,6 +146,24 @@ model PasswordResetToken {
   token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
+}
+
+model SubscriptionPlan {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String   @unique
+  description String?
+  price       Int      @default(0) // kuruş cinsinden (0 = ücretsiz)
+  durationDays Int     @default(30)
+  features    String   @default("[]") // JSON array of feature strings
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  badgeLabel  String?  // e.g. "Premium", "Profesyonel"
+  badgeColor  String?  // e.g. "amber", "purple"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  profiles Profile[]
 }
 
 model RolePermission {

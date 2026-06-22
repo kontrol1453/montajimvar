@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { auth } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 // Send a message (profileId = to profile owner, receiverId = direct reply)
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user) {
     return NextResponse.json({ error: "Giriş yapmalısınız." }, { status: 401 });
   }
@@ -83,7 +83,7 @@ export async function POST(request: Request) {
 
 // Get messages (inbox/sent/conversation)
 export async function GET(request: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user) {
     return NextResponse.json({ error: "Giriş yapmalısınız." }, { status: 401 });
   }
@@ -142,3 +142,4 @@ export async function GET(request: Request) {
     );
   }
 }
+
