@@ -25,14 +25,12 @@ export default function CategoryManager({
   const [editing, setEditing] = useState<Category | null>(null);
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
-  const [icon, setIcon] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
   function resetForm() {
     setName("");
     setSlug("");
-    setIcon("");
     setEditing(null);
     setMessage("");
   }
@@ -41,7 +39,6 @@ export default function CategoryManager({
     setEditing(cat);
     setName(cat.name);
     setSlug(cat.slug);
-    setIcon(cat.icon || "");
     setMessage("");
   }
 
@@ -64,8 +61,8 @@ export default function CategoryManager({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
           editing
-            ? { id: editing.id, name, slug, icon: icon || null }
-            : { name, slug, icon: icon || null }
+            ? { id: editing.id, name, slug }
+            : { name, slug }
         ),
       });
 
@@ -128,31 +125,25 @@ export default function CategoryManager({
           {editing ? "Kategori Düzenle" : "Yeni Kategori"}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <Input
-              label="Kategori Adı"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-                if (!editing) setSlug(generateSlug(e.target.value));
-              }}
-              placeholder="Örn: Elektrik Montajı"
-              required
-            />
-            <Input
-              label="Slug"
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              placeholder="elektrik-montaji"
-              required
-            />
-            <Input
-              label="İkon (emoji)"
-              value={icon}
-              onChange={(e) => setIcon(e.target.value)}
-              placeholder="🔧"
-            />
-          </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Input
+                label="Kategori Adı"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  if (!editing) setSlug(generateSlug(e.target.value));
+                }}
+                placeholder="Örn: Elektrik Montajı"
+                required
+              />
+              <Input
+                label="Slug"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                placeholder="elektrik-montaji"
+                required
+              />
+            </div>
 
           {message && (
             <p
@@ -189,7 +180,6 @@ export default function CategoryManager({
             className="flex items-center justify-between p-4 hover:bg-dark-section transition"
           >
             <div className="flex items-center gap-3">
-              <span className="text-2xl">{cat.icon || "📦"}</span>
               <div>
                 <span className="font-medium text-white">{cat.name}</span>
                 <span className="text-xs text-sub-text ml-2">/{cat.slug}</span>
