@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
+import { sendEmail, resetPasswordHtml } from "@/lib/email";
 
 export async function POST(request: Request) {
   try {
@@ -36,7 +37,12 @@ export async function POST(request: Request) {
     });
 
     const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/auth/sifre-sifirla?token=${token}`;
-    console.log(`\n🔐 Şifre sıfırlama linki: ${resetUrl}\n`);
+
+    await sendEmail({
+      to: email,
+      subject: "Şifre sıfırlama - Montajım Var",
+      html: resetPasswordHtml(resetUrl),
+    });
 
     return NextResponse.json({
       success: true,
