@@ -18,10 +18,10 @@ function getTransporter() {
       port: Number(port) || 587,
       secure: Number(port) === 465,
       auth: { user, pass },
+      tls: { rejectUnauthorized: false },
     });
   }
 
-  // Dev fallback: log to console, don't send
   return null;
 }
 
@@ -38,16 +38,20 @@ export async function sendEmail({ to, subject, html }: EmailOptions) {
 
   if (!transporter) {
     devLog(to, subject, html);
-    console.log(`   SMTP not configured. Set SMTP_HOST, SMTP_USER, SMTP_PASS env vars.\n`);
     return;
   }
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_FROM || `"Montajım Var" <noreply@montajimvar.app>`,
-    to,
-    subject,
-    html,
-  });
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM || process.env.SMTP_USER || `"Montajım Var" <noreply@montajimvar.app>`,
+      to,
+      subject,
+      html,
+    });
+    console.log(`\n📬 EMAIL SENT to ${to} | Subject: ${subject}\n`);
+  } catch (err: any) {
+    console.error(`\n❌ EMAIL FAILED to ${to}:`, err?.message || err);
+  }
 }
 
 export function verifyEmailHtml(verifyUrl: string): string {
