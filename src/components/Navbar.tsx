@@ -91,7 +91,7 @@ export default function Navbar() {
                         className="block px-4 py-2 text-sm text-amber-400 hover:bg-dark-section font-medium"
                         onClick={() => setProfileOpen(false)}
                       >
-                        💎 Üyelik
+                        <svg className="w-4 h-4 inline-block mr-1 text-amber-400 -mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2L2 7l8 5 8-5-8-5zM2 12l8 5 8-5-8-5-8 5z" /></svg><span>Üyelik</span>
                       </Link>
                     )}
                     <Link

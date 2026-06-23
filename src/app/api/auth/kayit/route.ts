@@ -64,7 +64,8 @@ export async function POST(request: Request) {
       },
     });
 
-    const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/auth/email-dogrula?token=${verificationToken}`;
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
+    const verifyUrl = `${appUrl}/auth/email-dogrula?token=${verificationToken}`;
 
     // SMTP yoksa hata fırlatma (console'a log atar)
     await sendEmail({

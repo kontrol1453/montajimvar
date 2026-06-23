@@ -71,7 +71,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-montaj/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">🔍</span>
+                <svg className="w-8 h-8 text-montaj" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">Ara ve Bul</h3>
               <p className="text-muted-text">
@@ -81,7 +81,7 @@ export default async function HomePage() {
 
             <div className="text-center">
               <div className="w-16 h-16 bg-montaj/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">📋</span>
+                <svg className="w-8 h-8 text-montaj" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">İncele ve Karşılaştır</h3>
               <p className="text-muted-text">
@@ -91,7 +91,7 @@ export default async function HomePage() {
 
             <div className="text-center">
               <div className="w-16 h-16 bg-montaj/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">💬</span>
+                <svg className="w-8 h-8 text-montaj" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">İletişime Geç</h3>
               <p className="text-muted-text">

@@ -1,21 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { TURKISH_CITIES } from "@/lib/utils";
 import type { Metadata } from "next";
 import SearchViewToggle from "@/components/SearchViewToggle";
+import SearchForm from "@/components/SearchForm";
 
 const PAGE_SIZE = 12;
 
 type SearchParams = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
-
-const RATING_OPTIONS = [
-  { value: "", label: "Tümü" },
-  { value: "4", label: "4+" },
-  { value: "3", label: "3+" },
-  { value: "2", label: "2+" },
-] as const;
 
 export async function generateMetadata({ searchParams }: SearchParams): Promise<Metadata> {
   try {
@@ -54,10 +47,24 @@ export default async function SearchPage(props: { searchParams: Promise<{ [key: 
   const where: Record<string, unknown> = {};
   if (sehir) where.city = sehir;
   if (q) {
-    where.OR = [
-      { companyName: { contains: q, mode: "insensitive" } },
-      { description: { contains: q, mode: "insensitive" } },
-    ];
+    const words = q.trim().split(/\s+/).filter(Boolean);
+    if (words.length === 1) {
+      where.OR = [
+        { companyName: { contains: q, mode: "insensitive" } },
+        { description: { contains: q, mode: "insensitive" } },
+        { category: { name: { contains: q, mode: "insensitive" } } },
+        { categories: { some: { category: { name: { contains: q, mode: "insensitive" } } } } },
+      ];
+    } else {
+      where.AND = words.map((word) => ({
+        OR: [
+          { companyName: { contains: word, mode: "insensitive" } },
+          { description: { contains: word, mode: "insensitive" } },
+          { category: { name: { contains: word, mode: "insensitive" } } },
+          { categories: { some: { category: { name: { contains: word, mode: "insensitive" } } } } },
+        ],
+      }));
+    }
   }
   if (selectedSlugs.length > 0) {
     where.categories = {
@@ -116,68 +123,14 @@ export default async function SearchPage(props: { searchParams: Promise<{ [key: 
       <h1 className="text-3xl font-bold text-white mb-2">Tüm Firmalar</h1>
 
       <div className="bg-dark-card rounded-xl border border-dark-border p-4 mb-8">
-        <form className="space-y-4">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <input
-              name="q" defaultValue={q} placeholder="Firma adı veya açıklama ile ara..."
-              className="flex-1 px-3 py-2 border border-dark-border rounded-lg text-sm bg-dark-bg text-white placeholder-gray-500"
-            />
-            <select name="sehir" defaultValue={sehir}
-              className="px-3 py-2 border border-dark-border rounded-lg text-sm bg-dark-bg text-white"
-            >
-              <option value="">Tüm Şehirler</option>
-              {TURKISH_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-            <select name="minPuan" defaultValue={minPuan}
-              className="px-3 py-2 border border-dark-border rounded-lg text-sm bg-dark-bg text-white"
-            >
-              {RATING_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-            <select name="siralama" defaultValue={siralama}
-              className="px-3 py-2 border border-dark-border rounded-lg text-sm bg-dark-bg text-white"
-            >
-              <option value="en_yeni">En Yeni</option>
-              <option value="en_eski">En Eski</option>
-              <option value="puana_gore">Puana Göre</option>
-            </select>
-            <button type="submit" className="px-6 py-2 bg-montaj text-white rounded-lg hover:bg-montaj-dark transition text-sm font-medium">
-              Filtrele
-            </button>
-          </div>
-
-          <div>
-            <p className="text-xs text-sub-text mb-2">Kategoriler</p>
-            <div className="flex flex-wrap gap-2">
-              {categories.map((cat) => {
-                const checked = selectedSlugs.includes(cat.slug);
-                return (
-                  <label key={cat.id}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm border cursor-pointer transition ${
-                      checked
-                        ? "bg-montaj/20 border-montaj text-white"
-                        : "border-dark-border bg-dark-bg text-gray-300 hover:border-montaj/50"
-                    }`}
-                  >
-                    <input type="checkbox" name="kategoriler" value={cat.slug} defaultChecked={checked} className="sr-only" />
-                    {cat.icon && <span>{cat.icon}</span>}
-                    <span>{cat.name}</span>
-                  </label>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <button type="submit" className="px-4 py-1.5 bg-montaj text-white rounded-lg text-sm hover:bg-montaj-dark transition">
-              Filtrele
-            </button>
-            <Link href="/ara" className="px-4 py-1.5 border border-dark-border rounded-lg text-sm text-sub-text hover:text-white transition">
-              Filtreleri Temizle
-            </Link>
-          </div>
-        </form>
+        <SearchForm
+          categories={categories}
+          initialSehir={sehir}
+          initialQ={q}
+          initialMinPuan={minPuan}
+          initialSiralama={siralama}
+          initialSelectedSlugs={selectedSlugs}
+        />
       </div>
 
       <SearchViewToggle

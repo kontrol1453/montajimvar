@@ -49,6 +49,21 @@ export default function SearchViewToggle({
 }: SearchViewToggleProps) {
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
 
+  function highlightText(text: string) {
+    if (!q || !text) return text;
+    const words = q.trim().split(/\s+/).filter(Boolean);
+    if (words.length === 0) return text;
+    const escaped = words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+    const regex = new RegExp(`(${escaped})`, "gi");
+    const parts = text.split(regex);
+    const testRe = new RegExp(`^(${escaped})$`, "i");
+    return parts.map((part, i) =>
+      testRe.test(part)
+        ? <mark key={i} className="bg-montaj/30 text-white rounded px-0.5">{part}</mark>
+        : part,
+    );
+  }
+
   const mapProfiles = profiles
     .filter((p) => p.latitude && p.longitude)
     .map((p) => ({
@@ -120,16 +135,16 @@ export default function SearchViewToggle({
                       {profile.isVerified && <Badge variant="success">Onaylı</Badge>}
                     </div>
                   </div>
-                  <h3 className="font-semibold text-white mb-1 line-clamp-1">{profile.companyName}</h3>
+                  <h3 className="font-semibold text-white mb-1 line-clamp-1">{highlightText(profile.companyName)}</h3>
                   <div className="flex items-center gap-2 text-sm text-sub-text mb-2">
-                    <span>{profile.city}</span>
+                    <span>{highlightText(profile.city)}</span>
                     <span>·</span>
-                    <Badge variant="default">{profile.category.name}</Badge>
+                    <Badge variant="default">{highlightText(profile.category.name)}</Badge>
                     {profile.categories
                       ?.filter((pc) => pc.category.name !== profile.category.name)
                       .slice(0, 2)
                       .map((pc) => (
-                        <Badge key={pc.category.name} variant="default">{pc.category.name}</Badge>
+                        <Badge key={pc.category.name} variant="default">{highlightText(pc.category.name)}</Badge>
                       ))}
                     {(profile.categories?.length ?? 0) > 3 && (
                       <span className="text-xs text-sub-text">+{((profile.categories?.length ?? 0) - 1)}</span>
@@ -142,7 +157,7 @@ export default function SearchViewToggle({
                       <span className="text-sub-text">({profile.reviewCount})</span>
                     </div>
                   )}
-                  <p className="text-sm text-muted-text line-clamp-2">{profile.description || "Henüz açıklama eklenmemiş."}</p>
+                  <p className="text-sm text-muted-text line-clamp-2">{profile.description ? highlightText(profile.description) : "Henüz açıklama eklenmemiş."}</p>
                     {profile.whatsapp && (
                     <div className="mt-3 flex items-center gap-1.5 text-sm text-green-400">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>

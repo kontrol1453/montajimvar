@@ -8,20 +8,20 @@ async function main() {
 
   // Create categories (upsert to allow re-running)
   const categoryData = [
-    { name: "Mobilya Montajı", slug: "mobilya-montaji", icon: "🪑" },
-    { name: "Beyaz Eşya Montajı", slug: "beyaz-esya-montaji", icon: "🧊" },
-    { name: "Klima Montajı", slug: "klima-montaji", icon: "❄️" },
-    { name: "Elektrik Montajı", slug: "elektrik-montaji", icon: "⚡" },
-    { name: "Sıhhi Tesisat", slug: "sihhi-tesisat", icon: "🔧" },
-    { name: "Kapı & Pencere Montajı", slug: "kapi-pencere-montaji", icon: "🚪" },
-    { name: "Mutfak & Banyo Montajı", slug: "mutfak-banyo-montaji", icon: "🍳" },
-    { name: "Diğer", slug: "diger", icon: "📦" },
+    { name: "Mobilya Montajı", slug: "mobilya-montaji" },
+    { name: "Beyaz Eşya Montajı", slug: "beyaz-esya-montaji" },
+    { name: "Klima Montajı", slug: "klima-montaji" },
+    { name: "Elektrik Montajı", slug: "elektrik-montaji" },
+    { name: "Sıhhi Tesisat", slug: "sihhi-tesisat" },
+    { name: "Kapı & Pencere Montajı", slug: "kapi-pencere-montaji" },
+    { name: "Mutfak & Banyo Montajı", slug: "mutfak-banyo-montaji" },
+    { name: "Diğer", slug: "diger" },
   ];
   const categories = await Promise.all(
     categoryData.map((cat) =>
       prisma.category.upsert({
         where: { slug: cat.slug },
-        update: { name: cat.name, icon: cat.icon },
+        update: { name: cat.name },
         create: cat,
       })
     )

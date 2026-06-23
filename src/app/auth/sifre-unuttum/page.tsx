@@ -50,7 +50,7 @@ export default function ForgotPasswordPage() {
 
         {sent ? (
           <div className="text-center">
-            <div className="text-4xl mb-4">📧</div>
+            <svg className="w-10 h-10 text-montaj mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
             <p className="text-green-400 mb-4">
               E-posta adresiniz varsa şifre sıfırlama linki gönderilecektir.
             </p>
