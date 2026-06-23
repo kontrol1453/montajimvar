@@ -19,6 +19,7 @@ model User {
   emailVerified         Boolean   @default(false)
   emailVerificationToken String?   @unique
   emailVerificationExpires DateTime?
+  premiumUntil          DateTime?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
