@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { clearPermissionCache } from "@/lib/permissions";
 
 export async function GET() {
   const session = await auth();
@@ -30,6 +31,9 @@ export async function POST(request: Request) {
       update: { enabled },
       create: { role, feature, enabled },
     });
+
+    // Cache'i temizle, aksi halde eski değer dönmeye devam eder
+    clearPermissionCache();
 
     return NextResponse.json(perm);
   } catch (error) {
