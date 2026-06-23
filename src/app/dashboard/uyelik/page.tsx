@@ -1,8 +1,6 @@
-import { auth } from "@/lib/auth";
+﻿import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { formatDate } from "@/lib/utils";
-import Link from "next/link";
 import PremiumBadge from "@/components/PremiumBadge";
 import SubscribeButton from "./SubscribeButton";
 import EmailVerifyBadge from "./EmailVerifyBadge";
@@ -31,7 +29,17 @@ export default async function UyelikPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl font-bold text-white mb-6">Üyelik & Abonelik</h1>
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-montaj/20 via-dark-card to-purple-900/20 border border-montaj/10 p-8 mb-8">
+        <div className="relative z-10">
+          <h1 className="text-3xl font-bold text-white mb-2">Üyelik & Abonelik</h1>
+          <p className="text-muted-text">
+            Premium üyeliğe geçerek firmanızı öne çıkarın, daha fazla müşteriye ulaşın.
+          </p>
+        </div>
+        <div className="absolute -top-6 -right-6 w-32 h-32 bg-montaj/10 rounded-full blur-2xl" />
+        <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl" />
+      </div>
 
       {/* E-posta doğrulama durumu */}
       {user && (
@@ -44,32 +52,84 @@ export default async function UyelikPage() {
       )}
 
       {/* Current subscription */}
-      {profile?.subscription || profile?.premiumUntil ? (
-        <div className="bg-dark-card rounded-xl border border-dark-border p-6 mb-8">
-          <h2 className="text-lg font-semibold text-white mb-3">Mevcut Üyeliğiniz</h2>
-          <div className="flex items-center gap-3 mb-2">
-            <PremiumBadge
-              label={profile.subscription?.badgeLabel || "Premium"}
-              color={profile.subscription?.badgeColor || "amber"}
-            />
-            {profile?.premiumUntil && new Date(profile.premiumUntil) > new Date() ? (
-              <span className="text-sm text-green-400">Aktif</span>
-            ) : (
-              <span className="text-sm text-red-400">Süresi Doldu</span>
+      {(profile?.subscription || profile?.premiumUntil) ? (
+        <div className="bg-dark-card rounded-xl border border-montaj/20 p-6 mb-8">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h2 className="text-lg font-semibold text-white mb-1">Mevcut Üyeliğiniz</h2>
+              <div className="flex items-center gap-2">
+                <PremiumBadge
+                  label={profile.subscription?.badgeLabel || "Premium"}
+                  color={profile.subscription?.badgeColor || "amber"}
+                />
+                {profile?.premiumUntil && new Date(profile.premiumUntil) > new Date() ? (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-500/20 text-green-400 text-xs font-medium rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
+                    Aktif
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-500/20 text-red-400 text-xs font-medium rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                    Süresi Doldu
+                  </span>
+                )}
+              </div>
+            </div>
+            {profile?.subscription && (
+              <span className="text-2xl font-bold text-montaj">
+                {profile.subscription.name}
+              </span>
             )}
           </div>
           {profile?.premiumUntil && (
-            <p className="text-sm text-sub-text">
-              Bitiş: {formatDate(profile.premiumUntil)}
-            </p>
+            <>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-sub-text">Kalan Süre</span>
+                  <span className="text-white font-medium">
+                    {(() => {
+                      const now = new Date();
+                      const end = new Date(profile.premiumUntil!);
+                      const remainingMs = end.getTime() - now.getTime();
+                      const days = Math.max(0, Math.ceil(remainingMs / (1000 * 60 * 60 * 24)));
+                      return <>{days} gün</>;
+                    })()}
+                  </span>
+                </div>
+                {(() => {
+                  const now = new Date();
+                  const end = new Date(profile.premiumUntil!);
+                  const totalMs = end.getTime() - new Date(profile.createdAt || now).getTime();
+                  const remainingMs = end.getTime() - now.getTime();
+                  const pct = totalMs > 0 ? Math.max(0, Math.round((remainingMs / totalMs) * 100)) : 0;
+                  return (
+                    <div className="w-full h-2 bg-dark-section rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-montaj to-purple-500 rounded-full transition-all duration-500"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  );
+                })()}
+              </div>
+            </>
           )}
         </div>
       ) : (
         <div className="bg-dark-card rounded-xl border border-dark-border p-6 mb-8">
-          <h2 className="text-lg font-semibold text-white mb-2">Henüz Üyeliğiniz Yok</h2>
-          <p className="text-sm text-sub-text mb-4">
-            Premium üyeliğe geçerek firmanızı öne çıkarın, daha fazla müşteriye ulaşın.
-          </p>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-montaj/20 rounded-xl flex items-center justify-center">
+              <svg className="w-6 h-6 text-montaj" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-white">Henüz Üyeliğiniz Yok</h2>
+              <p className="text-sm text-sub-text mt-1">
+                Premium üyeliğe geçerek firmanızı öne çıkarın, daha fazla müşteriye ulaşın.
+              </p>
+            </div>
+          </div>
         </div>
       )}
 
@@ -82,24 +142,32 @@ export default async function UyelikPage() {
           return (
             <div
               key={plan.id}
-              className={`rounded-xl border p-6 flex flex-col ${
+              className={`relative rounded-xl border p-6 flex flex-col transition-all duration-200 hover:shadow-lg hover:shadow-montaj/5 ${
                 plan.price > 0
-                  ? "bg-dark-card border-montaj/30"
+                  ? "bg-dark-card border-dark-border hover:border-montaj/40"
                   : "bg-dark-card border-dark-border"
-              } ${isCurrentPlan ? "ring-2 ring-montaj" : ""}`}
+              } ${isCurrentPlan ? "ring-2 ring-montaj border-montaj/50" : ""}`}
             >
+              {/* "En Popüler" rozeti */}
+              {plan.price > 0 && plan.price === Math.max(...plans.filter(p => p.price > 0).map(p => p.price)) && (
+                <div className="absolute -top-3 right-4">
+                  <span className="px-3 py-1 bg-gradient-to-r from-montaj to-purple-600 text-white text-xs font-bold rounded-full shadow-lg">
+                    En Popüler
+                  </span>
+                </div>
+              )}
               <div className="mb-4">
                 {plan.badgeLabel && (
                   <PremiumBadge label={plan.badgeLabel} color={plan.badgeColor || "amber"} className="mb-2" />
                 )}
-                <h3 className="text-xl font-bold text-white">{plan.name}</h3>
+                <h3 className="text-2xl font-bold text-white">{plan.name}</h3>
                 {plan.description && (
                   <p className="text-sm text-muted-text mt-1">{plan.description}</p>
                 )}
               </div>
 
               <div className="mb-6">
-                <span className="text-3xl font-bold text-white">
+                <span className="text-4xl font-extrabold text-white">
                   {plan.price > 0 ? `${(plan.price / 100).toFixed(0)} TL` : "Ücretsiz"}
                 </span>
                 <span className="text-sub-text text-sm"> / {plan.durationDays} gün</span>
@@ -108,29 +176,33 @@ export default async function UyelikPage() {
               <ul className="space-y-2 mb-6 flex-1">
                 {features.map((feat, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-muted-text">
-                    <svg className="w-4 h-4 text-green-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    <svg className="w-4 h-4 text-green-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                     {feat}
                   </li>
                 ))}
               </ul>
 
-              <SubscribeButton
-                planId={plan.id}
-                price={plan.price}
-                isCurrentPlan={isCurrentPlan}
-                disabled={!roles.some((r) => ["ASSEMBLER", "MANUFACTURER"].includes(r))}
-              />
+              <div className="mt-auto">
+                <SubscribeButton
+                  planId={plan.id}
+                  price={plan.price}
+                  isCurrentPlan={isCurrentPlan}
+                  disabled={!roles.some((r) => ["ASSEMBLER", "MANUFACTURER"].includes(r))}
+                />
+              </div>
             </div>
           );
         })}
       </div>
 
       {!roles.some((r) => ["ASSEMBLER", "MANUFACTURER"].includes(r)) && (
-        <p className="text-sm text-sub-text mt-4 text-center">
-          Premium üyelik sadece firma sahipleri içindir. Önce firma profili oluşturun.
-        </p>
+        <div className="mt-8 p-4 bg-blue-900/20 border border-blue-500/20 rounded-lg text-center">
+          <p className="text-sm text-blue-300">
+            <span className="font-medium">Bilgi:</span> Premium üyelik sadece firma sahipleri (Montajcı / Üretici) içindir. Önce firma profili oluşturun.
+          </p>
+        </div>
       )}
     </div>
   );
