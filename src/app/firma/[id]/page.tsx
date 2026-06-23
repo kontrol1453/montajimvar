@@ -45,7 +45,7 @@ export default async function CompanyProfilePage({ params }: Props) {
       categories: {
         include: { category: true },
       },
-      user: { select: { id: true, name: true, email: true, phone: true, createdAt: true } },
+      user: { select: { id: true, name: true, email: true, phone: true, roles: true, createdAt: true } },
     },
   });
 
@@ -67,6 +67,8 @@ export default async function CompanyProfilePage({ params }: Props) {
       ? null
       : profile.user.id === (session?.user as any)?.id;
 
+  const isPublicProfile = !["ASSEMBLER", "MANUFACTURER"].some(r => (profile.user.roles as string[]).includes(r));
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Üst Bilgi */}
@@ -85,7 +87,7 @@ export default async function CompanyProfilePage({ params }: Props) {
               {profile.isVerified && (
                 <Badge variant="success">Onaylı Firma</Badge>
               )}
-              <FavoriteButton profileId={profile.id} />
+              {isPublicProfile && <FavoriteButton profileId={profile.id} />}
             </div>
 
             <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-text">
