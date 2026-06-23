@@ -39,7 +39,7 @@ export default async function UyelikPage() {
     sentMessages: await prisma.message.count({ where: { senderId: userId } }),
   } : null;
 
-  const isPremium = profile?.subscriptionId != null && profile?.premiumUntil != null && new Date(profile.premiumUntil) > new Date();
+  const isPremium = profile?.premiumUntil != null && new Date(profile.premiumUntil) > new Date();
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -164,69 +164,71 @@ export default async function UyelikPage() {
         </div>
       )}
 
-      {/* Plans */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {plans.map((plan) => {
-          const features: string[] = JSON.parse(plan.features || "[]");
-          const isCurrentPlan = profile?.subscriptionId === plan.id;
+      {/* Plans (sadece premium olmayanlar) */}
+      {!isPremium && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {plans.map((plan) => {
+            const features: string[] = JSON.parse(plan.features || "[]");
+            const isCurrentPlan = profile?.subscriptionId === plan.id;
 
-          return (
-            <div
-              key={plan.id}
-              className={`relative rounded-xl border p-6 flex flex-col transition-all duration-200 hover:shadow-lg hover:shadow-montaj/5 ${
-                plan.price > 0
-                  ? "bg-dark-card border-dark-border hover:border-montaj/40"
-                  : "bg-dark-card border-dark-border"
-              } ${isCurrentPlan ? "ring-2 ring-montaj border-montaj/50" : ""}`}
-            >
-              {/* "En Popüler" rozeti */}
-              {plan.price > 0 && plan.price === Math.max(...plans.filter(p => p.price > 0).map(p => p.price)) && (
-                <div className="absolute -top-3 right-4">
-                  <span className="px-3 py-1 bg-gradient-to-r from-montaj to-purple-600 text-white text-xs font-bold rounded-full shadow-lg">
-                    En Popüler
-                  </span>
+            return (
+              <div
+                key={plan.id}
+                className={`relative rounded-xl border p-6 flex flex-col transition-all duration-200 hover:shadow-lg hover:shadow-montaj/5 ${
+                  plan.price > 0
+                    ? "bg-dark-card border-dark-border hover:border-montaj/40"
+                    : "bg-dark-card border-dark-border"
+                } ${isCurrentPlan ? "ring-2 ring-montaj border-montaj/50" : ""}`}
+              >
+                {/* "En Popüler" rozeti */}
+                {plan.price > 0 && plan.price === Math.max(...plans.filter(p => p.price > 0).map(p => p.price)) && (
+                  <div className="absolute -top-3 right-4">
+                    <span className="px-3 py-1 bg-gradient-to-r from-montaj to-purple-600 text-white text-xs font-bold rounded-full shadow-lg">
+                      En Popüler
+                    </span>
+                  </div>
+                )}
+                <div className="mb-4">
+                  {plan.badgeLabel && (
+                    <PremiumBadge label={plan.badgeLabel} color={plan.badgeColor || "amber"} className="mb-2" />
+                  )}
+                  <h3 className="text-2xl font-bold text-white">{plan.name}</h3>
+                  {plan.description && (
+                    <p className="text-sm text-muted-text mt-1">{plan.description}</p>
+                  )}
                 </div>
-              )}
-              <div className="mb-4">
-                {plan.badgeLabel && (
-                  <PremiumBadge label={plan.badgeLabel} color={plan.badgeColor || "amber"} className="mb-2" />
-                )}
-                <h3 className="text-2xl font-bold text-white">{plan.name}</h3>
-                {plan.description && (
-                  <p className="text-sm text-muted-text mt-1">{plan.description}</p>
-                )}
-              </div>
 
-              <div className="mb-6">
-                <span className="text-4xl font-extrabold text-white">
-                  {plan.price > 0 ? `${(plan.price / 100).toFixed(0)} TL` : "Ücretsiz"}
-                </span>
-                <span className="text-sub-text text-sm"> / {plan.durationDays} gün</span>
-              </div>
+                <div className="mb-6">
+                  <span className="text-4xl font-extrabold text-white">
+                    {plan.price > 0 ? `${(plan.price / 100).toFixed(0)} TL` : "Ücretsiz"}
+                  </span>
+                  <span className="text-sub-text text-sm"> / {plan.durationDays} gün</span>
+                </div>
 
-              <ul className="space-y-2 mb-6 flex-1">
-                {features.map((feat, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-muted-text">
-                    <svg className="w-4 h-4 text-green-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                    {feat}
-                  </li>
-                ))}
-              </ul>
+                <ul className="space-y-2 mb-6 flex-1">
+                  {features.map((feat, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-muted-text">
+                      <svg className="w-4 h-4 text-green-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
 
-              <div className="mt-auto">
-                <SubscribeButton
-                  planId={plan.id}
-                  price={plan.price}
-                  isCurrentPlan={isCurrentPlan}
-                  disabled={!roles.some((r) => ["ASSEMBLER", "MANUFACTURER"].includes(r))}
-                />
+                <div className="mt-auto">
+                  <SubscribeButton
+                    planId={plan.id}
+                    price={plan.price}
+                    isCurrentPlan={isCurrentPlan}
+                    disabled={!roles.some((r) => ["ASSEMBLER", "MANUFACTURER"].includes(r))}
+                  />
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Ödeme Geçmişi (sadece firma sahipleri) */}
       {(roles.includes("ASSEMBLER") || roles.includes("MANUFACTURER")) && (
@@ -235,7 +237,7 @@ export default async function UyelikPage() {
         </div>
       )}
 
-      {!roles.some((r) => ["ASSEMBLER", "MANUFACTURER"].includes(r)) && (
+      {!isPremium && !roles.some((r) => ["ASSEMBLER", "MANUFACTURER"].includes(r)) && (
         <div className="mt-8 p-4 bg-blue-900/20 border border-blue-500/20 rounded-lg text-center">
           <p className="text-sm text-blue-300">
             <span className="font-medium">Bilgi:</span> Premium üyelik sadece firma sahipleri (Montajcı / Üretici) içindir. Önce firma profili oluşturun.
