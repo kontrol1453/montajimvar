@@ -94,22 +94,6 @@ export default function Navbar() {
                         <svg className="w-4 h-4 inline-block mr-1 text-amber-400 -mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2L2 7l8 5 8-5-8-5zM2 12l8 5 8-5-8-5-8 5z" /></svg><span>Üyelik</span>
                       </Link>
                     )}
-                    <Link
-                      href="/dashboard/profil"
-                      className="block px-4 py-2 text-sm text-gray-200 hover:bg-dark-section"
-                      onClick={() => setProfileOpen(false)}
-                    >
-                      Profilim
-                    </Link>
-                    {(user?.roles?.includes("ASSEMBLER") || user?.roles?.includes("MANUFACTURER")) && (
-                      <Link
-                        href="/dashboard/firma"
-                        className="block px-4 py-2 text-sm text-gray-200 hover:bg-dark-section"
-                        onClick={() => setProfileOpen(false)}
-                      >
-                        Firma Profilim
-                      </Link>
-                    )}
                     {user?.roles?.includes("ADMIN") && (
                       <Link
                         href="/admin"
@@ -209,22 +193,6 @@ export default function Navbar() {
                   onClick={() => setMenuOpen(false)}
                 >
                   💎 Üyelik
-                </Link>
-              )}
-              <Link
-                href="/dashboard/profil"
-                className="block py-2 text-muted-text hover:text-montaj"
-                onClick={() => setMenuOpen(false)}
-              >
-                Profilim
-              </Link>
-              {(user?.roles?.includes("ASSEMBLER") || user?.roles?.includes("MANUFACTURER")) && (
-                <Link
-                  href="/dashboard/firma"
-                  className="block py-2 text-muted-text hover:text-montaj"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Firma Profilim
                 </Link>
               )}
               {user?.roles?.includes("ADMIN") && (
