@@ -4,6 +4,7 @@ import Badge from "@/components/ui/Badge";
 import VerifyButton from "./VerifyButton";
 import FeaturedButton from "./FeaturedButton";
 import CategoryEditor from "./CategoryEditor";
+import DeleteProfileButton from "./DeleteProfileButton";
 
 export default async function AdminFirmsPage() {
   const profiles = await prisma.profile.findMany({
@@ -101,6 +102,10 @@ export default async function AdminFirmsPage() {
                       <VerifyButton
                         profileId={profile.id}
                         isVerified={profile.isVerified}
+                      />
+                      <DeleteProfileButton
+                        profileId={profile.id}
+                        companyName={profile.companyName}
                       />
                     </div>
                   </td>
