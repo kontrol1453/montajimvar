@@ -1,26 +1,15 @@
 import { prisma } from "./prisma";
 
-// Cache permissions per request to avoid multiple DB calls
-const permissionCache = new Map<string, boolean>();
-
 export async function hasPermission(
   role: string,
   feature: string
 ): Promise<boolean> {
-  const key = `${role}:${feature}`;
-
-  if (permissionCache.has(key)) {
-    return permissionCache.get(key)!;
-  }
-
   try {
     const perm = await prisma.rolePermission.findUnique({
       where: { role_feature: { role, feature } },
     });
 
-    const result = perm?.enabled ?? true; // Default to true if not set
-    permissionCache.set(key, result);
-    return result;
+    return perm?.enabled ?? true; // Default to true if not set
   } catch {
     return true; // Default to true on error
   }
@@ -50,6 +39,3 @@ export const FEATURE_LABELS: Record<string, string> = {
   view_dashboard: "Paneli Görüntüleme",
 };
 
-export function clearPermissionCache() {
-  permissionCache.clear();
-}

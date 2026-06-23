@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { hasPermission } from "@/lib/permissions";
+import { notifyAdmin } from "@/lib/notifications";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -113,6 +114,15 @@ export async function POST(request: Request) {
         ratingAvg: agg._avg.rating || 0,
         reviewCount: agg._count.rating,
       },
+    });
+
+    // Admin bildirimi
+    const reviewerName = (session.user as any).name || "Bilinmeyen";
+    await notifyAdmin({
+      type: "new_review",
+      title: "Yeni Yorum",
+      message: `${reviewerName} - ${rating}/5`,
+      link: "/admin/kullanicilar",
     });
 
     return NextResponse.json(review, { status: 201 });

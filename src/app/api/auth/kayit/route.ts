@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { sendEmail, verifyEmailHtml } from "@/lib/email";
+import { notifyAdmin } from "@/lib/notifications";
 
 export async function POST(request: Request) {
   try {
@@ -72,6 +73,14 @@ export async function POST(request: Request) {
       to: email,
       subject: "E-posta adresinizi doğrulayın - Montajım Var",
       html: verifyEmailHtml(verifyUrl),
+    });
+
+    // Admin bildirimi
+    await notifyAdmin({
+      type: "new_user",
+      title: "Yeni Kullanıcı Kaydı",
+      message: `${name} (${email}) - ${role}`,
+      link: "/admin/kullanicilar",
     });
 
     return NextResponse.json(

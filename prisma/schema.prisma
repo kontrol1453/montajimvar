@@ -186,6 +186,16 @@ model SubscriptionPayment {
   plan    SubscriptionPlan @relation(fields: [planId], references: [id])
 }
 
+model Notification {
+  id        Int      @id @default(autoincrement())
+  type      String   // new_user, new_profile, new_review, new_message, new_payment
+  title     String
+  message   String?
+  link      String?  // admin sayfasına yönlendirme URL'i
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
 model RolePermission {
   id        Int      @id @default(autoincrement())
   role      String

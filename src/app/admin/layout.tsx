@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import AdminNav from "./AdminNav";
+import NotificationBell from "./NotificationBell";
 
 export default async function AdminLayout({
   children,
@@ -29,12 +30,15 @@ export default async function AdminLayout({
               </Link>
               <AdminNav />
             </div>
-            <Link
-              href="/"
-              className="text-xs text-sub-text hover:text-montaj transition"
-            >
-              ← Siteye Dön
-            </Link>
+            <div className="flex items-center gap-2">
+              <NotificationBell />
+              <Link
+                href="/"
+                className="text-xs text-sub-text hover:text-montaj transition"
+              >
+                ← Siteye Dön
+              </Link>
+            </div>
           </div>
         </div>
       </nav>

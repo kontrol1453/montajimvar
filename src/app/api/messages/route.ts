@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { hasPermission } from "@/lib/permissions";
+import { notifyAdmin } from "@/lib/notifications";
 
 // Send a message (profileId = to profile owner, receiverId = direct reply)
 export async function POST(request: Request) {
@@ -79,6 +80,15 @@ export async function POST(request: Request) {
         sender: { select: { id: true, name: true } },
         receiver: { select: { id: true, name: true } },
       },
+    });
+
+    // Admin bildirimi
+    const senderName = (session.user as any).name || "Bilinmeyen";
+    await notifyAdmin({
+      type: "new_message",
+      title: "Yeni Mesaj",
+      message: `${senderName}: ${content.substring(0, 100)}${content.length > 100 ? "..." : ""}`,
+      link: "/admin/kullanicilar",
     });
 
     return NextResponse.json(message, { status: 201 });

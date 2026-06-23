@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { notifyAdmin } from "@/lib/notifications";
 
 export async function GET(request: Request) {
   try {
@@ -67,6 +68,9 @@ export async function POST(request: Request) {
       );
     }
 
+    // Check if creating new profile (for notification)
+    const existingProfile = await prisma.profile.findUnique({ where: { userId } });
+
     const profile = await prisma.profile.upsert({
       where: { userId },
       create: {
@@ -110,6 +114,16 @@ export async function POST(request: Request) {
           profileId: profile.id,
           categoryId: catId,
         })),
+      });
+    }
+
+    // Admin bildirimi (sadece yeni profil oluşturulduğunda)
+    if (!existingProfile) {
+      await notifyAdmin({
+        type: "new_profile",
+        title: "Yeni Firma Profili",
+        message: `${companyName} - ${city}`,
+        link: "/admin/firmalar",
       });
     }
 
