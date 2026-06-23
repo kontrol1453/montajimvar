@@ -57,11 +57,11 @@ export default async function UyelikPage() {
         </div>
       )}
 
-      {/* E-posta doğrulama durumu */}
-      {user && (
+      {/* E-posta doğrulama durumu (sadece doğrulanmamış e-postalar) */}
+      {user && !user.emailVerified && (
         <div className="mb-6">
           <EmailVerifyBadge
-            emailVerified={user.emailVerified ?? false}
+            emailVerified={false}
             email={user.email}
           />
         </div>
