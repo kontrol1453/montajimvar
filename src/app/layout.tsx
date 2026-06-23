@@ -41,6 +41,29 @@ export default function RootLayout({
     <html lang="tr">
       <body className="min-h-screen flex flex-col">
         <Provider>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                name: "Montajım Var",
+                url: "https://montajimvar.xyz",
+                description:
+                  "Türkiye'nin montaj platformu. Montaj firmaları, üreticiler ve müşterileri bir araya getiriyor.",
+                inLanguage: "tr",
+                potentialAction: {
+                  "@type": "SearchAction",
+                  target: {
+                    "@type": "EntryPoint",
+                    urlTemplate:
+                      "https://montajimvar.xyz/ara?q={search_term_string}",
+                  },
+                  "query-input": "required name=search_term_string",
+                },
+              }),
+            }}
+          />
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />

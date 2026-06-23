@@ -11,6 +11,27 @@ interface CompanyCardProps {
   };
 }
 
+function LogoDisplay({ companyName, logo }: { companyName: string; logo: string | null }) {
+  if (logo) {
+    return (
+      <img
+        src={logo}
+        alt={`${companyName} logosu`}
+        className="w-12 h-12 rounded-lg object-contain bg-dark-bg"
+        onError={(e) => {
+          (e.target as HTMLImageElement).style.display = "none";
+          (e.target as HTMLImageElement).nextElementSibling?.classList.remove("hidden");
+        }}
+      />
+    );
+  }
+  return (
+    <div className="w-12 h-12 bg-montaj/20 rounded-lg flex items-center justify-center text-xl font-bold text-montaj">
+      {companyName[0]?.toUpperCase() || "?"}
+    </div>
+  );
+}
+
 export default function CompanyCard({ profile }: CompanyCardProps) {
   return (
     <Link
@@ -18,8 +39,8 @@ export default function CompanyCard({ profile }: CompanyCardProps) {
       className="block bg-dark-card rounded-xl border border-dark-border hover:border-montaj/50 transition p-6"
     >
       <div className="flex items-start justify-between mb-3">
-        <div className="w-12 h-12 bg-montaj/20 rounded-lg flex items-center justify-center text-xl font-bold text-montaj">
-          {profile.companyName[0]?.toUpperCase() || "?"}
+        <div className="relative">
+          <LogoDisplay companyName={profile.companyName} logo={(profile as any).logo} />
         </div>
         <div className="flex items-center gap-1.5 flex-wrap justify-end">
           {(profile as any).premiumUntil && new Date((profile as any).premiumUntil) > new Date() && (
