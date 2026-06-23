@@ -5,6 +5,7 @@ import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 import PremiumBadge from "@/components/PremiumBadge";
 import SubscribeButton from "./SubscribeButton";
+import EmailVerifyBadge from "./EmailVerifyBadge";
 
 export default async function UyelikPage() {
   const session = await auth();
@@ -18,6 +19,11 @@ export default async function UyelikPage() {
     include: { subscription: true },
   });
 
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { email: true, emailVerified: true },
+  });
+
   const plans = await prisma.subscriptionPlan.findMany({
     where: { isActive: true },
     orderBy: { sortOrder: "asc" },
@@ -26,6 +32,16 @@ export default async function UyelikPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-2xl font-bold text-white mb-6">Üyelik & Abonelik</h1>
+
+      {/* E-posta doğrulama durumu */}
+      {user && (
+        <div className="mb-6">
+          <EmailVerifyBadge
+            emailVerified={user.emailVerified ?? false}
+            email={user.email}
+          />
+        </div>
+      )}
 
       {/* Current subscription */}
       {profile?.subscription || profile?.premiumUntil ? (

@@ -27,6 +27,7 @@ export default async function AdminUsersPage() {
       email: true,
       roles: true,
       city: true,
+      emailVerified: true,
       createdAt: true,
     },
   });
@@ -56,6 +57,7 @@ export default async function AdminUsersPage() {
                 <th className="text-left p-4 text-sub-text font-medium">Rol</th>
                 <th className="text-left p-4 text-sub-text font-medium hidden lg:table-cell">Şehir</th>
                 <th className="text-left p-4 text-sub-text font-medium hidden lg:table-cell">Kayıt</th>
+                <th className="text-left p-4 text-sub-text font-medium hidden lg:table-cell">Onay</th>
                 <th className="text-right p-4 text-sub-text font-medium">İşlem</th>
               </tr>
             </thead>
@@ -82,6 +84,13 @@ export default async function AdminUsersPage() {
                   </td>
                   <td className="p-4 text-sub-text hidden lg:table-cell">
                     {formatDate(user.createdAt)}
+                  </td>
+                  <td className="p-4 text-center hidden lg:table-cell">
+                    {user.emailVerified ? (
+                      <span className="text-green-500 font-medium" title="E-posta doğrulanmış">✓</span>
+                    ) : (
+                      <span className="text-red-500 font-medium" title="E-posta doğrulanmamış">✗</span>
+                    )}
                   </td>
                   <td className="p-4 text-right">
                     <UserActions userId={user.id} userName={user.name} userRoles={user.roles as string[]} />

@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Card from "@/components/ui/Card";
@@ -16,9 +15,9 @@ const PUBLIC_ROLES = [
 ] as const;
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -47,24 +46,36 @@ export default function RegisterPage() {
         return;
       }
 
-      // Auto login after successful registration
-      const loginResult = await signIn("credentials", {
-        email: form.email,
-        password: form.password,
-        redirect: false,
-      });
-
-      if (loginResult?.ok) {
-        router.push("/dashboard");
-        router.refresh();
-      } else {
-        router.push("/auth/giris");
-      }
+      setSuccess(true);
     } catch {
       setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     } finally {
       setLoading(false);
     }
+  }
+
+  if (success) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
+        <Card className="w-full max-w-lg text-center">
+          <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-white mb-2">Hesabınız Oluşturuldu!</h1>
+          <p className="text-muted-text mb-6">
+            E-posta adresinize doğrulama linki gönderildi. Lütfen e-postanızı kontrol edin ve hesabınızı aktifleştirin.
+          </p>
+          <Link
+            href="/auth/giris"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-montaj text-white rounded-lg hover:bg-montaj-dark transition font-medium"
+          >
+            Giriş Yap
+          </Link>
+        </Card>
+      </div>
+    );
   }
 
   return (
