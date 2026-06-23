@@ -7,6 +7,7 @@ const links = [
   { href: "/admin", label: "Panel" },
   { href: "/admin/kullanicilar", label: "Kullanıcılar" },
   { href: "/admin/firmalar", label: "Firmalar" },
+  { href: "/admin/google-firma-ekle", label: "Google Firma" },
   { href: "/admin/kategoriler", label: "Kategoriler" },
   { href: "/admin/izinler", label: "İzinler" },
 ];
