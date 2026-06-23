@@ -40,11 +40,18 @@ export async function PUT(
       ? new Date(Date.now() + days * 24 * 60 * 60 * 1000)
       : null;
 
-    const updated = await prisma.user.update({
-      where: { id: userId },
-      data: { premiumUntil },
-      select: { id: true, name: true, email: true, premiumUntil: true },
-    });
+    // Update both User and Profile (if exists) so frontend checks work
+    const [updated] = await prisma.$transaction([
+      prisma.user.update({
+        where: { id: userId },
+        data: { premiumUntil },
+        select: { id: true, name: true, email: true, premiumUntil: true },
+      }),
+      prisma.profile.updateMany({
+        where: { userId },
+        data: { premiumUntil },
+      }),
+    ]);
 
     return NextResponse.json(updated);
   } catch (error) {
