@@ -43,17 +43,19 @@ export default async function UyelikPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-montaj/20 via-dark-card to-purple-900/20 border border-montaj/10 p-8 mb-8">
-        <div className="relative z-10">
-          <h1 className="text-3xl font-bold text-white mb-2">Üyelik & Abonelik</h1>
-          <p className="text-muted-text">
-            Premium üyeliğe geçerek firmanızı öne çıkarın, daha fazla müşteriye ulaşın.
-          </p>
+      {/* Hero Banner (sadece premium olmayanlar) */}
+      {!isPremium && (
+        <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-montaj/20 via-dark-card to-purple-900/20 border border-montaj/10 p-8 mb-8">
+          <div className="relative z-10">
+            <h1 className="text-3xl font-bold text-white mb-2">Üyelik & Abonelik</h1>
+            <p className="text-muted-text">
+              Premium üyeliğe geçerek firmanızı öne çıkarın, daha fazla müşteriye ulaşın.
+            </p>
+          </div>
+          <div className="absolute -top-6 -right-6 w-32 h-32 bg-montaj/10 rounded-full blur-2xl" />
+          <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl" />
         </div>
-        <div className="absolute -top-6 -right-6 w-32 h-32 bg-montaj/10 rounded-full blur-2xl" />
-        <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl" />
-      </div>
+      )}
 
       {/* E-posta doğrulama durumu */}
       {user && (
