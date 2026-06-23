@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-export default function FavoriteButton({ profileId }: { profileId: number }) {
+export default function FavoriteButton({ profileId, canAddFavorite = true }: { profileId: number; canAddFavorite?: boolean }) {
   const { data: session } = useSession();
   const router = useRouter();
   const [favorited, setFavorited] = useState(false);
@@ -44,7 +44,7 @@ export default function FavoriteButton({ profileId }: { profileId: number }) {
     }
   }
 
-  if (!session?.user) return null;
+  if (!session?.user || !canAddFavorite) return null;
 
   return (
     <button

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { hasPermission } from "@/lib/permissions";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -37,6 +38,14 @@ export async function POST(request: Request) {
   }
 
   const userId = (session.user as any).id;
+  const userRole = ((session.user as any).roles?.[0] as string) || "CUSTOMER";
+
+  if (!(await hasPermission(userRole, "leave_review"))) {
+    return NextResponse.json(
+      { error: "Yorum bırakma yetkiniz bulunmamaktadır." },
+      { status: 403 }
+    );
+  }
 
   try {
     const { profileId, rating, comment } = await request.json();

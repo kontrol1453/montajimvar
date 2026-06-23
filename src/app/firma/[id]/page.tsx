@@ -9,6 +9,7 @@ import CompanyGallery from "./CompanyGallery";
 import ReviewSection from "@/components/ReviewSection";
 import FavoriteButton from "@/components/FavoriteButton";
 import CompanyMap from "@/components/CompanyMap";
+import { hasPermission } from "@/lib/permissions";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -55,12 +56,21 @@ export default async function CompanyProfilePage({ params }: Props) {
 
   // Increment view count (skip owner's own views)
   const viewerId = (session?.user as any)?.id;
+  const viewerRole = (session?.user as any)?.roles?.[0] || "CUSTOMER";
   if (viewerId && viewerId !== profile.user.id) {
     await prisma.profile.update({
       where: { id: profile.id },
       data: { viewCount: { increment: 1 } },
     });
   }
+
+  // Permission checks
+  const [canSendMessage, canAddFavorite, canLeaveReview, canViewContactInfo] = await Promise.all([
+    viewerId ? hasPermission(viewerRole, "send_message") : false,
+    viewerId ? hasPermission(viewerRole, "add_favorite") : false,
+    viewerId ? hasPermission(viewerRole, "leave_review") : false,
+    viewerId ? hasPermission(viewerRole, "view_contact_info") : true,
+  ]);
 
   const roleBadge =
     profile.user.id === (session?.user as any)?.id
@@ -87,7 +97,7 @@ export default async function CompanyProfilePage({ params }: Props) {
               {profile.isVerified && (
                 <Badge variant="success">Onaylı Firma</Badge>
               )}
-              {isPublicProfile && <FavoriteButton profileId={profile.id} />}
+              {isPublicProfile && canAddFavorite && <FavoriteButton profileId={profile.id} />}
             </div>
 
             <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-text">
@@ -121,10 +131,11 @@ export default async function CompanyProfilePage({ params }: Props) {
 
       {/* İletişim Bilgileri */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div className="bg-dark-card rounded-xl border border-dark-border p-6">
-          <h2 className="text-lg font-semibold text-white mb-4">
-            İletişim Bilgileri
-          </h2>
+        {canViewContactInfo ? (
+          <div className="bg-dark-card rounded-xl border border-dark-border p-6">
+            <h2 className="text-lg font-semibold text-white mb-4">
+              İletişim Bilgileri
+            </h2>
           <div className="space-y-3 text-sm">
             <div className="flex items-center gap-2">
               <span className="text-sub-text w-5 text-center">
@@ -203,6 +214,16 @@ export default async function CompanyProfilePage({ params }: Props) {
             )}
           </div>
         </div>
+        ) : (
+          <div className="bg-dark-card rounded-xl border border-dark-border p-6">
+            <h2 className="text-lg font-semibold text-white mb-4">
+              İletişim Bilgileri
+            </h2>
+            <p className="text-sm text-sub-text">
+              İletişim bilgilerini görüntüleme yetkiniz bulunmamaktadır.
+            </p>
+          </div>
+        )}
 
         {/* Mesaj Gönder */}
         <div className="bg-dark-card rounded-xl border border-dark-border p-6">
@@ -213,6 +234,7 @@ export default async function CompanyProfilePage({ params }: Props) {
             profileId={profile.id}
             companyName={profile.companyName}
             isOwner={session?.user ? (session.user as any).id === profile.user.id : false}
+            canSendMessage={canSendMessage}
           />
         </div>
       </div>
@@ -236,6 +258,7 @@ export default async function CompanyProfilePage({ params }: Props) {
         <ReviewSection
           profileId={profile.id}
           isOwner={session?.user ? (session.user as any).id === profile.user.id : false}
+          canLeaveReview={canLeaveReview}
         />
       </div>
     </div>

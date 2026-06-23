@@ -10,9 +10,10 @@ interface Props {
   profileId: number;
   companyName: string;
   isOwner: boolean;
+  canSendMessage: boolean;
 }
 
-export default function MessageButton({ profileId, companyName, isOwner }: Props) {
+export default function MessageButton({ profileId, companyName, isOwner, canSendMessage }: Props) {
   const { data: session } = useSession();
   const router = useRouter();
   const [showForm, setShowForm] = useState(false);
@@ -25,6 +26,14 @@ export default function MessageButton({ profileId, companyName, isOwner }: Props
     return (
       <p className="text-sm text-gray-500 italic">
         Bu sizin firma profiliniz.
+      </p>
+    );
+  }
+
+  if (!session?.user || !canSendMessage) {
+    return (
+      <p className="text-sm text-sub-text">
+        Mesaj gönderme yetkiniz bulunmamaktadır.
       </p>
     );
   }

@@ -15,6 +15,7 @@ interface Review {
 interface Props {
   profileId: number;
   isOwner: boolean;
+  canLeaveReview: boolean;
 }
 
 function StarRating({
@@ -45,7 +46,7 @@ function StarRating({
   );
 }
 
-export default function ReviewSection({ profileId, isOwner }: Props) {
+export default function ReviewSection({ profileId, isOwner, canLeaveReview }: Props) {
   const { data: session } = useSession();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [userRating, setUserRating] = useState(0);
@@ -127,7 +128,7 @@ export default function ReviewSection({ profileId, isOwner }: Props) {
       </div>
 
       {/* Review Form */}
-      {session?.user && !isOwner && (
+      {session?.user && !isOwner && canLeaveReview && (
         <form onSubmit={handleSubmit} className="mb-6 p-4 bg-dark-section rounded-lg border border-dark-border">
           <h3 className="text-sm font-medium text-white mb-3">
             {existingReview ? "Değerlendirmeni Güncelle" : "Firmayı Değerlendir"}

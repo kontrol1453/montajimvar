@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { hasPermission } from "@/lib/permissions";
 
 // Get user's favorites or check if profile is favorited
 export async function GET(request: Request) {
@@ -57,6 +58,14 @@ export async function POST(request: Request) {
   }
 
   const userId = (session.user as any).id;
+  const userRole = ((session.user as any).roles?.[0] as string) || "CUSTOMER";
+
+  if (!(await hasPermission(userRole, "add_favorite"))) {
+    return NextResponse.json(
+      { error: "Favorilere ekleme yetkiniz bulunmamaktadır." },
+      { status: 403 }
+    );
+  }
 
   try {
     const { profileId } = await request.json();

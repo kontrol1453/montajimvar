@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { hasPermission } from "@/lib/permissions";
 
 // Send a message (profileId = to profile owner, receiverId = direct reply)
 export async function POST(request: Request) {
@@ -11,6 +12,15 @@ export async function POST(request: Request) {
   }
 
   const senderId = (session.user as any).id;
+  const senderRole = ((session.user as any).roles?.[0] as string) || "CUSTOMER";
+
+  // Permission check
+  if (!(await hasPermission(senderRole, "send_message"))) {
+    return NextResponse.json(
+      { error: "Mesaj gönderme yetkiniz bulunmamaktadır." },
+      { status: 403 }
+    );
+  }
 
   try {
     const { profileId, receiverId, subject, content } = await request.json();
