@@ -49,6 +49,8 @@ model Profile {
   ratingAvg   Float    @default(0)
   reviewCount Int      @default(0)
   subscriptionId Int?
+  autoRenew     Boolean   @default(true)
+  canceledAt    DateTime?
   premiumUntil   DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -60,6 +62,7 @@ model Profile {
   favorites     Favorite[]
   categories    ProfileCategory[]
   subscription  SubscriptionPlan? @relation(fields: [subscriptionId], references: [id])
+  subscriptionPayments SubscriptionPayment[]
 }
 
 model Category {
@@ -153,7 +156,7 @@ model SubscriptionPlan {
   name        String
   slug        String   @unique
   description String?
-  price       Int      @default(0) // kuruş cinsinden (0 = ücretsiz)
+  price       Int      @default(0) // kuruÃ…Å¸ cinsinden (0 = ÃƒÂ¼cretsiz)
   durationDays Int     @default(30)
   features    String   @default("[]") // JSON array of feature strings
   isActive    Boolean  @default(true)
@@ -163,7 +166,23 @@ model SubscriptionPlan {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  profiles Profile[]
+  subscriptionPayments SubscriptionPayment[]
+    profiles Profile[]
+}
+
+model SubscriptionPayment {
+  id             Int      @id @default(autoincrement())
+  profileId      Int
+  planId         Int
+  amount         Int      // kuruÅŸ cinsinden
+  currency       String   @default("TRY")
+  status         String   @default("completed") // pending, completed, failed, refunded
+  paymentMethod  String?  // "credit_card", "bank_transfer", "free"
+  description    String?
+  createdAt      DateTime @default(now())
+
+  profile Profile          @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  plan    SubscriptionPlan @relation(fields: [planId], references: [id])
 }
 
 model RolePermission {
@@ -176,3 +195,4 @@ model RolePermission {
 
   @@unique([role, feature])
 }
+

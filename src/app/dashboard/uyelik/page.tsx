@@ -4,6 +4,9 @@ import { prisma } from "@/lib/prisma";
 import PremiumBadge from "@/components/PremiumBadge";
 import SubscribeButton from "./SubscribeButton";
 import EmailVerifyBadge from "./EmailVerifyBadge";
+import CancelSubscription from "./CancelSubscription";
+import PaymentHistory from "./PaymentHistory";
+import PremiumAnalytics from "./PremiumAnalytics";
 
 export default async function UyelikPage() {
   const session = await auth();
@@ -27,6 +30,17 @@ export default async function UyelikPage() {
     orderBy: { sortOrder: "asc" },
   });
 
+  // Premium analitik verileri
+  const premiumAnalytics = profile && (roles.includes("ASSEMBLER") || roles.includes("MANUFACTURER")) ? {
+    viewCount: profile.viewCount,
+    ratingAvg: profile.ratingAvg,
+    reviewCount: profile.reviewCount,
+    favoriteCount: await prisma.favorite.count({ where: { profileId: profile.id } }),
+    sentMessages: await prisma.message.count({ where: { senderId: userId } }),
+  } : null;
+
+  const isPremium = profile?.subscriptionId != null && profile?.premiumUntil != null && new Date(profile.premiumUntil) > new Date();
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero Banner */}
@@ -48,6 +62,13 @@ export default async function UyelikPage() {
             emailVerified={user.emailVerified ?? false}
             email={user.email}
           />
+        </div>
+      )}
+
+      {/* Premium Analitik (sadece premium üyeler) */}
+      {premiumAnalytics && isPremium && (
+        <div className="mb-6">
+          <PremiumAnalytics {...premiumAnalytics} />
         </div>
       )}
 
@@ -113,6 +134,14 @@ export default async function UyelikPage() {
                 })()}
               </div>
             </>
+          )}
+          {/* İptal/Yeniden Aktifleştir butonu */}
+          {profile?.subscription && (
+            <CancelSubscription
+              premiumUntil={profile.premiumUntil?.toISOString() ?? null}
+              autoRenew={profile.autoRenew ?? true}
+              canceledAt={profile.canceledAt?.toISOString() ?? null}
+            />
           )}
         </div>
       ) : (
@@ -196,6 +225,13 @@ export default async function UyelikPage() {
           );
         })}
       </div>
+
+      {/* Ödeme Geçmişi (sadece firma sahipleri) */}
+      {(roles.includes("ASSEMBLER") || roles.includes("MANUFACTURER")) && (
+        <div className="mt-8">
+          <PaymentHistory />
+        </div>
+      )}
 
       {!roles.some((r) => ["ASSEMBLER", "MANUFACTURER"].includes(r)) && (
         <div className="mt-8 p-4 bg-blue-900/20 border border-blue-500/20 rounded-lg text-center">
