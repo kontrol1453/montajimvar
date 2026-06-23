@@ -1,9 +1,10 @@
-import { AuthOptions, getServerSession } from "next-auth";
+﻿import { AuthOptions, getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
 import crypto from "crypto";
+import { cookies } from "next/headers";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -58,6 +59,22 @@ export const authOptions: AuthOptions = {
           where: { email: user.email! },
         });
 
+        // Google ile kayıt olurken seçilen rolü cookie'den al
+        let googleRole = "CUSTOMER";
+        try {
+          const cookieStore = await cookies();
+          googleRole = cookieStore.get("google_signup_role")?.value || "CUSTOMER";
+          // Cookie'yi temizle
+          cookieStore.set("google_signup_role", "", { maxAge: 0, path: "/" });
+        } catch {
+          // cookies() kullanılamazsa varsayılan role devam et
+        }
+
+        const validRoles = ["CUSTOMER", "ASSEMBLER", "MANUFACTURER"];
+        if (!validRoles.includes(googleRole)) {
+          googleRole = "CUSTOMER";
+        }
+
         if (!existingUser) {
           const randomPassword = crypto.randomBytes(32).toString("hex");
           const hashedPassword = await bcrypt.hash(randomPassword, 12);
@@ -67,7 +84,7 @@ export const authOptions: AuthOptions = {
               email: user.email!,
               name: user.name || profile?.name || "Google User",
               avatar: user.image || (profile as any)?.picture,
-              roles: ["CUSTOMER"],
+              roles: [googleRole],
               emailVerified: true,
               password: hashedPassword,
             },

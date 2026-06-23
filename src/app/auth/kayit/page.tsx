@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -18,6 +18,8 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [showGoogleRolePicker, setShowGoogleRolePicker] = useState(false);
+  const [googleRole, setGoogleRole] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -52,6 +54,16 @@ export default function RegisterPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleGoogleSignIn(role: string) {
+    document.cookie = `google_signup_role=${role}; path=/; max-age=300; SameSite=Lax`;
+    signIn("google", { callbackUrl: "/dashboard" });
+  }
+
+  function handleGoogleClick() {
+    setGoogleRole(null);
+    setShowGoogleRolePicker(true);
   }
 
   if (success) {
@@ -89,7 +101,7 @@ export default function RegisterPage() {
         {/* Google Sign In */}
         <Button
           variant="secondary"
-          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+          onClick={handleGoogleClick}
           className="w-full gap-2"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -112,6 +124,42 @@ export default function RegisterPage() {
           </svg>
           Google ile Devam Et
         </Button>
+
+        {/* Google Role Picker Dialog */}
+        {showGoogleRolePicker && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+            <div className="bg-dark-card rounded-xl border border-dark-border p-6 w-full max-w-md">
+              <h2 className="text-lg font-semibold text-white mb-1">Hesap Türünü Seçin</h2>
+              <p className="text-sm text-muted-text mb-4">
+                Google ile kaydolurken hangi hesap türünü kullanmak istersiniz?
+              </p>
+              <div className="space-y-2">
+                {PUBLIC_ROLES.map((role) => (
+                  <button
+                    key={role.value}
+                    type="button"
+                    onClick={() => handleGoogleSignIn(role.value)}
+                    className={`w-full p-3 border rounded-lg text-left text-sm transition hover:border-montaj ${
+                      googleRole === role.value
+                        ? "border-montaj bg-montaj/10 ring-2 ring-montaj/30"
+                        : "border-dark-border"
+                    }`}
+                  >
+                    <div className="font-medium text-white">{role.label}</div>
+                    <div className="text-sub-text text-xs mt-0.5">{role.description}</div>
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowGoogleRolePicker(false)}
+                className="w-full mt-4 py-2 text-sm text-muted-text hover:text-white transition"
+              >
+                İptal
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
