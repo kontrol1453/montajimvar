@@ -13,7 +13,6 @@ export default async function UyelikPage() {
   if (!session?.user) redirect("/auth/giris");
 
   const userId = (session.user as any).id;
-  const roles: string[] = (session.user as any).roles || [];
 
   const profile = await prisma.profile.findUnique({
     where: { userId },
@@ -30,8 +29,8 @@ export default async function UyelikPage() {
     orderBy: { sortOrder: "asc" },
   });
 
-  // Premium analitik verileri
-  const premiumAnalytics = profile && (roles.includes("ASSEMBLER") || roles.includes("MANUFACTURER")) ? {
+  // Premium analitik verileri (sadece profil sahipleri için)
+  const premiumAnalytics = profile ? {
     viewCount: profile.viewCount,
     ratingAvg: profile.ratingAvg,
     reviewCount: profile.reviewCount,
@@ -221,7 +220,6 @@ export default async function UyelikPage() {
                     planId={plan.id}
                     price={plan.price}
                     isCurrentPlan={isCurrentPlan}
-                    disabled={!roles.some((r) => ["ASSEMBLER", "MANUFACTURER"].includes(r))}
                   />
                 </div>
               </div>
@@ -230,20 +228,10 @@ export default async function UyelikPage() {
         </div>
       )}
 
-      {/* Ödeme Geçmişi (sadece firma sahipleri) */}
-      {(roles.includes("ASSEMBLER") || roles.includes("MANUFACTURER")) && (
-        <div className="mt-8">
-          <PaymentHistory />
-        </div>
-      )}
-
-      {!isPremium && !roles.some((r) => ["ASSEMBLER", "MANUFACTURER"].includes(r)) && (
-        <div className="mt-8 p-4 bg-blue-900/20 border border-blue-500/20 rounded-lg text-center">
-          <p className="text-sm text-blue-300">
-            <span className="font-medium">Bilgi:</span> Premium üyelik sadece firma sahipleri (Montajcı / Üretici) içindir. Önce firma profili oluşturun.
-          </p>
-        </div>
-      )}
+      {/* Ödeme Geçmişi */}
+      <div className="mt-8">
+        <PaymentHistory />
+      </div>
     </div>
   );
 }
