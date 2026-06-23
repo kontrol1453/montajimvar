@@ -85,15 +85,13 @@ export default function Navbar() {
                     >
                       Favorilerim
                     </Link>
-                    {(user?.roles?.includes("ASSEMBLER") || user?.roles?.includes("MANUFACTURER")) && (
-                      <Link
-                        href="/dashboard/uyelik"
-                        className="block px-4 py-2 text-sm text-amber-400 hover:bg-dark-section font-medium"
-                        onClick={() => setProfileOpen(false)}
-                      >
-                        <svg className="w-4 h-4 inline-block mr-1 text-amber-400 -mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2L2 7l8 5 8-5-8-5zM2 12l8 5 8-5-8-5-8 5z" /></svg><span>Üyelik</span>
-                      </Link>
-                    )}
+                    <Link
+                      href="/dashboard/uyelik"
+                      className="block px-4 py-2 text-sm text-amber-400 hover:bg-dark-section font-medium"
+                      onClick={() => setProfileOpen(false)}
+                    >
+                      <svg className="w-4 h-4 inline-block mr-1 text-amber-400 -mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2L2 7l8 5 8-5-8-5zM2 12l8 5 8-5-8-5-8 5z" /></svg><span>Üyelik</span>
+                    </Link>
                     {user?.roles?.includes("ADMIN") && (
                       <Link
                         href="/admin"
@@ -186,15 +184,13 @@ export default function Navbar() {
               >
                 Favorilerim
               </Link>
-              {(user?.roles?.includes("ASSEMBLER") || user?.roles?.includes("MANUFACTURER")) && (
-                <Link
-                  href="/dashboard/uyelik"
-                  className="block py-2 text-amber-400 font-medium"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  💎 Üyelik
-                </Link>
-              )}
+              <Link
+                href="/dashboard/uyelik"
+                className="block py-2 text-amber-400 font-medium"
+                onClick={() => setMenuOpen(false)}
+              >
+                💎 Üyelik
+              </Link>
               {user?.roles?.includes("ADMIN") && (
                 <Link
                   href="/admin"

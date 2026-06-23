@@ -41,20 +41,16 @@ export async function PUT(
       : null;
 
     // Update both User and Profile so frontend checks work
-    await prisma.$transaction(async (tx) => {
-      await tx.user.update({
-        where: { id: userId },
-        data: { premiumUntil },
-      });
-      await tx.profile.updateMany({
-        where: { userId },
-        data: { premiumUntil },
-      });
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data: { premiumUntil },
+      select: { id: true, name: true, email: true, premiumUntil: true },
     });
 
-    const updated = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { id: true, name: true, email: true, premiumUntil: true },
+    // Profile might not exist, updateMany silently skips if not found
+    await prisma.profile.updateMany({
+      where: { userId },
+      data: { premiumUntil },
     });
 
     return NextResponse.json(updated);
