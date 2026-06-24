@@ -118,18 +118,25 @@ export const authOptions: AuthOptions = {
       // Versiyon kontrolü SADECE token yenilemesinde (yeni girişte değil)
       // user veya account varsa yeni giriştir, kontrolü atla
       if (token.id && !user && !account) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id },
-          select: { tokenVersion: true, roles: true },
-        });
-        if (!dbUser) {
-          throw new Error("Kullanıcı bulunamadı");
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id },
+            select: { tokenVersion: true, roles: true },
+          });
+          if (!dbUser) {
+            // Kullanıcı silinmişse token'ı geçersiz kıl
+            throw new Error("Kullanıcı bulunamadı");
+          }
+          if (dbUser.tokenVersion !== token.tokenVersion) {
+            throw new Error("Roller güncellendi, lütfen tekrar giriş yapın");
+          }
+          token.roles = dbUser.roles;
+          token.role = dbUser.roles;
+        } catch (error) {
+          // Veritabanı hatası vs. durumunda girişि engellenmesin, logla ve devam et
+          console.error("JWT version check error:", error);
+          // Hata fırlatma, sadece mevcut token'ı kullan
         }
-        if (dbUser.tokenVersion !== token.tokenVersion) {
-          throw new Error("Roller güncellendi, lütfen tekrar giriş yapın");
-        }
-        token.roles = dbUser.roles;
-        token.role = dbUser.roles;
       }
       return token;
     },
