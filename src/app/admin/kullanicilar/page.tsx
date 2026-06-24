@@ -4,6 +4,8 @@ import Badge from "@/components/ui/Badge";
 import UserActions from "./UserActions";
 import CreateUserForm from "./CreateUserForm";
 
+export const dynamic = "force-dynamic";
+
 const ROLE_LABELS: Record<string, string> = {
   CUSTOMER: "Müşteri",
   ASSEMBLER: "Montajcı",

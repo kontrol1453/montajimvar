@@ -97,7 +97,7 @@ export default function UserActions({
       });
 
       if (res.ok) {
-        router.refresh();
+        window.location.reload();
       } else {
         const data = await res.json();
         alert(data.error || "Silme başarısız.");
@@ -131,7 +131,7 @@ export default function UserActions({
 
       if (res.ok) {
         setRoleEditorOpen(false);
-        router.refresh();
+        window.location.reload();
       } else {
         const data = await res.json();
         alert(data.error || "Roller güncellenemedi.");
