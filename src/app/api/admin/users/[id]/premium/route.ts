@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function PUT(
   request: Request,
@@ -52,6 +53,9 @@ export async function PUT(
       where: { userId },
       data: { premiumUntil },
     });
+
+    revalidatePath("/admin/kullanicilar");
+    revalidatePath("/dashboard/uyelik");
 
     return NextResponse.json(updated);
   } catch (error) {

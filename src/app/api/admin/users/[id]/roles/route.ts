@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function PUT(
   request: Request,
@@ -32,9 +33,15 @@ export async function PUT(
       );
     }
 
-    const user = await prisma.user.update({
+    await prisma.user.update({
       where: { id: userId },
       data: { roles },
+    });
+
+    revalidatePath("/admin/kullanicilar");
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
       select: { id: true, name: true, email: true, roles: true },
     });
 
