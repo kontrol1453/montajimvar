@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 const ALL_ROLES = [
   { value: "CUSTOMER", label: "Müşteri" },
@@ -21,7 +20,6 @@ export default function UserActions({
   userRoles: string[];
   premiumUntil: string | null;
 }) {
-  const router = useRouter();
   const [deleting, setDeleting] = useState(false);
   const [roleEditorOpen, setRoleEditorOpen] = useState(false);
   const [selectedRoles, setSelectedRoles] = useState<string[]>(userRoles);
