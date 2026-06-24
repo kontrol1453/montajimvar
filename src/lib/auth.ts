@@ -120,7 +120,10 @@ export const authOptions: AuthOptions = {
           where: { id: token.id },
           select: { tokenVersion: true, roles: true },
         });
-        if (dbUser && dbUser.tokenVersion !== token.tokenVersion) {
+        if (!dbUser) {
+          throw new Error("Kullanıcı bulunamadı");
+        }
+        if (dbUser.tokenVersion !== token.tokenVersion) {
           throw new Error("Roller güncellendi, lütfen tekrar giriş yapın");
         }
         token.roles = dbUser.roles;
