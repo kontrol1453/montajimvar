@@ -110,13 +110,13 @@ export const authOptions: AuthOptions = {
         token.role = token.roles;
         token.avatar = (user as any).avatar;
         token.tokenVersion = (user as any).tokenVersion || 0;
+        console.log("[JWT] New login - token created:", { id: token.id, roles: token.roles, tokenVersion: token.tokenVersion });
       }
       // Normalise eski JWT token'lardaki string ID'leri (Prisma Int uyumu)
       if (typeof token.id === "string") {
         token.id = Number(token.id) || 0;
       }
       // Versiyon kontrolü SADECE token yenilemesinde (yeni girişte değil)
-      // user veya account varsa yeni giriştir, kontrolü atla
       if (token.id && !user && !account) {
         try {
           const dbUser = await prisma.user.findUnique({
@@ -124,17 +124,19 @@ export const authOptions: AuthOptions = {
             select: { tokenVersion: true, roles: true },
           });
           if (!dbUser) {
-            // Kullanıcı silinmişse token'ı geçersiz kıl
+            console.log("[JWT] User not found in DB, invalidating token");
             throw new Error("Kullanıcı bulunamadı");
           }
+          console.log("[JWT] Version check:", { tokenVersion: token.tokenVersion, dbVersion: dbUser.tokenVersion, match: dbUser.tokenVersion === token.tokenVersion });
           if (dbUser.tokenVersion !== token.tokenVersion) {
+            console.log("[JWT] Version mismatch! Forcing re-login");
             throw new Error("Roller güncellendi, lütfen tekrar giriş yapın");
           }
+          // Versiyon uyuşuyorsa rolleri güncelle (token'da eski kalmasın)
           token.roles = dbUser.roles;
           token.role = dbUser.roles;
         } catch (error) {
-          // Veritabanı hatası vs. durumunda girişि engellenmesin, logla ve devam et
-          console.error("JWT version check error:", error);
+          console.error("[JWT] Version check error:", error);
           // Hata fırlatma, sadece mevcut token'ı kullan
         }
       }
