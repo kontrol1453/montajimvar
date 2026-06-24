@@ -35,14 +35,17 @@ export async function PUT(
 
     await prisma.user.update({
       where: { id: userId },
-      data: { roles },
+      data: { 
+        roles,
+        tokenVersion: { increment: 1 }
+      },
     });
 
     revalidatePath("/admin/kullanicilar");
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, name: true, email: true, roles: true },
+      select: { id: true, name: true, email: true, roles: true, tokenVersion: true },
     });
 
     return NextResponse.json(user);

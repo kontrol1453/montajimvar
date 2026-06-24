@@ -15,6 +15,7 @@ model User {
   phone                 String?
   avatar                String?
   roles                 String[]  @default(["CUSTOMER"])
+  tokenVersion          Int       @default(0)
   city                  String?
   emailVerified         Boolean   @default(false)
   emailVerificationToken String?   @unique

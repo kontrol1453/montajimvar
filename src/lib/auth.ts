@@ -109,10 +109,22 @@ export const authOptions: AuthOptions = {
         token.roles = (user as any).roles || ["CUSTOMER"];
         token.role = token.roles;
         token.avatar = (user as any).avatar;
+        token.tokenVersion = (user as any).tokenVersion || 0;
       }
       // Normalise eski JWT token'lardaki string ID'leri (Prisma Int uyumu)
       if (typeof token.id === "string") {
         token.id = Number(token.id) || 0;
+      }
+      if (token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id },
+          select: { tokenVersion: true, roles: true },
+        });
+        if (dbUser && dbUser.tokenVersion !== token.tokenVersion) {
+          throw new Error("Roller güncellendi, lütfen tekrar giriş yapın");
+        }
+        token.roles = dbUser.roles;
+        token.role = dbUser.roles;
       }
       return token;
     },
