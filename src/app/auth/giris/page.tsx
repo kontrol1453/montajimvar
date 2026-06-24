@@ -12,12 +12,17 @@ export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [verifySent, setVerifySent] = useState(false);
+  const [verifyLoading, setVerifyLoading] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
+
+  const isNotVerified = error.includes("doğrulanmamış");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setVerifySent(false);
 
     try {
       const result = await signIn("credentials", {
@@ -36,6 +41,28 @@ export default function LoginPage() {
       setError("Bir hata oluştu. Lütfen tekrar deneyin.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function resendVerification() {
+    setVerifyLoading(true);
+    setVerifySent(false);
+    try {
+      const res = await fetch("/api/auth/email-verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setVerifySent(true);
+      } else {
+        setError(data.error || "Doğrulama e-postası gönderilemedi.");
+      }
+    } catch {
+      setError("Bir hata oluştu.");
+    } finally {
+      setVerifyLoading(false);
     }
   }
 
@@ -114,7 +141,27 @@ export default function LoginPage() {
 
           {error && (
             <div className="bg-red-900/20 text-red-400 text-sm p-3 rounded-lg">
-              {error}
+              <p>{error}</p>
+              {isNotVerified && (
+                <div className="mt-3 pt-3 border-t border-red-900/40">
+                  <p className="text-xs text-red-300/80 mb-2">
+                    E-posta adresiniz: <span className="font-medium text-red-200">{form.email}</span>
+                  </p>
+                  {verifySent ? (
+                    <p className="text-green-400 text-xs font-medium">
+                      ✓ Doğrulama e-postası gönderildi. Gelen kutunuzu kontrol edin.
+                    </p>
+                  ) : (
+                    <button
+                      onClick={resendVerification}
+                      disabled={verifyLoading}
+                      className="text-xs font-medium text-montaj hover:underline disabled:opacity-50"
+                    >
+                      {verifyLoading ? "Gönderiliyor..." : "Doğrulama e-postasını tekrar gönder"}
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
