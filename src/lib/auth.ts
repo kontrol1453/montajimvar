@@ -115,7 +115,9 @@ export const authOptions: AuthOptions = {
       if (typeof token.id === "string") {
         token.id = Number(token.id) || 0;
       }
-      if (token.id) {
+      // Versiyon kontrolü SADECE token yenilemesinde (yeni girişte değil)
+      // user veya account varsa yeni giriştir, kontrolü atla
+      if (token.id && !user && !account) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id },
           select: { tokenVersion: true, roles: true },
