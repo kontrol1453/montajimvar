@@ -98,7 +98,11 @@ export const authOptions: AuthOptions = {
               emailVerified: true,
             },
           });
+          // Mevcut kullanıcının rollerini ve tokenVersion'ını user objesine ekle
+          // Bu JWT callback'inde doğru token oluşturulması için kritiktir
           (user as any).id = existingUser.id;
+          (user as any).roles = existingUser.roles;
+          (user as any).tokenVersion = existingUser.tokenVersion;
         }
       }
       return true;
