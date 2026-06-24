@@ -32,12 +32,12 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <span className="font-bold text-xl text-montaj">Montajım Var</span>
+            <span className="font-bold text-2xl text-accent">Montajım Var</span>
           </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6">
-            <Link href="/ara" className="text-muted-text hover:text-montaj transition">
+            <Link href="/ara" className="text-muted-text hover:text-accent transition">
               Firmalar
             </Link>
             <ThemeToggle />
@@ -45,9 +45,9 @@ export default function Navbar() {
               <div className="relative" ref={profileRef}>
                 <button
                   onClick={() => setProfileOpen(!profileOpen)}
-                  className="flex items-center gap-2 text-muted-text hover:text-montaj transition"
+                  className="flex items-center gap-2 text-muted-text hover:text-accent transition"
                 >
-                  <span className="w-8 h-8 bg-montaj/20 rounded-full flex items-center justify-center text-montaj font-semibold text-sm overflow-hidden">
+                  <span className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center text-accent font-semibold text-sm overflow-hidden">
                     {user?.avatar ? (
                       <img src={user.avatar} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -95,7 +95,7 @@ export default function Navbar() {
                     {user?.roles?.includes("ADMIN") && (
                       <Link
                         href="/admin"
-                        className="block px-4 py-2 text-sm text-montaj hover:bg-dark-section font-medium"
+                        className="block px-4 py-2 text-sm text-accent hover:bg-dark-section font-medium"
                         onClick={() => setProfileOpen(false)}
                       >
                         Admin Paneli
@@ -115,13 +115,13 @@ export default function Navbar() {
               <div className="flex items-center gap-3">
                 <Link
                   href="/auth/giris"
-                  className="text-muted-text hover:text-montaj transition px-3 py-2"
+                  className="text-muted-text hover:text-accent transition px-3 py-2"
                 >
                   Giriş Yap
                 </Link>
                 <Link
                   href="/auth/kayit"
-                  className="bg-montaj text-white px-4 py-2 rounded-lg hover:bg-montaj-dark transition"
+                  className="bg-accent text-[#1a1d27] px-4 py-2 rounded-lg hover:bg-accent-dark transition font-medium"
                 >
                   Kaydol
                 </Link>
@@ -155,7 +155,7 @@ export default function Navbar() {
           </div>
           <Link
             href="/ara"
-            className="block py-2 text-muted-text hover:text-montaj"
+            className="block py-2 text-muted-text hover:text-accent"
             onClick={() => setMenuOpen(false)}
           >
             Firmalar
@@ -164,14 +164,14 @@ export default function Navbar() {
             <>
               <Link
                 href="/dashboard"
-                className="block py-2 text-muted-text hover:text-montaj"
+                className="block py-2 text-muted-text hover:text-accent"
                 onClick={() => setMenuOpen(false)}
               >
                 Panelim
               </Link>
               <Link
                 href="/dashboard/mesajlar"
-                className="block py-2 text-muted-text hover:text-montaj relative inline-flex items-center"
+                className="block py-2 text-muted-text hover:text-accent relative inline-flex items-center"
                 onClick={() => setMenuOpen(false)}
               >
                 Mesajlarım
@@ -179,7 +179,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/dashboard/favoriler"
-                className="block py-2 text-muted-text hover:text-montaj"
+                className="block py-2 text-muted-text hover:text-accent"
                 onClick={() => setMenuOpen(false)}
               >
                 Favorilerim
@@ -194,7 +194,7 @@ export default function Navbar() {
               {user?.roles?.includes("ADMIN") && (
                 <Link
                   href="/admin"
-                  className="block py-2 text-montaj font-medium"
+                  className="block py-2 text-accent font-medium"
                   onClick={() => setMenuOpen(false)}
                 >
                   Admin Paneli
@@ -218,7 +218,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/auth/kayit"
-                className="block text-center py-2 bg-montaj text-white rounded-lg"
+                className="block text-center py-2 bg-accent text-[#1a1d27] rounded-lg"
                 onClick={() => setMenuOpen(false)}
               >
                 Kaydol

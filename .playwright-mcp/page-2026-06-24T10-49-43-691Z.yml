@@ -1,0 +1,402 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "Montajım Var" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]: Montajım Var
+      - generic [ref=e7]:
+        - link "Firmalar" [ref=e8] [cursor=pointer]:
+          - /url: /ara
+        - button "Açık temaya geç" [ref=e9]:
+          - img [ref=e10]
+        - generic [ref=e12]:
+          - link "Giriş Yap" [ref=e13] [cursor=pointer]:
+            - /url: /auth/giris
+          - link "Kaydol" [ref=e14] [cursor=pointer]:
+            - /url: /auth/kayit
+  - main [ref=e15]:
+    - generic [ref=e16]:
+      - heading "Tüm Firmalar" [level=1] [ref=e17]
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - textbox "Firma adı, açıklama veya kategori ile ara..." [ref=e21]
+          - combobox [ref=e22]:
+            - option "Tüm Şehirler" [selected]
+            - option "Adana"
+            - option "Adıyaman"
+            - option "Afyonkarahisar"
+            - option "Ağrı"
+            - option "Aksaray"
+            - option "Amasya"
+            - option "Ankara"
+            - option "Antalya"
+            - option "Ardahan"
+            - option "Artvin"
+            - option "Aydın"
+            - option "Balıkesir"
+            - option "Bartın"
+            - option "Batman"
+            - option "Bayburt"
+            - option "Bilecik"
+            - option "Bingöl"
+            - option "Bitlis"
+            - option "Bolu"
+            - option "Burdur"
+            - option "Bursa"
+            - option "Çanakkale"
+            - option "Çankırı"
+            - option "Çorum"
+            - option "Denizli"
+            - option "Diyarbakır"
+            - option "Düzce"
+            - option "Edirne"
+            - option "Elazığ"
+            - option "Erzincan"
+            - option "Erzurum"
+            - option "Eskişehir"
+            - option "Gaziantep"
+            - option "Giresun"
+            - option "Gümüşhane"
+            - option "Hakkâri"
+            - option "Hatay"
+            - option "Iğdır"
+            - option "Isparta"
+            - option "İstanbul"
+            - option "İzmir"
+            - option "Kahramanmaraş"
+            - option "Karabük"
+            - option "Karaman"
+            - option "Kars"
+            - option "Kastamonu"
+            - option "Kayseri"
+            - option "Kırıkkale"
+            - option "Kırklareli"
+            - option "Kırşehir"
+            - option "Kilis"
+            - option "Kocaeli"
+            - option "Konya"
+            - option "Kütahya"
+            - option "Malatya"
+            - option "Manisa"
+            - option "Mardin"
+            - option "Mersin"
+            - option "Muğla"
+            - option "Muş"
+            - option "Nevşehir"
+            - option "Niğde"
+            - option "Ordu"
+            - option "Osmaniye"
+            - option "Rize"
+            - option "Sakarya"
+            - option "Samsun"
+            - option "Siirt"
+            - option "Sinop"
+            - option "Sivas"
+            - option "Şanlıurfa"
+            - option "Şırnak"
+            - option "Tekirdağ"
+            - option "Tokat"
+            - option "Trabzon"
+            - option "Tunceli"
+            - option "Uşak"
+            - option "Van"
+            - option "Yalova"
+            - option "Yozgat"
+            - option "Zonguldak"
+          - combobox [ref=e23]:
+            - option "Tümü" [selected]
+            - option "4+"
+            - option "3+"
+            - option "2+"
+          - combobox [ref=e24]:
+            - option "En Yeni" [selected]
+            - option "En Eski"
+            - option "Puana Göre"
+        - generic [ref=e25]:
+          - paragraph [ref=e26]: Kategoriler
+          - generic [ref=e27]:
+            - generic [ref=e28] [cursor=pointer]:
+              - checkbox "3d Printer Baskı" [ref=e29]
+              - generic [ref=e30]: 3d Printer Baskı
+            - generic [ref=e31] [cursor=pointer]:
+              - checkbox "Ahşap Stand Kurulumu" [ref=e32]
+              - generic [ref=e33]: Ahşap Stand Kurulumu
+            - generic [ref=e34] [cursor=pointer]:
+              - checkbox "Dekor Kurulumu" [ref=e35]
+              - generic [ref=e36]: Dekor Kurulumu
+            - generic [ref=e37] [cursor=pointer]:
+              - checkbox "Demir Konstrüksiyon" [ref=e38]
+              - generic [ref=e39]: Demir Konstrüksiyon
+            - generic [ref=e40] [cursor=pointer]:
+              - checkbox "Dijital Baskı" [ref=e41]
+              - generic [ref=e42]: Dijital Baskı
+            - generic [ref=e43] [cursor=pointer]:
+              - checkbox "Elektrikçi" [ref=e44]
+              - generic [ref=e45]: Elektrikçi
+            - generic [ref=e46] [cursor=pointer]:
+              - checkbox "Folyo Baskı" [ref=e47]
+              - generic [ref=e48]: Folyo Baskı
+            - generic [ref=e49] [cursor=pointer]:
+              - checkbox "Folyo Uygulama" [ref=e50]
+              - generic [ref=e51]: Folyo Uygulama
+            - generic [ref=e52] [cursor=pointer]:
+              - checkbox "Fuar Standı Kurulumu" [ref=e53]
+              - generic [ref=e54]: Fuar Standı Kurulumu
+            - generic [ref=e55] [cursor=pointer]:
+              - checkbox "Podyum Kurulumu" [ref=e56]
+              - generic [ref=e57]: Podyum Kurulumu
+            - generic [ref=e58] [cursor=pointer]:
+              - checkbox "Sahne Kurulumu" [ref=e59]
+              - generic [ref=e60]: Sahne Kurulumu
+            - generic [ref=e61] [cursor=pointer]:
+              - checkbox "Stand Kurulumu" [ref=e62]
+              - generic [ref=e63]: Stand Kurulumu
+            - generic [ref=e64] [cursor=pointer]:
+              - checkbox "Strafor Kesim" [ref=e65]
+              - generic [ref=e66]: Strafor Kesim
+            - generic [ref=e67] [cursor=pointer]:
+              - checkbox "Vinil Baskı" [ref=e68]
+              - generic [ref=e69]: Vinil Baskı
+            - generic [ref=e70] [cursor=pointer]:
+              - checkbox "Vinil Germe" [ref=e71]
+              - generic [ref=e72]: Vinil Germe
+      - generic [ref=e73]:
+        - paragraph [ref=e74]: 33 firma bulundu
+        - generic [ref=e75]:
+          - button "Liste" [ref=e76]:
+            - img [ref=e77]
+            - text: Liste
+          - button "Harita" [ref=e79]:
+            - img [ref=e80]
+            - text: Harita
+      - generic [ref=e82]:
+        - link "İ Premium Onaylı İstanbul Usta Montaj İstanbul · Folyo Uygulama Vinil Germe Stand Kurulumu +5 ★ 4.5 (2) 10 yıllık deneyimimizle İstanbul'un her semtinde mobilya, mutfak ve beyaz eşya montajı hizmeti veriyoruz. Profesyonel ekibimizle hızlı ve güvenilir montaj garantisi. WhatsApp ile iletişim" [ref=e83] [cursor=pointer]:
+          - /url: /firma/1
+          - generic [ref=e84]:
+            - generic [ref=e85]: İ
+            - generic [ref=e86]:
+              - generic [ref=e87]:
+                - img [ref=e88]
+                - text: Premium
+              - generic [ref=e90]: Onaylı
+          - heading "İstanbul Usta Montaj" [level=3] [ref=e91]
+          - generic [ref=e92]:
+            - generic [ref=e93]: İstanbul
+            - generic [ref=e94]: ·
+            - generic [ref=e95]: Folyo Uygulama
+            - generic [ref=e96]: Vinil Germe
+            - generic [ref=e97]: Stand Kurulumu
+            - generic [ref=e98]: "+5"
+          - generic [ref=e99]:
+            - generic [ref=e100]: ★
+            - generic [ref=e101]: "4.5"
+            - generic [ref=e102]: (2)
+          - paragraph [ref=e103]: 10 yıllık deneyimimizle İstanbul'un her semtinde mobilya, mutfak ve beyaz eşya montajı hizmeti veriyoruz. Profesyonel ekibimizle hızlı ve güvenilir montaj garantisi.
+          - generic [ref=e104]:
+            - img [ref=e105]
+            - generic [ref=e107]: WhatsApp ile iletişim
+        - link "B Onaylı Baskı Hizmeti istanbul · Dijital Baskı Dijital baskı hizmetinde yılların tecrübesi ile sizlere hizmet vermeye devam ediyoruz. Detaylı bilgi ve fiyatlar için hemen bizi arayın. WhatsApp ile iletişim" [ref=e108] [cursor=pointer]:
+          - /url: /firma/35
+          - generic [ref=e109]:
+            - generic [ref=e110]: B
+            - generic [ref=e112]: Onaylı
+          - heading "Baskı Hizmeti" [level=3] [ref=e113]
+          - generic [ref=e114]:
+            - generic [ref=e115]: istanbul
+            - generic [ref=e116]: ·
+            - generic [ref=e117]: Dijital Baskı
+          - paragraph [ref=e118]: Dijital baskı hizmetinde yılların tecrübesi ile sizlere hizmet vermeye devam ediyoruz. Detaylı bilgi ve fiyatlar için hemen bizi arayın.
+          - generic [ref=e119]:
+            - img [ref=e120]
+            - generic [ref=e122]: WhatsApp ile iletişim
+        - link "Y Onaylı Yıldırım Mobilya Malatya · Folyo Uygulama Stand Kurulumu ★ 3.3 (4) Malatya'da uygun fiyatlı mobilya üretimi. 7/24 hizmet, acil montaj desteği." [ref=e123] [cursor=pointer]:
+          - /url: /firma/33
+          - generic [ref=e124]:
+            - generic [ref=e125]: "Y"
+            - generic [ref=e127]: Onaylı
+          - heading "Yıldırım Mobilya" [level=3] [ref=e128]
+          - generic [ref=e129]:
+            - generic [ref=e130]: Malatya
+            - generic [ref=e131]: ·
+            - generic [ref=e132]: Folyo Uygulama
+            - generic [ref=e133]: Stand Kurulumu
+          - generic [ref=e134]:
+            - generic [ref=e135]: ★
+            - generic [ref=e136]: "3.3"
+            - generic [ref=e137]: (4)
+          - paragraph [ref=e138]: Malatya'da uygun fiyatlı mobilya üretimi. 7/24 hizmet, acil montaj desteği.
+        - link "K Onaylı Kaya Ürün Trabzon Trabzon · Dekor Kurulumu Demir Konstrüksiyon Ahşap Stand Kurulumu ★ 4.2 (7) Trabzon'da el yapımı ahşap mobilyalar. 10 yılı aşkın tecrübe, binlerce memnun müşteri." [ref=e139] [cursor=pointer]:
+          - /url: /firma/32
+          - generic [ref=e140]:
+            - generic [ref=e141]: K
+            - generic [ref=e143]: Onaylı
+          - heading "Kaya Ürün Trabzon" [level=3] [ref=e144]
+          - generic [ref=e145]:
+            - generic [ref=e146]: Trabzon
+            - generic [ref=e147]: ·
+            - generic [ref=e148]: Dekor Kurulumu
+            - generic [ref=e149]: Demir Konstrüksiyon
+            - generic [ref=e150]: Ahşap Stand Kurulumu
+          - generic [ref=e151]:
+            - generic [ref=e152]: ★
+            - generic [ref=e153]: "4.2"
+            - generic [ref=e154]: (7)
+          - paragraph [ref=e155]: Trabzon'da el yapımı ahşap mobilyalar. 10 yılı aşkın tecrübe, binlerce memnun müşteri.
+        - link "A Ateş Mobilya Samsun Samsun · Podyum Kurulumu Fuar Standı Kurulumu ★ 4.6 (3) Samsun'da her tarza uygun mobilya. Profesyonel ekip, hızlı servis, uygun fiyat garantisi." [ref=e156] [cursor=pointer]:
+          - /url: /firma/31
+          - generic [ref=e158]: A
+          - heading "Ateş Mobilya Samsun" [level=3] [ref=e159]
+          - generic [ref=e160]:
+            - generic [ref=e161]: Samsun
+            - generic [ref=e162]: ·
+            - generic [ref=e163]: Podyum Kurulumu
+            - generic [ref=e164]: Fuar Standı Kurulumu
+          - generic [ref=e165]:
+            - generic [ref=e166]: ★
+            - generic [ref=e167]: "4.6"
+            - generic [ref=e168]: (3)
+          - paragraph [ref=e169]: Samsun'da her tarza uygun mobilya. Profesyonel ekip, hızlı servis, uygun fiyat garantisi.
+        - link "D Onaylı Doğan Mobilya Diyarbakır · Sahne Kurulumu Demir Konstrüksiyon ★ 3.7 (6) Diyarbakır'da kaliteli mobilya üretimi. Uzman kadro, sigortalı çalışma, garanti." [ref=e170] [cursor=pointer]:
+          - /url: /firma/30
+          - generic [ref=e171]:
+            - generic [ref=e172]: D
+            - generic [ref=e174]: Onaylı
+          - heading "Doğan Mobilya" [level=3] [ref=e175]
+          - generic [ref=e176]:
+            - generic [ref=e177]: Diyarbakır
+            - generic [ref=e178]: ·
+            - generic [ref=e179]: Sahne Kurulumu
+            - generic [ref=e180]: Demir Konstrüksiyon
+          - generic [ref=e181]:
+            - generic [ref=e182]: ★
+            - generic [ref=e183]: "3.7"
+            - generic [ref=e184]: (6)
+          - paragraph [ref=e185]: Diyarbakır'da kaliteli mobilya üretimi. Uzman kadro, sigortalı çalışma, garanti.
+        - link "E Onaylı Er Mobilya Eskişehir Eskişehir · Ahşap Stand Kurulumu 3d Printer Baskı ★ 4.5 (1) Eskişehir'de modern ofis mobilyaları. Tüm Türkiye'ye hizmet, kaliteli işçilik." [ref=e186] [cursor=pointer]:
+          - /url: /firma/29
+          - generic [ref=e187]:
+            - generic [ref=e188]: E
+            - generic [ref=e190]: Onaylı
+          - heading "Er Mobilya Eskişehir" [level=3] [ref=e191]
+          - generic [ref=e192]:
+            - generic [ref=e193]: Eskişehir
+            - generic [ref=e194]: ·
+            - generic [ref=e195]: Ahşap Stand Kurulumu
+            - generic [ref=e196]: 3d Printer Baskı
+          - generic [ref=e197]:
+            - generic [ref=e198]: ★
+            - generic [ref=e199]: "4.5"
+            - generic [ref=e200]: (1)
+          - paragraph [ref=e201]: Eskişehir'de modern ofis mobilyaları. Tüm Türkiye'ye hizmet, kaliteli işçilik.
+        - link "K Onaylı Kaya Üretim Kayseri Kayseri · Elektrikçi Dekor Kurulumu ★ 3.7 (0) Kayseri'de endüstriyel mobilya üretimi. 7/24 hizmet, acil montaj desteği." [ref=e202] [cursor=pointer]:
+          - /url: /firma/28
+          - generic [ref=e203]:
+            - generic [ref=e204]: K
+            - generic [ref=e206]: Onaylı
+          - heading "Kaya Üretim Kayseri" [level=3] [ref=e207]
+          - generic [ref=e208]:
+            - generic [ref=e209]: Kayseri
+            - generic [ref=e210]: ·
+            - generic [ref=e211]: Elektrikçi
+            - generic [ref=e212]: Dekor Kurulumu
+          - generic [ref=e213]:
+            - generic [ref=e214]: ★
+            - generic [ref=e215]: "3.7"
+            - generic [ref=e216]: (0)
+          - paragraph [ref=e217]: Kayseri'de endüstriyel mobilya üretimi. 7/24 hizmet, acil montaj desteği.
+        - link "A Aktaş Mobilya Mersin · 3d Printer Baskı Stand Kurulumu ★ 3.1 (1) Mersin'de özel üretim mobilya çözümleri. 10 yılı aşkın tecrübe, binlerce memnun müşteri." [ref=e218] [cursor=pointer]:
+          - /url: /firma/27
+          - generic [ref=e220]: A
+          - heading "Aktaş Mobilya" [level=3] [ref=e221]
+          - generic [ref=e222]:
+            - generic [ref=e223]: Mersin
+            - generic [ref=e224]: ·
+            - generic [ref=e225]: 3d Printer Baskı
+            - generic [ref=e226]: Stand Kurulumu
+          - generic [ref=e227]:
+            - generic [ref=e228]: ★
+            - generic [ref=e229]: "3.1"
+            - generic [ref=e230]: (1)
+          - paragraph [ref=e231]: Mersin'de özel üretim mobilya çözümleri. 10 yılı aşkın tecrübe, binlerce memnun müşteri.
+        - link "Y Onaylı Yiğit Mobilya Gaziantep · Vinil Baskı Folyo Uygulama Folyo Baskı ★ 4.1 (0) Gaziantep'te kaliteli mobilya üretimi. Profesyonel ekip, hızlı servis, uygun fiyat garantisi." [ref=e232] [cursor=pointer]:
+          - /url: /firma/26
+          - generic [ref=e233]:
+            - generic [ref=e234]: "Y"
+            - generic [ref=e236]: Onaylı
+          - heading "Yiğit Mobilya" [level=3] [ref=e237]
+          - generic [ref=e238]:
+            - generic [ref=e239]: Gaziantep
+            - generic [ref=e240]: ·
+            - generic [ref=e241]: Vinil Baskı
+            - generic [ref=e242]: Folyo Uygulama
+            - generic [ref=e243]: Folyo Baskı
+          - generic [ref=e244]:
+            - generic [ref=e245]: ★
+            - generic [ref=e246]: "4.1"
+            - generic [ref=e247]: (0)
+          - paragraph [ref=e248]: Gaziantep'te kaliteli mobilya üretimi. Profesyonel ekip, hızlı servis, uygun fiyat garantisi.
+        - link "Ş Onaylı Şen Mobilya Konya Konya · Demir Konstrüksiyon Stand Kurulumu ★ 5.0 (1) Konya'da geleneksel ve modern mobilya. Uzman kadro, sigortalı çalışma, garanti." [ref=e249] [cursor=pointer]:
+          - /url: /firma/25
+          - generic [ref=e250]:
+            - generic [ref=e251]: Ş
+            - generic [ref=e253]: Onaylı
+          - heading "Şen Mobilya Konya" [level=3] [ref=e254]
+          - generic [ref=e255]:
+            - generic [ref=e256]: Konya
+            - generic [ref=e257]: ·
+            - generic [ref=e258]: Demir Konstrüksiyon
+            - generic [ref=e259]: Stand Kurulumu
+          - generic [ref=e260]:
+            - generic [ref=e261]: ★
+            - generic [ref=e262]: "5.0"
+            - generic [ref=e263]: (1)
+          - paragraph [ref=e264]: Konya'da geleneksel ve modern mobilya. Uzman kadro, sigortalı çalışma, garanti.
+        - link "E Onaylı Emre Mobilya Adana Adana · Stand Kurulumu Ahşap Stand Kurulumu ★ 3.9 (4) Adana'da uygun fiyatlı mobilya üretimi. Tüm Türkiye'ye hizmet, kaliteli işçilik." [ref=e265] [cursor=pointer]:
+          - /url: /firma/24
+          - generic [ref=e266]:
+            - generic [ref=e267]: E
+            - generic [ref=e269]: Onaylı
+          - heading "Emre Mobilya Adana" [level=3] [ref=e270]
+          - generic [ref=e271]:
+            - generic [ref=e272]: Adana
+            - generic [ref=e273]: ·
+            - generic [ref=e274]: Stand Kurulumu
+            - generic [ref=e275]: Ahşap Stand Kurulumu
+          - generic [ref=e276]:
+            - generic [ref=e277]: ★
+            - generic [ref=e278]: "3.9"
+            - generic [ref=e279]: (4)
+          - paragraph [ref=e280]: Adana'da uygun fiyatlı mobilya üretimi. Tüm Türkiye'ye hizmet, kaliteli işçilik.
+      - generic [ref=e281]:
+        - link "1" [ref=e282] [cursor=pointer]:
+          - /url: /ara?sayfa=1
+        - link "2" [ref=e283] [cursor=pointer]:
+          - /url: /ara?sayfa=2
+        - link "3" [ref=e284] [cursor=pointer]:
+          - /url: /ara?sayfa=3
+        - link "Sonraki →" [ref=e285] [cursor=pointer]:
+          - /url: /ara?sayfa=2
+  - contentinfo [ref=e286]:
+    - generic [ref=e287]:
+      - generic [ref=e288]:
+        - generic [ref=e289]:
+          - generic [ref=e290]: Montajım Var
+          - paragraph [ref=e291]: Türkiye'nin montaj platformu. Montaj firmaları, üreticiler ve müşterileri bir araya getiriyor.
+        - generic [ref=e292]:
+          - heading "Hızlı Linkler" [level=3] [ref=e293]
+          - list [ref=e294]:
+            - listitem [ref=e295]:
+              - link "Firmalar" [ref=e296] [cursor=pointer]:
+                - /url: /ara
+            - listitem [ref=e297]:
+              - link "Kaydol" [ref=e298] [cursor=pointer]:
+                - /url: /auth/kayit
+            - listitem [ref=e299]:
+              - link "Giriş Yap" [ref=e300] [cursor=pointer]:
+                - /url: /auth/giris
+        - generic [ref=e301]:
+          - heading "İletişim" [level=3] [ref=e302]
+          - list [ref=e303]:
+            - listitem [ref=e304]: "Email: info@montajimvar.com"
+            - listitem [ref=e305]: "Telefon: +90 (212) 555 0000"
+      - paragraph [ref=e307]: © 2026 Montajım Var. Tüm hakları saklıdır.

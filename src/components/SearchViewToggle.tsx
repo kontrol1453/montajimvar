@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
 import PremiumBadge from "@/components/PremiumBadge";
-import SearchMap from "@/components/SearchMap";
 import { buildQueryParams } from "@/lib/search";
+
+const SearchMap = dynamic(() => import("@/components/SearchMap"), { ssr: false });
 
 interface ProfileData {
   id: number;
@@ -59,7 +61,7 @@ export default function SearchViewToggle({
     const testRe = new RegExp(`^(${escaped})$`, "i");
     return parts.map((part, i) =>
       testRe.test(part)
-        ? <mark key={i} className="bg-montaj/30 text-white rounded px-0.5">{part}</mark>
+        ? <mark key={i} className="bg-accent/30 text-white rounded px-0.5">{part}</mark>
         : part,
     );
   }
@@ -85,7 +87,7 @@ export default function SearchViewToggle({
             <button
               onClick={() => setViewMode("list")}
               className={`px-3 py-1.5 rounded-md text-sm transition flex items-center gap-1 ${
-                viewMode === "list" ? "bg-montaj text-white" : "text-sub-text hover:text-white"
+                viewMode === "list" ? "bg-accent text-[#1a1d27]" : "text-sub-text hover:text-white"
               }`}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -96,7 +98,7 @@ export default function SearchViewToggle({
             <button
               onClick={() => setViewMode("map")}
               className={`px-3 py-1.5 rounded-md text-sm transition flex items-center gap-1 ${
-                viewMode === "map" ? "bg-montaj text-white" : "text-sub-text hover:text-white"
+                viewMode === "map" ? "bg-accent text-[#1a1d27]" : "text-sub-text hover:text-white"
               }`}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -121,10 +123,10 @@ export default function SearchViewToggle({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {profiles.map((profile) => (
                 <Link key={profile.id} href={`/firma/${profile.id}`}
-                  className="block bg-dark-card rounded-xl border border-dark-border hover:border-montaj/50 transition p-6"
+                  className="block bg-dark-card rounded-xl border border-dark-border hover:border-accent/50 transition p-6"
                 >
                   <div className="flex items-start justify-between mb-3">
-                    <div className="w-12 h-12 bg-montaj/20 rounded-lg flex items-center justify-center text-xl font-bold text-montaj">
+                      <div className="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center text-xl font-bold text-accent">
                       {profile.companyName[0]?.toUpperCase() || "?"}
                     </div>
                     <div className="flex items-center gap-1.5 flex-wrap justify-end">
@@ -151,7 +153,7 @@ export default function SearchViewToggle({
                     )}
                   </div>
                   {profile.ratingAvg > 0 && (
-                    <div className="flex items-center gap-1 text-sm text-montaj mb-2">
+                    <div className="flex items-center gap-1 text-sm text-accent mb-2">
                       <span>★</span>
                       <span className="font-medium">{profile.ratingAvg.toFixed(1)}</span>
                       <span className="text-sub-text">({profile.reviewCount})</span>
@@ -171,8 +173,8 @@ export default function SearchViewToggle({
             </div>
           ) : (
               <div className="text-center py-16">
-              <div className="w-16 h-16 bg-montaj/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-montaj/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-accent/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                 </svg>
               </div>
@@ -185,7 +187,7 @@ export default function SearchViewToggle({
             <div className="flex items-center justify-center gap-2 mt-8">
               {sayfa > 1 && (
                 <Link href={buildQueryParams(sp, { sayfa: String(sayfa - 1) })}
-                  className="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-sm text-white hover:border-montaj/50 transition"
+                  className="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-sm text-white hover:border-accent/50 transition"
                 >← Önceki</Link>
               )}
               {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
@@ -197,14 +199,14 @@ export default function SearchViewToggle({
                 return (
                   <Link key={p} href={buildQueryParams(sp, { sayfa: String(p) })}
                     className={`w-10 h-10 flex items-center justify-center rounded-lg text-sm transition ${
-                      p === sayfa ? "bg-montaj text-white" : "bg-dark-card border border-dark-border text-sub-text hover:border-montaj/50"
+                      p === sayfa ? "bg-accent text-[#1a1d27]" : "bg-dark-card border border-dark-border text-sub-text hover:border-accent/50"
                     }`}
                   >{p}</Link>
                 );
               })}
               {sayfa < totalPages && (
                 <Link href={buildQueryParams(sp, { sayfa: String(sayfa + 1) })}
-                  className="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-sm text-white hover:border-montaj/50 transition"
+                  className="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-sm text-white hover:border-accent/50 transition"
                 >Sonraki →</Link>
               )}
             </div>

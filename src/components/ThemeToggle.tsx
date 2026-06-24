@@ -7,7 +7,9 @@ export default function ThemeToggle() {
 
   useEffect(() => {
     const stored = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const prefersDark = typeof window !== "undefined"
+      ? window.matchMedia("(prefers-color-scheme: dark)").matches
+      : false;
     const isDark = stored ? stored === "dark" : prefersDark;
     setDark(isDark);
     document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
@@ -23,7 +25,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="p-2 rounded-lg hover:bg-dark-section transition text-sub-text hover:text-montaj"
+      className="p-2 rounded-lg hover:bg-dark-section transition text-sub-text hover:text-accent"
       aria-label={dark ? "Açık temaya geç" : "Koyu temaya geç"}
       title={dark ? "Açık Tema" : "Koyu Tema"}
     >

@@ -35,9 +35,9 @@ function StarRating({
           type="button"
           disabled={readonly}
           onClick={() => onChange?.(star)}
-          className={`text-2xl transition ${
-            star <= value ? "text-montaj" : "text-gray-600"
-          } ${readonly ? "cursor-default" : "hover:scale-110 cursor-pointer"}`}
+            className={`text-2xl transition ${
+              star <= value ? "text-accent" : "text-gray-600"
+            } ${readonly ? "cursor-default" : "hover:scale-110 cursor-pointer"}`}
         >
           ★
         </button>
@@ -121,7 +121,7 @@ export default function ReviewSection({ profileId, isOwner, canLeaveReview }: Pr
         <h2 className="text-lg font-semibold text-white">Değerlendirmeler</h2>
         {avgRating && (
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-montaj text-lg">★ {avgRating}</span>
+            <span className="text-accent text-lg">★ {avgRating}</span>
             <span className="text-sub-text">({reviews.length} yorum)</span>
           </div>
         )}
@@ -141,7 +141,7 @@ export default function ReviewSection({ profileId, isOwner, canLeaveReview }: Pr
             value={userComment}
             onChange={(e) => setUserComment(e.target.value)}
             rows={3}
-            className="w-full px-3 py-2 border border-dark-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-montaj bg-dark-bg text-white placeholder-gray-500 mb-3"
+              className="w-full px-3 py-2 border border-dark-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent bg-dark-bg text-white placeholder-gray-500 mb-3"
           />
           {message && (
             <p className={`text-sm mb-3 ${message.includes("kaydedildi") ? "text-green-400" : "text-red-400"}`}>

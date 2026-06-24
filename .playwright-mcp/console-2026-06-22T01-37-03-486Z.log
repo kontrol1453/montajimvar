@@ -1,0 +1,6 @@
+[    1072ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://montajimvarapp.vercel.app/auth/kayit:0
+[    1403ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://montajimvarapp.vercel.app/icon-192.png:0
+[    1472ms] [WARNING] Error while trying to use the following icon from the Manifest: https://montajimvarapp.vercel.app/icon-192.png (Download error or resource isn't a valid image) @ https://montajimvarapp.vercel.app/auth/kayit:0
+[  314777ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://montajimvarapp.vercel.app/auth/giris:0
+[  314823ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://montajimvarapp.vercel.app/icon-192.png:0
+[  314824ms] [WARNING] Error while trying to use the following icon from the Manifest: https://montajimvarapp.vercel.app/icon-192.png (Download error or resource isn't a valid image) @ https://montajimvarapp.vercel.app/auth/giris:0

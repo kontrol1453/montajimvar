@@ -1,0 +1,46 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "🔧 Montajım Var" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]: 🔧
+        - generic [ref=e7]: Montajım Var
+      - generic [ref=e8]:
+        - link "Firmalar" [ref=e9] [cursor=pointer]:
+          - /url: /ara
+        - button "Koyu temaya geç" [ref=e10]:
+          - img [ref=e11]
+        - generic [ref=e13]:
+          - link "Giriş Yap" [ref=e14] [cursor=pointer]:
+            - /url: /auth/giris
+          - link "Kaydol" [ref=e15] [cursor=pointer]:
+            - /url: /auth/kayit
+  - main [ref=e16]:
+    - paragraph [ref=e20]: E-posta doğrulanıyor...
+  - contentinfo [ref=e21]:
+    - generic [ref=e22]:
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - generic [ref=e25]:
+            - generic [ref=e26]: 🔧
+            - generic [ref=e27]: Montajım Var
+          - paragraph [ref=e28]: Türkiye'nin montaj platformu. Montaj firmaları, üreticiler ve müşterileri bir araya getiriyor.
+        - generic [ref=e29]:
+          - heading "Hızlı Linkler" [level=3] [ref=e30]
+          - list [ref=e31]:
+            - listitem [ref=e32]:
+              - link "Firmalar" [ref=e33] [cursor=pointer]:
+                - /url: /ara
+            - listitem [ref=e34]:
+              - link "Kaydol" [ref=e35] [cursor=pointer]:
+                - /url: /auth/kayit
+            - listitem [ref=e36]:
+              - link "Giriş Yap" [ref=e37] [cursor=pointer]:
+                - /url: /auth/giris
+        - generic [ref=e38]:
+          - heading "İletişim" [level=3] [ref=e39]
+          - list [ref=e40]:
+            - listitem [ref=e41]: "Email: info@montajimvar.com"
+            - listitem [ref=e42]: "Telefon: +90 (212) 555 0000"
+      - paragraph [ref=e44]: © 2026 Montajım Var. Tüm hakları saklıdır.
+  - alert [ref=e45]

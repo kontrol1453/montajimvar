@@ -1,0 +1,3 @@
+[    2078ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://montajimvarapp.vercel.app/auth/giris:0
+[    2830ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://montajimvarapp.vercel.app/icon-192.png:0
+[    2879ms] [WARNING] Error while trying to use the following icon from the Manifest: https://montajimvarapp.vercel.app/icon-192.png (Download error or resource isn't a valid image) @ https://montajimvarapp.vercel.app/auth/giris:0

@@ -5,7 +5,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <div className="mb-4">
-              <span className="font-bold text-xl text-montaj">Montajım Var</span>
+              <span className="font-bold text-xl text-accent">Montajım Var</span>
             </div>
             <p className="text-sm text-sub-text">
               Türkiye&apos;nin montaj platformu. Montaj firmaları, üreticiler ve müşterileri bir araya getiriyor.
@@ -15,9 +15,9 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-white mb-4">Hızlı Linkler</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="/ara" className="text-sub-text hover:text-montaj transition">Firmalar</a></li>
-              <li><a href="/auth/kayit" className="text-sub-text hover:text-montaj transition">Kaydol</a></li>
-              <li><a href="/auth/giris" className="text-sub-text hover:text-montaj transition">Giriş Yap</a></li>
+              <li><a href="/ara" className="text-sub-text hover:text-accent transition">Firmalar</a></li>
+              <li><a href="/auth/kayit" className="text-sub-text hover:text-accent transition">Kaydol</a></li>
+              <li><a href="/auth/giris" className="text-sub-text hover:text-accent transition">Giriş Yap</a></li>
             </ul>
           </div>
 

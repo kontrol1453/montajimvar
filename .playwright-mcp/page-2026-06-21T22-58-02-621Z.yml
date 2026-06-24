@@ -1,0 +1,182 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "🔧 Montajım Var" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]: 🔧
+        - generic [ref=e7]: Montajım Var
+      - generic [ref=e8]:
+        - link "Firmalar" [ref=e9] [cursor=pointer]:
+          - /url: /ara
+        - button "Koyu temaya geç" [ref=e10]:
+          - img [ref=e11]
+        - generic [ref=e13]:
+          - link "Giriş Yap" [ref=e14] [cursor=pointer]:
+            - /url: /auth/giris
+          - link "Kaydol" [ref=e15] [cursor=pointer]:
+            - /url: /auth/kayit
+  - main [ref=e16]:
+    - generic [ref=e17]:
+      - generic [ref=e20]:
+        - heading "Montajcınızı Bulun, İşinizi Büyütün" [level=1] [ref=e21]
+        - paragraph [ref=e22]: Türkiye'nin dört bir yanındaki güvenilir montaj firmaları, üreticiler ve müşterileri bir araya getiren platform.
+        - generic [ref=e23]:
+          - link "Firmaları Keşfet" [ref=e24] [cursor=pointer]:
+            - /url: /ara
+          - link "Hemen Katıl" [ref=e25] [cursor=pointer]:
+            - /url: /auth/kayit
+      - generic [ref=e27]:
+        - heading "Nasıl Çalışır?" [level=2] [ref=e28]
+        - generic [ref=e29]:
+          - generic [ref=e30]:
+            - generic [ref=e32]: 🔍
+            - heading "Ara ve Bul" [level=3] [ref=e33]
+            - paragraph [ref=e34]: Şehrine ve ihtiyacına uygun montaj firmalarını filtrelerle kolayca bul.
+          - generic [ref=e35]:
+            - generic [ref=e37]: 📋
+            - heading "İncele ve Karşılaştır" [level=3] [ref=e38]
+            - paragraph [ref=e39]: Firma profillerini incele, deneyimlerini gör ve en uygununu seç.
+          - generic [ref=e40]:
+            - generic [ref=e42]: 💬
+            - heading "İletişime Geç" [level=3] [ref=e43]
+            - paragraph [ref=e44]: Platform üzerinden mesaj gönder, teklif al ve anlaşmaya var.
+      - generic [ref=e46]:
+        - heading "Kategoriler" [level=2] [ref=e47]
+        - generic [ref=e48]:
+          - link "🧊 Beyaz Eşya Montajı" [ref=e49] [cursor=pointer]:
+            - /url: /ara?kategori=beyaz-esya-montaji
+            - generic [ref=e50]: 🧊
+            - generic [ref=e51]: Beyaz Eşya Montajı
+          - link "📦 Diğer" [ref=e52] [cursor=pointer]:
+            - /url: /ara?kategori=diger
+            - generic [ref=e53]: 📦
+            - generic [ref=e54]: Diğer
+          - link "⚡ Elektrik Montajı" [ref=e55] [cursor=pointer]:
+            - /url: /ara?kategori=elektrik-montaji
+            - generic [ref=e56]: ⚡
+            - generic [ref=e57]: Elektrik Montajı
+          - link "🚪 Kapı & Pencere Montajı" [ref=e58] [cursor=pointer]:
+            - /url: /ara?kategori=kapi-pencere-montaji
+            - generic [ref=e59]: 🚪
+            - generic [ref=e60]: Kapı & Pencere Montajı
+          - link "❄️ Klima Montajı" [ref=e61] [cursor=pointer]:
+            - /url: /ara?kategori=klima-montaji
+            - generic [ref=e62]: ❄️
+            - generic [ref=e63]: Klima Montajı
+          - link "🪑 Mobilya Montajı" [ref=e64] [cursor=pointer]:
+            - /url: /ara?kategori=mobilya-montaji
+            - generic [ref=e65]: 🪑
+            - generic [ref=e66]: Mobilya Montajı
+          - link "🍳 Mutfak & Banyo Montajı" [ref=e67] [cursor=pointer]:
+            - /url: /ara?kategori=mutfak-banyo-montaji
+            - generic [ref=e68]: 🍳
+            - generic [ref=e69]: Mutfak & Banyo Montajı
+          - link "🔧 Sıhhi Tesisat" [ref=e70] [cursor=pointer]:
+            - /url: /ara?kategori=sihhi-tesisat
+            - generic [ref=e71]: 🔧
+            - generic [ref=e72]: Sıhhi Tesisat
+      - generic [ref=e74]:
+        - generic [ref=e75]:
+          - heading "Öne Çıkan Firmalar" [level=2] [ref=e76]
+          - link "Tümünü Gör →" [ref=e77] [cursor=pointer]:
+            - /url: /ara
+        - generic [ref=e78]:
+          - link "B Premium Bursa Mobilya Üretim Bursa · Mutfak & Banyo Montajı Modern tasarım mobilyalar üretiyoruz. Ürünlerimiz için Türkiye genelinde montajcı arıyoruz. Bayi ve montajcı başvurularına açığız." [ref=e79] [cursor=pointer]:
+            - /url: /firma/3
+            - generic [ref=e80]:
+              - generic [ref=e81]: B
+              - generic [ref=e83]:
+                - img [ref=e84]
+                - text: Premium
+            - heading "Bursa Mobilya Üretim" [level=3] [ref=e86]
+            - generic [ref=e87]:
+              - generic [ref=e88]: Bursa
+              - generic [ref=e89]: ·
+              - generic [ref=e91]: Mutfak & Banyo Montajı
+            - paragraph [ref=e92]: Modern tasarım mobilyalar üretiyoruz. Ürünlerimiz için Türkiye genelinde montajcı arıyoruz. Bayi ve montajcı başvurularına açığız.
+          - link "A Onaylı Ankara Montaj Servisi Ankara · Klima Montajı Mobilya Montajı ★ 4.0 (1) Ankara ve çevresinde klima, beyaz eşya ve mobilya montajı yapıyoruz. 7/24 hizmet, uygun fiyat garantisi." [ref=e93] [cursor=pointer]:
+            - /url: /firma/2
+            - generic [ref=e94]:
+              - generic [ref=e95]: A
+              - generic [ref=e97]: Onaylı
+            - heading "Ankara Montaj Servisi" [level=3] [ref=e98]
+            - generic [ref=e99]:
+              - generic [ref=e100]: Ankara
+              - generic [ref=e101]: ·
+              - generic [ref=e102]:
+                - generic [ref=e103]: Klima Montajı
+                - generic [ref=e104]: Mobilya Montajı
+            - generic [ref=e105]:
+              - generic [ref=e106]: ★
+              - generic [ref=e107]: "4.0"
+              - generic [ref=e108]: (1)
+            - paragraph [ref=e109]: Ankara ve çevresinde klima, beyaz eşya ve mobilya montajı yapıyoruz. 7/24 hizmet, uygun fiyat garantisi.
+          - link "İ Premium Onaylı İstanbul Usta Montaj İstanbul · Mobilya Montajı Beyaz Eşya Montajı ★ 4.5 (2) 10 yıllık deneyimimizle İstanbul'un her semtinde mobilya, mutfak ve beyaz eşya montajı hizmeti veriyoruz. Profesyonel ekibimizle hızlı ve güvenilir montaj garantisi. 💬 WhatsApp ile iletişim" [ref=e110] [cursor=pointer]:
+            - /url: /firma/1
+            - generic [ref=e111]:
+              - generic [ref=e112]: İ
+              - generic [ref=e113]:
+                - generic [ref=e114]:
+                  - img [ref=e115]
+                  - text: Premium
+                - generic [ref=e117]: Onaylı
+            - heading "İstanbul Usta Montaj" [level=3] [ref=e118]
+            - generic [ref=e119]:
+              - generic [ref=e120]: İstanbul
+              - generic [ref=e121]: ·
+              - generic [ref=e122]:
+                - generic [ref=e123]: Mobilya Montajı
+                - generic [ref=e124]: Beyaz Eşya Montajı
+            - generic [ref=e125]:
+              - generic [ref=e126]: ★
+              - generic [ref=e127]: "4.5"
+              - generic [ref=e128]: (2)
+            - paragraph [ref=e129]: 10 yıllık deneyimimizle İstanbul'un her semtinde mobilya, mutfak ve beyaz eşya montajı hizmeti veriyoruz. Profesyonel ekibimizle hızlı ve güvenilir montaj garantisi.
+            - generic [ref=e130]:
+              - generic [ref=e131]: 💬
+              - generic [ref=e132]: WhatsApp ile iletişim
+  - contentinfo [ref=e133]:
+    - generic [ref=e134]:
+      - generic [ref=e135]:
+        - generic [ref=e136]:
+          - generic [ref=e137]:
+            - generic [ref=e138]: 🔧
+            - generic [ref=e139]: Montajım Var
+          - paragraph [ref=e140]: Türkiye'nin montaj platformu. Montaj firmaları, üreticiler ve müşterileri bir araya getiriyor.
+        - generic [ref=e141]:
+          - heading "Hızlı Linkler" [level=3] [ref=e142]
+          - list [ref=e143]:
+            - listitem [ref=e144]:
+              - link "Firmalar" [ref=e145] [cursor=pointer]:
+                - /url: /ara
+            - listitem [ref=e146]:
+              - link "Kaydol" [ref=e147] [cursor=pointer]:
+                - /url: /auth/kayit
+            - listitem [ref=e148]:
+              - link "Giriş Yap" [ref=e149] [cursor=pointer]:
+                - /url: /auth/giris
+        - generic [ref=e150]:
+          - heading "İletişim" [level=3] [ref=e151]
+          - list [ref=e152]:
+            - listitem [ref=e153]: "Email: info@montajimvar.com"
+            - listitem [ref=e154]: "Telefon: +90 (212) 555 0000"
+      - paragraph [ref=e156]: © 2026 Montajım Var. Tüm hakları saklıdır.
+  - alert [ref=e157]
+  - dialog "Çerez tercihleri" [ref=e158]:
+    - generic [ref=e159]:
+      - generic [ref=e160]:
+        - generic [ref=e161]: 🍪
+        - generic [ref=e162]:
+          - heading "Çerez Tercihleri" [level=3] [ref=e163]
+          - paragraph [ref=e164]:
+            - text: Deneyiminizi iyileştirmek, site trafiğini analiz etmek ve kişiselleştirilmiş içerik sunmak için çerezleri kullanıyoruz.
+            - link "Gizlilik Politikası" [ref=e165] [cursor=pointer]:
+              - /url: /gizlilik
+            - text: ve
+            - link "Kullanım Koşulları" [ref=e166] [cursor=pointer]:
+              - /url: /kullanim-kosullari
+            - text: nı inceleyebilirsiniz.
+      - generic [ref=e167]:
+        - button "Tümünü Kabul Et" [ref=e168]
+        - button "Sadece Zorunlular" [ref=e169]
+        - button "Tercihler" [ref=e170]

@@ -47,6 +47,16 @@ button:where(.bg-montaj, .bg-montaj-dark) .text-white {
   color: #ffffff !important;
 }
 
+/* Hero section has hardcoded dark BG, force white text always */
+.hero-section,
+.hero-section * {
+  color: #ffffff !important;
+}
+/* But allow the gradient text (Montajcınızı Bulun) to keep its gradient */
+.hero-section .text-transparent {
+  color: transparent !important;
+}
+
 /* Base layer */
 @layer base {
   html {

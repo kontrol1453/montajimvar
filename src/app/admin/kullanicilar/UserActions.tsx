@@ -42,7 +42,7 @@ export default function UserActions({
 
       if (res.ok) {
         setPremiumOpen(false);
-        router.refresh();
+        window.location.reload();
       } else {
         const data = await res.json();
         alert(data.error || "Premium güncellenemedi.");
@@ -69,7 +69,7 @@ export default function UserActions({
 
       if (res.ok) {
         setPremiumOpen(false);
-        router.refresh();
+        window.location.reload();
       } else {
         const data = await res.json();
         alert(data.error || "Premium iptal edilemedi.");

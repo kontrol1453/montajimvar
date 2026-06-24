@@ -53,7 +53,7 @@ export default function FavoriteButton({ profileId, canAddFavorite = true }: { p
       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium transition ${
         favorited
           ? "bg-red-900/20 border-red-800 text-red-400 hover:bg-red-900/30"
-          : "bg-dark-card border-dark-border text-sub-text hover:border-montaj/50 hover:text-montaj"
+          : "bg-dark-card border-dark-border text-sub-text hover:border-accent/50 hover:text-accent"
       }`}
       title={favorited ? "Favorilerden Çıkar" : "Favorilere Ekle"}
     >

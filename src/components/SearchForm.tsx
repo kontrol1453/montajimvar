@@ -158,7 +158,7 @@ export default function SearchForm({
             onClick={() => setMobileOpen(!mobileOpen)}
             className={`px-3 py-2 border rounded-lg text-sm transition flex items-center gap-1 ${
               mobileOpen
-                ? "bg-montaj text-white border-montaj"
+                ? "bg-accent text-[#1a1d27] border-accent"
                 : "bg-dark-bg text-gray-300 border-dark-border"
             }`}
           >
@@ -208,7 +208,7 @@ export default function SearchForm({
           {activeTags.map((tag) => (
             <span
               key={tag.key}
-              className="inline-flex items-center gap-1 px-2 py-1 bg-montaj/10 border border-montaj/30 rounded-full text-xs text-montaj"
+              className="inline-flex items-center gap-1 px-2 py-1 bg-accent/10 border border-accent/30 rounded-full text-xs text-accent"
             >
               {tag.label}
               <button

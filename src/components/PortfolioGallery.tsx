@@ -60,8 +60,8 @@ export default function PortfolioGallery({ images, companyName }: PortfolioGalle
               onClick={() => setActiveCategory(cat)}
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
                 activeCategory === cat
-                  ? "bg-montaj text-white"
-                  : "bg-dark-card border border-dark-border text-sub-text hover:border-montaj/50"
+                  ? "bg-accent text-[#1a1d27]"
+                  : "bg-dark-card border border-dark-border text-sub-text hover:border-accent/50"
               }`}
             >
               {cat === "all" ? "Tümü" : CATEGORY_LABELS[cat] || cat}
@@ -76,7 +76,7 @@ export default function PortfolioGallery({ images, companyName }: PortfolioGalle
           <div
             key={image.id}
             onClick={() => setSelectedImage(image)}
-            className="relative group cursor-pointer rounded-xl overflow-hidden bg-dark-card border border-dark-border hover:border-montaj/50 transition"
+            className="relative group cursor-pointer rounded-xl overflow-hidden bg-dark-card border border-dark-border hover:border-accent/50 transition"
           >
             <div className="aspect-square relative">
               <Image
@@ -105,7 +105,7 @@ export default function PortfolioGallery({ images, companyName }: PortfolioGalle
                 {image.tags && (
                   <div className="flex flex-wrap gap-1 mt-1">
                     {JSON.parse(image.tags || "[]").slice(0, 3).map((tag: string) => (
-                      <span key={tag} className="text-xs bg-montaj/20 text-montaj px-1.5 py-0.5 rounded">
+                      <span key={tag} className="text-xs bg-accent/20 text-accent px-1.5 py-0.5 rounded">
                         #{tag}
                       </span>
                     ))}
@@ -148,7 +148,7 @@ export default function PortfolioGallery({ images, companyName }: PortfolioGalle
               )}
               <div className="flex flex-wrap gap-2">
                 {selectedImage.category && (
-                  <span className="px-3 py-1 bg-montaj/20 text-montaj rounded-full text-sm">
+                  <span className="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm">
                     {CATEGORY_LABELS[selectedImage.category] || selectedImage.category}
                   </span>
                 )}

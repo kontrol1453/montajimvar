@@ -22,8 +22,8 @@ export default function CategoryFilter({ categories, selectedSlugs, onToggle }: 
             key={cat.id}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm border cursor-pointer transition ${
               checked
-                ? "bg-montaj/20 border-montaj text-white"
-                : "border-dark-border bg-dark-bg text-gray-300 hover:border-montaj/50"
+                ? "bg-accent/20 border-accent text-white"
+                : "border-dark-border bg-dark-bg text-gray-300 hover:border-accent/50"
             }`}
           >
             <input

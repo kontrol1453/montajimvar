@@ -1,0 +1,4 @@
+[     644ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://montajimvar.xyz/auth/giris:0
+[     875ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://montajimvar.xyz/icon-192.png:0
+[     884ms] [WARNING] Error while trying to use the following icon from the Manifest: https://montajimvar.xyz/icon-192.png (Download error or resource isn't a valid image) @ https://montajimvar.xyz/auth/giris:0
+[  157827ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://montajimvar.xyz/api/auth/callback/credentials:0

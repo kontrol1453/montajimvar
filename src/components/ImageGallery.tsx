@@ -123,12 +123,12 @@ export default function ImageGallery({ profileId, editable = false, onLogoChange
       {editable && (
         <div className="mb-4">
           <label className="block mb-2">
-            <div className="flex items-center justify-center gap-2 p-6 border-2 border-dashed border-dark-border rounded-xl hover:border-montaj/50 cursor-pointer transition bg-dark-card">
+            <div className="flex items-center justify-center gap-2 p-6 border-2 border-dashed border-dark-border rounded-xl hover:border-accent/50 cursor-pointer transition bg-dark-card">
               {uploading ? (
                 <span className="text-sub-text">Yükleniyor...</span>
               ) : (
                 <>
-                  <svg className="w-6 h-6 text-montaj" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                  <svg className="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                   <span className="text-sub-text">Fotoğraf eklemek için tıklayın</span>
                 </>
               )}
@@ -160,7 +160,7 @@ export default function ImageGallery({ profileId, editable = false, onLogoChange
                 className="w-full h-32 md:h-40 object-cover"
               />
               {image.isLogo && (
-                <span className="absolute top-2 left-2 bg-montaj text-white text-xs px-2 py-0.5 rounded-full">
+                <span className="absolute top-2 left-2 bg-accent text-[#1a1d27] text-xs px-2 py-0.5 rounded-full">
                   Logo
                 </span>
               )}
@@ -169,7 +169,7 @@ export default function ImageGallery({ profileId, editable = false, onLogoChange
                   {!image.isLogo && (
                     <button
                       onClick={() => handleSetLogo(image.url)}
-                      className="text-xs bg-montaj text-white px-3 py-1.5 rounded-lg hover:bg-montaj-dark transition"
+                      className="text-xs bg-accent text-[#1a1d27] px-3 py-1.5 rounded-lg hover:bg-accent-dark transition"
                       title="Logo yap"
                     >
                       Logo Yap

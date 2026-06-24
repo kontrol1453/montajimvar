@@ -1,0 +1,94 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "🔧 Montajım Var" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]: 🔧
+        - generic [ref=e7]: Montajım Var
+      - generic [ref=e8]:
+        - link "Firmalar" [ref=e9] [cursor=pointer]:
+          - /url: /ara
+        - button "Koyu temaya geç" [ref=e10]:
+          - img [ref=e11]
+        - generic [ref=e13]:
+          - link "Giriş Yap" [ref=e14] [cursor=pointer]:
+            - /url: /auth/giris
+          - link "Kaydol" [ref=e15] [cursor=pointer]:
+            - /url: /auth/kayit
+  - main [ref=e16]:
+    - generic [ref=e17]:
+      - generic [ref=e19]:
+        - generic [ref=e20]: İ
+        - generic [ref=e21]:
+          - generic [ref=e22]:
+            - heading "İstanbul Usta Montaj" [level=1] [ref=e23]
+            - generic [ref=e24]: ✔ Onaylı Firma
+          - generic [ref=e25]:
+            - generic [ref=e26]: 📍 İstanbul
+            - generic [ref=e27]: ·
+            - generic [ref=e28]:
+              - generic [ref=e29]: Mobilya Montajı
+              - generic [ref=e30]: Beyaz Eşya Montajı
+            - generic [ref=e31]: ·
+            - generic [ref=e32]: "Kayıt: 21 Haziran 2026 15:04"
+          - paragraph [ref=e33]: 10 yıllık deneyimimizle İstanbul'un her semtinde mobilya, mutfak ve beyaz eşya montajı hizmeti veriyoruz. Profesyonel ekibimizle hızlı ve güvenilir montaj garantisi.
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - heading "İletişim Bilgileri" [level=2] [ref=e36]
+          - generic [ref=e37]:
+            - generic [ref=e38]:
+              - generic [ref=e39]: 👤
+              - generic [ref=e40]: Mehmet Usta
+            - generic [ref=e41]:
+              - generic [ref=e42]: 📞
+              - link "0532 222 33 44" [ref=e43] [cursor=pointer]:
+                - /url: tel:0532 222 33 44
+            - generic [ref=e44]:
+              - generic [ref=e45]: 💬
+              - link "0532 222 33 44" [ref=e46] [cursor=pointer]:
+                - /url: https://wa.me/9005322223344
+            - generic [ref=e47]:
+              - generic [ref=e48]: ✉️
+              - link "montajci@test.com" [ref=e49] [cursor=pointer]:
+                - /url: mailto:montajci@test.com
+            - generic [ref=e50]:
+              - generic [ref=e51]: 📍
+              - generic [ref=e52]: Kadıköy, İstanbul, İstanbul
+            - generic [ref=e53]:
+              - generic [ref=e54]: 🌐
+              - link "istanbulusta.com" [ref=e55] [cursor=pointer]:
+                - /url: https://istanbulusta.com
+        - generic [ref=e56]:
+          - heading "İletişime Geç" [level=2] [ref=e57]
+          - button "Mesaj Gönder" [ref=e58]
+      - generic [ref=e60]:
+        - heading "Değerlendirmeler" [level=2] [ref=e62]
+        - paragraph [ref=e63]: Yorum yapmak için giriş yapmalısınız.
+        - paragraph [ref=e64]: Henüz değerlendirme yapılmamış. İlk yorumu sen yap!
+  - contentinfo [ref=e65]:
+    - generic [ref=e66]:
+      - generic [ref=e67]:
+        - generic [ref=e68]:
+          - generic [ref=e69]:
+            - generic [ref=e70]: 🔧
+            - generic [ref=e71]: Montajım Var
+          - paragraph [ref=e72]: Türkiye'nin montaj platformu. Montaj firmaları, üreticiler ve müşterileri bir araya getiriyor.
+        - generic [ref=e73]:
+          - heading "Hızlı Linkler" [level=3] [ref=e74]
+          - list [ref=e75]:
+            - listitem [ref=e76]:
+              - link "Firmalar" [ref=e77] [cursor=pointer]:
+                - /url: /ara
+            - listitem [ref=e78]:
+              - link "Kaydol" [ref=e79] [cursor=pointer]:
+                - /url: /auth/kayit
+            - listitem [ref=e80]:
+              - link "Giriş Yap" [ref=e81] [cursor=pointer]:
+                - /url: /auth/giris
+        - generic [ref=e82]:
+          - heading "İletişim" [level=3] [ref=e83]
+          - list [ref=e84]:
+            - listitem [ref=e85]: "Email: info@montajimvar.com"
+            - listitem [ref=e86]: "Telefon: +90 (212) 555 0000"
+      - paragraph [ref=e88]: © 2026 Montajım Var. Tüm hakları saklıdır.
+  - alert [ref=e89]

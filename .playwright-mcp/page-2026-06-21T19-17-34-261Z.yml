@@ -1,0 +1,65 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "🔧 Montajım Var" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]: 🔧
+        - generic [ref=e7]: Montajım Var
+      - generic [ref=e8]:
+        - link "Firmalar" [ref=e9] [cursor=pointer]:
+          - /url: /ara
+        - button "Koyu temaya geç" [ref=e10]:
+          - img [ref=e11]
+        - generic [ref=e13]:
+          - link "Giriş Yap" [ref=e14] [cursor=pointer]:
+            - /url: /auth/giris
+          - link "Kaydol" [ref=e15] [cursor=pointer]:
+            - /url: /auth/kayit
+  - main [ref=e16]:
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - heading "Giriş Yap" [level=1] [ref=e20]
+        - paragraph [ref=e21]: Hesabınıza giriş yapın
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - generic [ref=e24]: E-posta
+          - textbox "E-posta" [ref=e25]:
+            - /placeholder: ornek@email.com
+        - generic [ref=e26]:
+          - generic [ref=e27]: Şifre
+          - textbox "Şifre" [ref=e28]:
+            - /placeholder: ••••••••
+        - link "Şifremi Unuttum" [ref=e30] [cursor=pointer]:
+          - /url: /auth/sifre-unuttum
+        - button "Giriş Yap" [ref=e31]
+      - paragraph [ref=e32]:
+        - text: Hesabınız yok mu?
+        - link "Kaydol" [ref=e33] [cursor=pointer]:
+          - /url: /auth/kayit
+  - contentinfo [ref=e34]:
+    - generic [ref=e35]:
+      - generic [ref=e36]:
+        - generic [ref=e37]:
+          - generic [ref=e38]:
+            - generic [ref=e39]: 🔧
+            - generic [ref=e40]: Montajım Var
+          - paragraph [ref=e41]: Türkiye'nin montaj platformu. Montaj firmaları, üreticiler ve müşterileri bir araya getiriyor.
+        - generic [ref=e42]:
+          - heading "Hızlı Linkler" [level=3] [ref=e43]
+          - list [ref=e44]:
+            - listitem [ref=e45]:
+              - link "Firmalar" [ref=e46] [cursor=pointer]:
+                - /url: /ara
+            - listitem [ref=e47]:
+              - link "Kaydol" [ref=e48] [cursor=pointer]:
+                - /url: /auth/kayit
+            - listitem [ref=e49]:
+              - link "Giriş Yap" [ref=e50] [cursor=pointer]:
+                - /url: /auth/giris
+        - generic [ref=e51]:
+          - heading "İletişim" [level=3] [ref=e52]
+          - list [ref=e53]:
+            - listitem [ref=e54]: "Email: info@montajimvar.com"
+            - listitem [ref=e55]: "Telefon: +90 (212) 555 0000"
+      - paragraph [ref=e57]: © 2026 Montajım Var. Tüm hakları saklıdır.
+  - alert [ref=e58]

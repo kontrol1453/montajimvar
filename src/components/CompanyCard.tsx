@@ -26,7 +26,7 @@ function LogoDisplay({ companyName, logo }: { companyName: string; logo: string 
     );
   }
   return (
-    <div className="w-12 h-12 bg-montaj/20 rounded-lg flex items-center justify-center text-xl font-bold text-montaj">
+    <div className="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center text-xl font-bold text-accent">
       {companyName[0]?.toUpperCase() || "?"}
     </div>
   );
@@ -36,7 +36,7 @@ export default function CompanyCard({ profile }: CompanyCardProps) {
   return (
     <Link
       href={`/firma/${profile.id}`}
-      className="block bg-dark-card rounded-xl border border-dark-border hover:border-montaj/50 transition p-6"
+      className="block bg-dark-card rounded-xl border border-dark-border hover:border-accent/50 transition p-6"
     >
       <div className="flex items-start justify-between mb-3">
         <div className="relative">
@@ -79,7 +79,7 @@ export default function CompanyCard({ profile }: CompanyCardProps) {
       </div>
 
       {(profile as any).reviewCount > 0 && (
-        <div className="flex items-center gap-1 text-sm text-montaj mb-2">
+        <div className="flex items-center gap-1 text-sm text-accent mb-2">
           <span>★</span>
           <span className="font-medium">{(profile as any).ratingAvg?.toFixed(1)}</span>
           <span className="text-sub-text">({(profile as any).reviewCount})</span>

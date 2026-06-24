@@ -49,15 +49,15 @@ export default function CookieBanner() {
     >
       <div className="bg-dark-card border border-dark-border rounded-xl p-6 shadow-xl">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 bg-montaj/20 rounded-lg flex items-center justify-center text-montaj flex-shrink-0">
-            <svg className="w-5 h-5 text-montaj" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2a10 10 0 00-10 10 10 10 0 0010 10 10 10 0 0010-10A10 10 0 0012 2zm0 4a1 1 0 110 2 1 1 0 010-2zm-4 8a1 1 0 110-2 1 1 0 010 2zm1-4a1 1 0 110-2 1 1 0 010 2zm6 0a1 1 0 110-2 1 1 0 010 2zm-1 4a1 1 0 110-2 1 1 0 010 2z" /></svg>
+          <div className="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center text-accent flex-shrink-0">
+            <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2a10 10 0 00-10 10 10 10 0 0010 10 10 10 0 0010-10A10 10 0 0012 2zm0 4a1 1 0 110 2 1 1 0 010-2zm-4 8a1 1 0 110-2 1 1 0 010 2zm1-4a1 1 0 110-2 1 1 0 010 2zm6 0a1 1 0 110-2 1 1 0 010 2zm-1 4a1 1 0 110-2 1 1 0 010 2z" /></svg>
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-semibold text-white mb-2">Çerez Tercihleri</h3>
             <p className="text-sm text-muted-text mb-4">
               Deneyiminizi iyileştirmek, site trafiğini analiz etmek ve kişiselleştirilmiş içerik sunmak için çerezleri kullanıyoruz.
-              <a href="/gizlilik" className="text-montaj hover:underline ml-1">Gizlilik Politikası</a> 
-              ve <a href="/kullanim-kosullari" className="text-montaj hover:underline ml-1">Kullanım Koşulları</a> 
+              <a href="/gizlilik" className="text-accent hover:underline ml-1">Gizlilik Politikası</a> 
+              ve <a href="/kullanim-kosullari" className="text-accent hover:underline ml-1">Kullanım Koşulları</a> 
               nı inceleyebilirsiniz.
             </p>
           </div>

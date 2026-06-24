@@ -1,0 +1,149 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "🔧 Montajım Var" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]: 🔧
+        - generic [ref=e7]: Montajım Var
+      - generic [ref=e8]:
+        - link "Firmalar" [ref=e9] [cursor=pointer]:
+          - /url: /ara
+        - button "Koyu temaya geç" [ref=e10]:
+          - img [ref=e11]
+        - generic [ref=e13]:
+          - link "Giriş Yap" [ref=e14] [cursor=pointer]:
+            - /url: /auth/giris
+          - link "Kaydol" [ref=e15] [cursor=pointer]:
+            - /url: /auth/kayit
+  - main [ref=e16]:
+    - generic [ref=e17]:
+      - heading "Gizlilik Politikası ve KVKK Aydınlatma Metni" [level=1] [ref=e18]
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - heading "1. Veri Sorumlusu" [level=2] [ref=e21]
+          - paragraph [ref=e22]: Montajım Var platformu ("Platform"), veri sorumlusu olarak, Kişisel Verilerin Korunması Kanunu ("KVKK") ve Genel Veri Koruma Yönetmeliği ("GDPR") kapsamında kişisel verilerinizi korumayı taahhüt eder.
+        - generic [ref=e23]:
+          - heading "2. Toplanan Kişisel Veriler" [level=2] [ref=e24]
+          - list [ref=e25]:
+            - listitem [ref=e26]:
+              - strong [ref=e27]: "Kimlik Bilgileri:"
+              - text: Ad, soyad, e-posta adresi, telefon numarası
+            - listitem [ref=e28]:
+              - strong [ref=e29]: "Firma Bilgileri:"
+              - text: Firma adı, adres, şehir, web sitesi, WhatsApp numarası
+            - listitem [ref=e30]:
+              - strong [ref=e31]: "Konum Bilgileri:"
+              - text: Şehir, ilçe, enlem/boylam (isteğe bağlı)
+            - listitem [ref=e32]:
+              - strong [ref=e33]: "İletişim Verileri:"
+              - text: Mesajlaşma içeriği, iletişim formu verileri
+            - listitem [ref=e34]:
+              - strong [ref=e35]: "Teknik Veriler:"
+              - text: IP adresi, tarayıcı bilgileri, çerezler, oturum verileri
+            - listitem [ref=e36]:
+              - strong [ref=e37]: "İşlem Verileri:"
+              - text: Profil görüntüleme sayısı, favori işlemleri, değerlendirmeler
+        - generic [ref=e38]:
+          - heading "3. Verilerin İşlenme Amaçları" [level=2] [ref=e39]
+          - list [ref=e40]:
+            - listitem [ref=e41]: Hesap oluşturma ve yönetimi
+            - listitem [ref=e42]: Firma profili oluşturma ve yayınlama
+            - listitem [ref=e43]: Kullanıcılar arası iletişimi sağlama (mesajlaşma)
+            - listitem [ref=e44]: Arama ve filtreleme hizmetleri sunma
+            - listitem [ref=e45]: Değerlendirme ve puanlama sistemi
+            - listitem [ref=e46]: Güvenlik ve dolandırıcılık önleme
+            - listitem [ref=e47]: Yasal yükümlülüklerin yerine getirilmesi
+            - listitem [ref=e48]: Platform iyileştirme ve analitik
+        - generic [ref=e49]:
+          - heading "4. Verilerin Paylaşılması" [level=2] [ref=e50]
+          - paragraph [ref=e51]: "Kişisel verileriniz; yasal zorunluluklar dışında, sizin açık rızanız olmadan üçüncü taraflarla paylaşılmaz. Paylaşım durumları:"
+          - list [ref=e52]:
+            - listitem [ref=e53]: Diğer platform kullanıcılarıyla (mesajlaşma, firma profili görünürlüğü)
+            - listitem [ref=e54]: Yasal makamlarla (mahkeme, savcılık, BTK vb. talep halinde)
+            - listitem [ref=e55]: Hizmet sağlayıcılarımızla (bulut depolama, e-posta gönderimi, analitik - sadece gerekli ölçüde)
+        - generic [ref=e56]:
+          - heading "5. Veri Saklama Süresi" [level=2] [ref=e57]
+          - paragraph [ref=e58]: Kişisel verileriniz, işlenme amacı gerçekleşene veya yasal saklama süreleri bitene kadar saklanır. Hesabınızı sildiğinizde verileriniz 30 gün içinde silinir (yasal bekletme yükümlülükleri hariç).
+        - generic [ref=e59]:
+          - heading "6. Kullanıcı Hakları (KVKK Madde 11)" [level=2] [ref=e60]
+          - paragraph [ref=e61]: "KVKK Madde 11 uyarınca aşağıdaki haklara sahipsiniz:"
+          - list [ref=e62]:
+            - listitem [ref=e63]: Kişisel verilerinizin işlenip işlenmediğini öğrenme
+            - listitem [ref=e64]: İşlenen verilerinizin ne amaçla işlendiğini ve amaca uygun olarak kullanılıp kullanılmadığını bilme
+            - listitem [ref=e65]: Yurt içinde veya yurt dışında kişisel verilerinizin aktarıldığı üçüncü kişileri bilme
+            - listitem [ref=e66]: Eksik veya yanlış işlenmişse bunların düzeltilmesini isteme
+            - listitem [ref=e67]: Kişisel verilerinizin silinmesini veya yok edilmesini isteme
+            - listitem [ref=e68]: Verilerinizin işlenmesine itiraz etme
+        - generic [ref=e69]:
+          - heading "7. Çerezler (Cookies)" [level=2] [ref=e70]
+          - paragraph [ref=e71]: "Platformumuz, kullanıcı deneyimini iyileştirmek, oturum yönetimi ve analitik için çerezleri kullanır:"
+          - list [ref=e72]:
+            - listitem [ref=e73]:
+              - strong [ref=e74]: "Zorunlu Çerezler:"
+              - text: Oturum yönetimi, güvenlik (oturum açma, CSRF koruması)
+            - listitem [ref=e75]:
+              - strong [ref=e76]: "Tercih Çerezleri:"
+              - text: Tema tercihi (koyu/açık), dil ayarları
+            - listitem [ref=e77]:
+              - strong [ref=e78]: "Analitik Çerezler:"
+              - text: Sayfa görüntülemeleri, kullanıcı davranışı analizi (anonimleştirilmiş)
+        - generic [ref=e79]:
+          - heading "8. Veri Güvenliği" [level=2] [ref=e80]
+          - paragraph [ref=e81]: "Verilerinizin güvenliği için teknik ve idari önlemler alınmıştır: SSL/TLS şifreleme, şifre hashleme (bcrypt), erişim kontrolü, düzenli güvenlik denetimleri."
+        - generic [ref=e82]:
+          - heading "9. İletişim" [level=2] [ref=e83]
+          - paragraph [ref=e84]:
+            - text: "Gizlilik politikası ve KVKK başvurularınız için:"
+            - link "destek@montajimvar.com" [ref=e85] [cursor=pointer]:
+              - /url: mailto:destek@montajimvar.com
+        - generic [ref=e86]:
+          - heading "10. Güncellemeler" [level=2] [ref=e87]
+          - paragraph [ref=e88]:
+            - text: "Bu gizlilik politikası, yasal düzenlemeler ve platform değişiklikleri doğrultusunda güncellenebilir. Değişiklikler bu sayfada yayınlanacaktır. Son güncelleme:"
+            - strong [ref=e89]: Haziran 2026
+            - text: .
+  - contentinfo [ref=e90]:
+    - generic [ref=e91]:
+      - generic [ref=e92]:
+        - generic [ref=e93]:
+          - generic [ref=e94]:
+            - generic [ref=e95]: 🔧
+            - generic [ref=e96]: Montajım Var
+          - paragraph [ref=e97]: Türkiye'nin montaj platformu. Montaj firmaları, üreticiler ve müşterileri bir araya getiriyor.
+        - generic [ref=e98]:
+          - heading "Hızlı Linkler" [level=3] [ref=e99]
+          - list [ref=e100]:
+            - listitem [ref=e101]:
+              - link "Firmalar" [ref=e102] [cursor=pointer]:
+                - /url: /ara
+            - listitem [ref=e103]:
+              - link "Kaydol" [ref=e104] [cursor=pointer]:
+                - /url: /auth/kayit
+            - listitem [ref=e105]:
+              - link "Giriş Yap" [ref=e106] [cursor=pointer]:
+                - /url: /auth/giris
+        - generic [ref=e107]:
+          - heading "İletişim" [level=3] [ref=e108]
+          - list [ref=e109]:
+            - listitem [ref=e110]: "Email: info@montajimvar.com"
+            - listitem [ref=e111]: "Telefon: +90 (212) 555 0000"
+      - paragraph [ref=e113]: © 2026 Montajım Var. Tüm hakları saklıdır.
+  - alert [ref=e114]
+  - dialog "Çerez tercihleri" [ref=e115]:
+    - generic [ref=e116]:
+      - generic [ref=e117]:
+        - generic [ref=e118]: 🍪
+        - generic [ref=e119]:
+          - heading "Çerez Tercihleri" [level=3] [ref=e120]
+          - paragraph [ref=e121]:
+            - text: Deneyiminizi iyileştirmek, site trafiğini analiz etmek ve kişiselleştirilmiş içerik sunmak için çerezleri kullanıyoruz.
+            - link "Gizlilik Politikası" [ref=e122] [cursor=pointer]:
+              - /url: /gizlilik
+            - text: ve
+            - link "Kullanım Koşulları" [ref=e123] [cursor=pointer]:
+              - /url: /kullanim-kosullari
+            - text: nı inceleyebilirsiniz.
+      - generic [ref=e124]:
+        - button "Tümünü Kabul Et" [ref=e125]
+        - button "Sadece Zorunlular" [ref=e126]
+        - button "Tercihler" [ref=e127]

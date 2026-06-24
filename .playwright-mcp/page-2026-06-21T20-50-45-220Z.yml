@@ -1,0 +1,168 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "🔧 Montajım Var" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]: 🔧
+        - generic [ref=e7]: Montajım Var
+      - generic [ref=e8]:
+        - link "Firmalar" [ref=e9] [cursor=pointer]:
+          - /url: /ara
+        - button "Koyu temaya geç" [ref=e10]:
+          - img [ref=e11]
+        - generic [ref=e13]:
+          - link "Giriş Yap" [ref=e14] [cursor=pointer]:
+            - /url: /auth/giris
+          - link "Kaydol" [ref=e15] [cursor=pointer]:
+            - /url: /auth/kayit
+  - main [ref=e16]:
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - heading "Kaydol" [level=1] [ref=e20]
+        - paragraph [ref=e21]: Hesap oluşturun
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - generic [ref=e24]: Hesap Türü
+          - generic [ref=e25]:
+            - button "Müşteri Montaj hizmeti almak istiyorum" [ref=e26]:
+              - generic [ref=e27]: Müşteri
+              - generic [ref=e28]: Montaj hizmeti almak istiyorum
+            - button "Montajcı Montaj hizmeti veriyorum" [ref=e29]:
+              - generic [ref=e30]: Montajcı
+              - generic [ref=e31]: Montaj hizmeti veriyorum
+            - button "Üretici Ürünlerimi montajcılarla buluşturmak istiyorum" [ref=e32]:
+              - generic [ref=e33]: Üretici
+              - generic [ref=e34]: Ürünlerimi montajcılarla buluşturmak istiyorum
+        - generic [ref=e35]:
+          - generic [ref=e36]: Ad Soyad
+          - textbox "Ad Soyad" [ref=e37]:
+            - /placeholder: Adınız ve soyadınız
+        - generic [ref=e38]:
+          - generic [ref=e39]: E-posta
+          - textbox "E-posta" [ref=e40]:
+            - /placeholder: ornek@email.com
+        - generic [ref=e41]:
+          - generic [ref=e42]: Şifre
+          - textbox "Şifre" [ref=e43]:
+            - /placeholder: En az 6 karakter
+        - generic [ref=e44]:
+          - generic [ref=e45]: Telefon (isteğe bağlı)
+          - textbox "Telefon (isteğe bağlı)" [ref=e46]:
+            - /placeholder: 05XX XXX XX XX
+        - generic [ref=e47]:
+          - generic [ref=e48]: Şehir (isteğe bağlı)
+          - combobox [ref=e49]:
+            - option "Şehir seçin" [selected]
+            - option "Adana"
+            - option "Adıyaman"
+            - option "Afyonkarahisar"
+            - option "Ağrı"
+            - option "Aksaray"
+            - option "Amasya"
+            - option "Ankara"
+            - option "Antalya"
+            - option "Ardahan"
+            - option "Artvin"
+            - option "Aydın"
+            - option "Balıkesir"
+            - option "Bartın"
+            - option "Batman"
+            - option "Bayburt"
+            - option "Bilecik"
+            - option "Bingöl"
+            - option "Bitlis"
+            - option "Bolu"
+            - option "Burdur"
+            - option "Bursa"
+            - option "Çanakkale"
+            - option "Çankırı"
+            - option "Çorum"
+            - option "Denizli"
+            - option "Diyarbakır"
+            - option "Düzce"
+            - option "Edirne"
+            - option "Elazığ"
+            - option "Erzincan"
+            - option "Erzurum"
+            - option "Eskişehir"
+            - option "Gaziantep"
+            - option "Giresun"
+            - option "Gümüşhane"
+            - option "Hakkâri"
+            - option "Hatay"
+            - option "Iğdır"
+            - option "Isparta"
+            - option "İstanbul"
+            - option "İzmir"
+            - option "Kahramanmaraş"
+            - option "Karabük"
+            - option "Karaman"
+            - option "Kars"
+            - option "Kastamonu"
+            - option "Kayseri"
+            - option "Kırıkkale"
+            - option "Kırklareli"
+            - option "Kırşehir"
+            - option "Kilis"
+            - option "Kocaeli"
+            - option "Konya"
+            - option "Kütahya"
+            - option "Malatya"
+            - option "Manisa"
+            - option "Mardin"
+            - option "Mersin"
+            - option "Muğla"
+            - option "Muş"
+            - option "Nevşehir"
+            - option "Niğde"
+            - option "Ordu"
+            - option "Osmaniye"
+            - option "Rize"
+            - option "Sakarya"
+            - option "Samsun"
+            - option "Siirt"
+            - option "Sinop"
+            - option "Sivas"
+            - option "Şanlıurfa"
+            - option "Şırnak"
+            - option "Tekirdağ"
+            - option "Tokat"
+            - option "Trabzon"
+            - option "Tunceli"
+            - option "Uşak"
+            - option "Van"
+            - option "Yalova"
+            - option "Yozgat"
+            - option "Zonguldak"
+        - button "Kaydol" [ref=e50]
+      - paragraph [ref=e51]:
+        - text: Zaten hesabınız var mı?
+        - link "Giriş Yap" [ref=e52] [cursor=pointer]:
+          - /url: /auth/giris
+  - contentinfo [ref=e53]:
+    - generic [ref=e54]:
+      - generic [ref=e55]:
+        - generic [ref=e56]:
+          - generic [ref=e57]:
+            - generic [ref=e58]: 🔧
+            - generic [ref=e59]: Montajım Var
+          - paragraph [ref=e60]: Türkiye'nin montaj platformu. Montaj firmaları, üreticiler ve müşterileri bir araya getiriyor.
+        - generic [ref=e61]:
+          - heading "Hızlı Linkler" [level=3] [ref=e62]
+          - list [ref=e63]:
+            - listitem [ref=e64]:
+              - link "Firmalar" [ref=e65] [cursor=pointer]:
+                - /url: /ara
+            - listitem [ref=e66]:
+              - link "Kaydol" [ref=e67] [cursor=pointer]:
+                - /url: /auth/kayit
+            - listitem [ref=e68]:
+              - link "Giriş Yap" [ref=e69] [cursor=pointer]:
+                - /url: /auth/giris
+        - generic [ref=e70]:
+          - heading "İletişim" [level=3] [ref=e71]
+          - list [ref=e72]:
+            - listitem [ref=e73]: "Email: info@montajimvar.com"
+            - listitem [ref=e74]: "Telefon: +90 (212) 555 0000"
+      - paragraph [ref=e76]: © 2026 Montajım Var. Tüm hakları saklıdır.
+  - alert [ref=e77]

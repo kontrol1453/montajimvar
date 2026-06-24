@@ -1,0 +1,236 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "🔧 Montajım Var" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]: 🔧
+        - generic [ref=e7]: Montajım Var
+      - generic [ref=e8]:
+        - link "Firmalar" [ref=e9] [cursor=pointer]:
+          - /url: /ara
+        - button "Koyu temaya geç" [ref=e10]:
+          - img [ref=e11]
+        - generic [ref=e13]:
+          - link "Giriş Yap" [ref=e14] [cursor=pointer]:
+            - /url: /auth/giris
+          - link "Kaydol" [ref=e15] [cursor=pointer]:
+            - /url: /auth/kayit
+  - main [ref=e16]:
+    - generic [ref=e17]:
+      - heading "Tüm Firmalar" [level=1] [ref=e18]
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - textbox "Firma adı veya açıklama ile ara..." [ref=e22]
+          - combobox [ref=e23]:
+            - option "Tüm Şehirler" [selected]
+            - option "Adana"
+            - option "Adıyaman"
+            - option "Afyonkarahisar"
+            - option "Ağrı"
+            - option "Aksaray"
+            - option "Amasya"
+            - option "Ankara"
+            - option "Antalya"
+            - option "Ardahan"
+            - option "Artvin"
+            - option "Aydın"
+            - option "Balıkesir"
+            - option "Bartın"
+            - option "Batman"
+            - option "Bayburt"
+            - option "Bilecik"
+            - option "Bingöl"
+            - option "Bitlis"
+            - option "Bolu"
+            - option "Burdur"
+            - option "Bursa"
+            - option "Çanakkale"
+            - option "Çankırı"
+            - option "Çorum"
+            - option "Denizli"
+            - option "Diyarbakır"
+            - option "Düzce"
+            - option "Edirne"
+            - option "Elazığ"
+            - option "Erzincan"
+            - option "Erzurum"
+            - option "Eskişehir"
+            - option "Gaziantep"
+            - option "Giresun"
+            - option "Gümüşhane"
+            - option "Hakkâri"
+            - option "Hatay"
+            - option "Iğdır"
+            - option "Isparta"
+            - option "İstanbul"
+            - option "İzmir"
+            - option "Kahramanmaraş"
+            - option "Karabük"
+            - option "Karaman"
+            - option "Kars"
+            - option "Kastamonu"
+            - option "Kayseri"
+            - option "Kırıkkale"
+            - option "Kırklareli"
+            - option "Kırşehir"
+            - option "Kilis"
+            - option "Kocaeli"
+            - option "Konya"
+            - option "Kütahya"
+            - option "Malatya"
+            - option "Manisa"
+            - option "Mardin"
+            - option "Mersin"
+            - option "Muğla"
+            - option "Muş"
+            - option "Nevşehir"
+            - option "Niğde"
+            - option "Ordu"
+            - option "Osmaniye"
+            - option "Rize"
+            - option "Sakarya"
+            - option "Samsun"
+            - option "Siirt"
+            - option "Sinop"
+            - option "Sivas"
+            - option "Şanlıurfa"
+            - option "Şırnak"
+            - option "Tekirdağ"
+            - option "Tokat"
+            - option "Trabzon"
+            - option "Tunceli"
+            - option "Uşak"
+            - option "Van"
+            - option "Yalova"
+            - option "Yozgat"
+            - option "Zonguldak"
+          - combobox [ref=e24]:
+            - option "Tümü" [selected]
+            - option "4+"
+            - option "3+"
+            - option "2+"
+          - combobox [ref=e25]:
+            - option "En Yeni" [selected]
+            - option "En Eski"
+            - option "Puana Göre"
+          - button "Filtrele" [ref=e26]
+        - generic [ref=e27]:
+          - paragraph [ref=e28]: Kategoriler
+          - generic [ref=e29]:
+            - generic [ref=e30] [cursor=pointer]:
+              - checkbox "🧊 Beyaz Eşya Montajı" [ref=e31]
+              - generic [ref=e32]: 🧊
+              - generic [ref=e33]: Beyaz Eşya Montajı
+            - generic [ref=e34] [cursor=pointer]:
+              - checkbox "📦 Diğer" [ref=e35]
+              - generic [ref=e36]: 📦
+              - generic [ref=e37]: Diğer
+            - generic [ref=e38] [cursor=pointer]:
+              - checkbox "⚡ Elektrik Montajı" [ref=e39]
+              - generic [ref=e40]: ⚡
+              - generic [ref=e41]: Elektrik Montajı
+            - generic [ref=e42] [cursor=pointer]:
+              - checkbox "🚪 Kapı & Pencere Montajı" [ref=e43]
+              - generic [ref=e44]: 🚪
+              - generic [ref=e45]: Kapı & Pencere Montajı
+            - generic [ref=e46] [cursor=pointer]:
+              - checkbox "❄️ Klima Montajı" [ref=e47]
+              - generic [ref=e48]: ❄️
+              - generic [ref=e49]: Klima Montajı
+            - generic [ref=e50] [cursor=pointer]:
+              - checkbox "🪑 Mobilya Montajı" [ref=e51]
+              - generic [ref=e52]: 🪑
+              - generic [ref=e53]: Mobilya Montajı
+            - generic [ref=e54] [cursor=pointer]:
+              - checkbox "🍳 Mutfak & Banyo Montajı" [ref=e55]
+              - generic [ref=e56]: 🍳
+              - generic [ref=e57]: Mutfak & Banyo Montajı
+            - generic [ref=e58] [cursor=pointer]:
+              - checkbox "🔧 Sıhhi Tesisat" [ref=e59]
+              - generic [ref=e60]: 🔧
+              - generic [ref=e61]: Sıhhi Tesisat
+        - generic [ref=e62]:
+          - button "Filtrele" [ref=e63]
+          - link "Filtreleri Temizle" [ref=e64] [cursor=pointer]:
+            - /url: /ara
+      - generic [ref=e65]:
+        - paragraph [ref=e66]: 3 firma bulundu
+        - generic [ref=e67]:
+          - button "☰ Liste" [ref=e68]
+          - button "🗺️ Harita" [ref=e69]
+      - generic [ref=e70]:
+        - link "İ Premium Onaylı İstanbul Usta Montaj İstanbul · Mobilya Montajı Beyaz Eşya Montajı ★ 4.5 (2) 10 yıllık deneyimimizle İstanbul'un her semtinde mobilya, mutfak ve beyaz eşya montajı hizmeti veriyoruz. Profesyonel ekibimizle hızlı ve güvenilir montaj garantisi. 💬 WhatsApp ile iletişim" [ref=e71] [cursor=pointer]:
+          - /url: /firma/1
+          - generic [ref=e72]:
+            - generic [ref=e73]: İ
+            - generic [ref=e74]:
+              - generic [ref=e75]:
+                - img [ref=e76]
+                - text: Premium
+              - generic [ref=e78]: Onaylı
+          - heading "İstanbul Usta Montaj" [level=3] [ref=e79]
+          - generic [ref=e80]:
+            - generic [ref=e81]: İstanbul
+            - generic [ref=e82]: ·
+            - generic [ref=e83]: Mobilya Montajı
+            - generic [ref=e84]: Beyaz Eşya Montajı
+          - generic [ref=e85]:
+            - generic [ref=e86]: ★
+            - generic [ref=e87]: "4.5"
+            - generic [ref=e88]: (2)
+          - paragraph [ref=e89]: 10 yıllık deneyimimizle İstanbul'un her semtinde mobilya, mutfak ve beyaz eşya montajı hizmeti veriyoruz. Profesyonel ekibimizle hızlı ve güvenilir montaj garantisi.
+          - generic [ref=e90]:
+            - generic [ref=e91]: 💬
+            - generic [ref=e92]: WhatsApp ile iletişim
+        - link "B Bursa Mobilya Üretim Bursa · Mutfak & Banyo Montajı Modern tasarım mobilyalar üretiyoruz. Ürünlerimiz için Türkiye genelinde montajcı arıyoruz. Bayi ve montajcı başvurularına açığız." [ref=e93] [cursor=pointer]:
+          - /url: /firma/3
+          - generic [ref=e95]: B
+          - heading "Bursa Mobilya Üretim" [level=3] [ref=e96]
+          - generic [ref=e97]:
+            - generic [ref=e98]: Bursa
+            - generic [ref=e99]: ·
+            - generic [ref=e100]: Mutfak & Banyo Montajı
+          - paragraph [ref=e101]: Modern tasarım mobilyalar üretiyoruz. Ürünlerimiz için Türkiye genelinde montajcı arıyoruz. Bayi ve montajcı başvurularına açığız.
+        - link "A Onaylı Ankara Montaj Servisi Ankara · Klima Montajı Mobilya Montajı ★ 4.0 (1) Ankara ve çevresinde klima, beyaz eşya ve mobilya montajı yapıyoruz. 7/24 hizmet, uygun fiyat garantisi." [ref=e102] [cursor=pointer]:
+          - /url: /firma/2
+          - generic [ref=e103]:
+            - generic [ref=e104]: A
+            - generic [ref=e106]: Onaylı
+          - heading "Ankara Montaj Servisi" [level=3] [ref=e107]
+          - generic [ref=e108]:
+            - generic [ref=e109]: Ankara
+            - generic [ref=e110]: ·
+            - generic [ref=e111]: Klima Montajı
+            - generic [ref=e112]: Mobilya Montajı
+          - generic [ref=e113]:
+            - generic [ref=e114]: ★
+            - generic [ref=e115]: "4.0"
+            - generic [ref=e116]: (1)
+          - paragraph [ref=e117]: Ankara ve çevresinde klima, beyaz eşya ve mobilya montajı yapıyoruz. 7/24 hizmet, uygun fiyat garantisi.
+  - contentinfo [ref=e118]:
+    - generic [ref=e119]:
+      - generic [ref=e120]:
+        - generic [ref=e121]:
+          - generic [ref=e122]:
+            - generic [ref=e123]: 🔧
+            - generic [ref=e124]: Montajım Var
+          - paragraph [ref=e125]: Türkiye'nin montaj platformu. Montaj firmaları, üreticiler ve müşterileri bir araya getiriyor.
+        - generic [ref=e126]:
+          - heading "Hızlı Linkler" [level=3] [ref=e127]
+          - list [ref=e128]:
+            - listitem [ref=e129]:
+              - link "Firmalar" [ref=e130] [cursor=pointer]:
+                - /url: /ara
+            - listitem [ref=e131]:
+              - link "Kaydol" [ref=e132] [cursor=pointer]:
+                - /url: /auth/kayit
+            - listitem [ref=e133]:
+              - link "Giriş Yap" [ref=e134] [cursor=pointer]:
+                - /url: /auth/giris
+        - generic [ref=e135]:
+          - heading "İletişim" [level=3] [ref=e136]
+          - list [ref=e137]:
+            - listitem [ref=e138]: "Email: info@montajimvar.com"
+            - listitem [ref=e139]: "Telefon: +90 (212) 555 0000"
+      - paragraph [ref=e141]: © 2026 Montajım Var. Tüm hakları saklıdır.
+  - alert [ref=e142]
