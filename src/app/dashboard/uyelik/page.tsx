@@ -21,7 +21,7 @@ export default async function UyelikPage() {
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { email: true, emailVerified: true },
+    select: { email: true, emailVerified: true, premiumUntil: true },
   });
 
   const plans = await prisma.subscriptionPlan.findMany({
@@ -38,7 +38,9 @@ export default async function UyelikPage() {
     sentMessages: await prisma.message.count({ where: { senderId: userId } }),
   } : null;
 
-  const isPremium = profile?.premiumUntil != null && new Date(profile.premiumUntil) > new Date();
+  const effectivePremiumUntil = profile?.premiumUntil || user?.premiumUntil || null;
+  const isPremium = effectivePremiumUntil != null && new Date(effectivePremiumUntil) > new Date();
+  const premiumFromUserOnly = user?.premiumUntil != null && new Date(user.premiumUntil) > new Date() && !profile;
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -73,18 +75,48 @@ export default async function UyelikPage() {
         </div>
       )}
 
+      {/* Firma profili önerisi (premium aktif ama profil yok) */}
+      {premiumFromUserOnly && (
+        <div className="bg-gradient-to-r from-montaj/20 via-dark-card to-amber-900/20 border border-montaj/30 rounded-xl p-6 mb-8">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-montaj/20 rounded-xl flex items-center justify-center shrink-0">
+              <svg className="w-6 h-6 text-montaj" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-white mb-1">Premium Üyeliğiniz Aktif!</h3>
+              <p className="text-sm text-muted-text mb-4">
+                Premium üyeliğiniz aktif durumda ancak henüz bir firma profiliniz bulunmuyor.
+                Premium avantajlarından (aramada üst sıra, premium rozeti, vitrin desteği) yararlanmak için
+                firma profili oluşturun.
+              </p>
+              <a
+                href="/dashboard/firma"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-montaj text-white rounded-lg hover:bg-montaj-dark transition font-medium text-sm"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                Firma Profili Oluştur
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Current subscription */}
-      {(profile?.subscription || profile?.premiumUntil) ? (
+      {(profile?.subscription || profile?.premiumUntil || user?.premiumUntil) ? (
         <div className="bg-dark-card rounded-xl border border-montaj/20 p-6 mb-8">
           <div className="flex items-start justify-between mb-4">
             <div>
               <h2 className="text-lg font-semibold text-white mb-1">Mevcut Üyeliğiniz</h2>
               <div className="flex items-center gap-2">
                 <PremiumBadge
-                  label={profile.subscription?.badgeLabel || "Premium"}
-                  color={profile.subscription?.badgeColor || "amber"}
+                  label={profile?.subscription?.badgeLabel || "Premium"}
+                  color={profile?.subscription?.badgeColor || "amber"}
                 />
-                {profile?.premiumUntil && new Date(profile.premiumUntil) > new Date() ? (
+                {effectivePremiumUntil && new Date(effectivePremiumUntil) > new Date() ? (
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-500/20 text-green-400 text-xs font-medium rounded-full">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
                     Aktif
@@ -103,7 +135,7 @@ export default async function UyelikPage() {
               </span>
             )}
           </div>
-          {profile?.premiumUntil && (
+          {effectivePremiumUntil && (
             <>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
@@ -111,7 +143,7 @@ export default async function UyelikPage() {
                   <span className="text-white font-medium">
                     {(() => {
                       const now = new Date();
-                      const end = new Date(profile.premiumUntil!);
+                      const end = new Date(effectivePremiumUntil);
                       const remainingMs = end.getTime() - now.getTime();
                       const days = Math.max(0, Math.ceil(remainingMs / (1000 * 60 * 60 * 24)));
                       return <>{days} gün</>;
@@ -120,8 +152,9 @@ export default async function UyelikPage() {
                 </div>
                 {(() => {
                   const now = new Date();
-                  const end = new Date(profile.premiumUntil!);
-                  const totalMs = end.getTime() - new Date(profile.createdAt || now).getTime();
+                  const end = new Date(effectivePremiumUntil);
+                  const start = profile?.createdAt ? new Date(profile.createdAt) : new Date(effectivePremiumUntil.getTime() - 30 * 24 * 60 * 60 * 1000);
+                  const totalMs = end.getTime() - start.getTime();
                   const remainingMs = end.getTime() - now.getTime();
                   const pct = totalMs > 0 ? Math.max(0, Math.round((remainingMs / totalMs) * 100)) : 0;
                   return (
@@ -143,6 +176,13 @@ export default async function UyelikPage() {
               autoRenew={profile.autoRenew ?? true}
               canceledAt={profile.canceledAt?.toISOString() ?? null}
             />
+          )}
+          {!profile && isPremium && (
+            <div className="mt-4 pt-4 border-t border-dark-border">
+              <p className="text-xs text-sub-text">
+                Premium avantajlarını kullanmak için firma profili oluşturun.
+              </p>
+            </div>
           )}
         </div>
       ) : (

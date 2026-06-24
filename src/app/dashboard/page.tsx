@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Card from "@/components/ui/Card";
+import PremiumBadge from "@/components/PremiumBadge";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -11,11 +12,19 @@ export default async function DashboardPage() {
   const userId = (session.user as any).id;
   const roles: string[] = (session.user as any).roles || [];
 
-  const [messageCount, unreadCount, profile] = await Promise.all([
+  const [messageCount, unreadCount, profile, userRecord] = await Promise.all([
     prisma.message.count({ where: { receiverId: userId } }),
     prisma.message.count({ where: { receiverId: userId, isRead: false } }),
     prisma.profile.findUnique({ where: { userId } }),
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { premiumUntil: true },
+    }),
   ]);
+
+  const premiumUntil = profile?.premiumUntil || userRecord?.premiumUntil || null;
+  const isPremium = premiumUntil != null && new Date(premiumUntil) > new Date();
+  const canHaveProfile = roles.includes("ASSEMBLER") || roles.includes("MANUFACTURER");
 
   // Analytics for ASSEMBLER/MANUFACTURER
   let analytics = null;
@@ -66,14 +75,22 @@ export default async function DashboardPage() {
 
         <Card>
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-green-900/30 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+            <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${isPremium ? "bg-amber-900/30" : "bg-green-900/30"}`}>
+              {isPremium ? (
+                <svg className="w-6 h-6 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2L2 7l8 5 8-5-8-5zM2 12l8 5 8-5-8-5-8 5z" /></svg>
+              ) : (
+                <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+              )}
             </div>
             <div>
-              <p className="text-sm text-sub-text">Profilim</p>
-              <p className="text-sm font-medium text-white">
-                {roles.includes("CUSTOMER") ? "Müşteri" : roles.includes("ASSEMBLER") ? "Montajcı" : roles.includes("MANUFACTURER") ? "Üretici" : "-"}
-              </p>
+              <p className="text-sm text-sub-text">{isPremium ? "Üyelik" : "Profilim"}</p>
+              {isPremium ? (
+                <PremiumBadge label="Premium" color="amber" />
+              ) : (
+                <p className="text-sm font-medium text-white">
+                  {roles.includes("CUSTOMER") ? "Müşteri" : roles.includes("ASSEMBLER") ? "Montajcı" : roles.includes("MANUFACTURER") ? "Üretici" : "-"}
+                </p>
+              )}
             </div>
           </div>
         </Card>
@@ -116,6 +133,36 @@ export default async function DashboardPage() {
                 <p className="text-xs text-sub-text mt-1">Favoriye Eklenme</p>
               </div>
             </Card>
+          </div>
+        </div>
+      )}
+
+      {/* Firma profili önerisi (premium aktif ama profil yok) */}
+      {isPremium && !profile && canHaveProfile && (
+        <div className="bg-gradient-to-r from-montaj/20 via-dark-card to-amber-900/20 border border-montaj/30 rounded-xl p-6 mb-8">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-montaj/20 rounded-xl flex items-center justify-center shrink-0">
+              <svg className="w-6 h-6 text-montaj" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-white mb-1">Premium Üyeliğiniz Aktif!</h3>
+              <p className="text-sm text-muted-text mb-4">
+                Premium üyeliğiniz aktif durumda ancak henüz bir firma profiliniz bulunmuyor.
+                Premium avantajlarından (aramada üst sıra, premium rozeti, vitrin desteği) yararlanmak için
+                firma profili oluşturun.
+              </p>
+              <Link
+                href="/dashboard/firma"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-montaj text-white rounded-lg hover:bg-montaj-dark transition font-medium text-sm"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                Firma Profili Oluştur
+              </Link>
+            </div>
           </div>
         </div>
       )}
