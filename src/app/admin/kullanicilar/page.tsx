@@ -5,6 +5,7 @@ import UserActions from "./UserActions";
 import CreateUserForm from "./CreateUserForm";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const ROLE_LABELS: Record<string, string> = {
   CUSTOMER: "Müşteri",
