@@ -127,6 +127,18 @@ export async function POST(request: Request) {
       });
     }
 
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { premiumUntil: true },
+    });
+    if (user?.premiumUntil && user.premiumUntil !== profile.premiumUntil) {
+      await prisma.profile.update({
+        where: { userId },
+        data: { premiumUntil: user.premiumUntil },
+      });
+      profile.premiumUntil = user.premiumUntil;
+    }
+
     return NextResponse.json(profile, { status: 201 });
   } catch (error) {
     console.error("Profil kayıt hatası:", error);
