@@ -14,9 +14,9 @@ export async function POST(request: Request) {
 
   try {
     const formData = await request.formData();
-    const file = formData.get("file") as File | null;
-    const profileId = formData.get("profileId") as string | null;
-    const isLogo = formData.get("isLogo") === "true";
+    const file = (formData as any).get("file") as File | null;
+    const profileId = (formData as any).get("profileId") as string | null;
+    const isLogo = (formData as any).get("isLogo") === "true";
 
     if (!file || !profileId) {
       return NextResponse.json(

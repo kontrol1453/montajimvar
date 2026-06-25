@@ -22,6 +22,7 @@
     "cheerio": "^1.2.0",
     "expo": "~56.0.12",
     "fetch-nodeshim": "^0.4.10",
+    "jsonwebtoken": "^9.0.3",
     "leaflet": "^1.9.4",
     "next": "16.2.9",
     "next-auth": "^4.24.14",
