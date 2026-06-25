@@ -13,6 +13,10 @@ workflows:
         script: |
           cd mobile
           npm ci --legacy-peer-deps
+      - name: Install Expo
+        script: |
+          cd mobile
+          npm install expo@~56.0.12 --legacy-peer-deps
       - name: Fix Expo
         script: |
           cd mobile
