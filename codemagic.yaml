@@ -21,7 +21,7 @@ workflows:
       - name: Fix Expo
         script: |
           cd mobile
-          npx expo install --fix
+          EXPO_TOKEN=$EXPO_TOKEN npx expo install --fix
       - name: Install EAS CLI
         script: |
           npm install -g eas-cli --legacy-peer-deps
