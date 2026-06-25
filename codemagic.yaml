@@ -28,7 +28,7 @@ workflows:
       - name: Build iOS
         script: |
           cd mobile
-          npx eas build --platform ios --profile preview --non-interactive
+          EXPO_TOKEN=$EXPO_TOKEN npx eas build --platform ios --profile preview --non-interactive
     artifacts:
       - build/ios/*.ipa
     publishing:
