@@ -9,9 +9,10 @@ workflows:
       vars:
         BUNDLE_ID: "com.kontrol1453.montajimvar"
     scripts:
-      - name: Install dependencies
+      - name: Clean install
         script: |
           cd mobile
+          rm -rf node_modules package-lock.json
           npm install --legacy-peer-deps
       - name: Install Expo
         script: |
