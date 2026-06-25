@@ -22,6 +22,9 @@ workflows:
         script: |
           cd mobile
           npx expo install --fix
+      - name: Install EAS CLI
+        script: |
+          npm install -g eas-cli --legacy-peer-deps
       - name: Build iOS
         script: |
           cd mobile
