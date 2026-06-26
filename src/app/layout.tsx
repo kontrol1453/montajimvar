@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Provider from "@/components/Provider";
 import CookieBanner from "@/components/CookieBanner";
+import PushNotificationSetup from "@/components/PushNotificationSetup";
 
 export const metadata: Metadata = {
   title: "Montajım Var - Montaj Firmaları, Üreticiler ve Müşteriler Buluşuyor",
@@ -14,6 +15,21 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "Montajım Var",
+    startupImage: ["/apple-splash-icon.png"],
+  },
+  other: {
+    "apple-mobile-web-app-capable": "yes",
+    "mobile-web-app-capable": "yes",
+    "apple-touch-fullscreen": "yes",
+  },
+  icons: {
+    icon: [
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
   openGraph: {
     title: "Montajım Var - Montaj Firmaları Bulun",
@@ -64,10 +80,22 @@ export default function RootLayout({
               }),
             }}
           />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                if ('serviceWorker' in navigator) {
+                  window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js');
+                  });
+                }
+              `,
+            }}
+          />
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
           <CookieBanner />
+          <PushNotificationSetup />
         </Provider>
       </body>
     </html>

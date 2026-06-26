@@ -2,10 +2,14 @@
   "name": "Montajım Var",
   "short_name": "MontajımVar",
   "description": "Türkiye'nin montaj platformu. Montaj firmaları, üreticiler ve müşterileri bir araya getiriyor.",
-  "start_url": "/",
+  "start_url": "/?source=pwa",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "background_color": "#0d0d0d",
   "theme_color": "#ff7a00",
+  "scope": "/",
+  "categories": ["business", "productivity", "utilities"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icon-192.png",
@@ -18,8 +22,18 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
+  "screenshots": [],
   "lang": "tr-TR",
-  "orientation": "portrait-primary"
+  "orientation": "portrait-primary",
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
 }
