@@ -6,9 +6,17 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0a0a0a"
+    },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.kontrol1453.montajimvar"
+      "bundleIdentifier": "com.kontrol1453.montajimvar",
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -18,11 +26,24 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.kontrol1453.montajimvar"
+      "package": "com.kontrol1453.montajimvar",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": {
+            "scheme": "https",
+            "host": "montajimvar.xyz"
+          },
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "plugins": [
+      "expo-status-bar"
+    ],
     "extra": {
       "eas": {
         "projectId": "bf4ae8cd-8fa6-437c-8204-68253e3c9eca"
