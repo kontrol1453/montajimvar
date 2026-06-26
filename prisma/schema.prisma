@@ -29,6 +29,7 @@ model User {
   receivedMessages     Message[]      @relation("ReceivedMessages")
   reviews              Review[]
   favorites            Favorite[]
+  pushSubscriptions    PushSubscription[]
 }
 
 model Profile {
@@ -185,6 +186,21 @@ model SubscriptionPayment {
 
   profile Profile          @relation(fields: [profileId], references: [id], onDelete: Cascade)
   plan    SubscriptionPlan @relation(fields: [planId], references: [id])
+}
+
+model PushSubscription {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  endpoint   String   @unique
+  p256dh     String
+  auth       String
+  userAgent  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Notification {
