@@ -4,7 +4,6 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { hasPermission } from "@/lib/permissions";
 import { notifyAdmin } from "@/lib/notifications";
-import { sendPushToUser } from "@/lib/push";
 
 // Send a message (profileId = to profile owner, receiverId = direct reply)
 export async function POST(request: Request) {
@@ -92,16 +91,7 @@ export async function POST(request: Request) {
       link: "/admin/kullanicilar",
     });
 
-    // Kullanıcıya push notification gönder
-    const preview = content.length > 80 ? content.substring(0, 80) + "..." : content;
-    sendPushToUser(targetUserId, {
-      title: `📩 ${senderName} size mesaj gönderdi`,
-      body: preview,
-      icon: "/apple-touch-icon.png",
-      badge: "/apple-touch-icon.png",
-      url: "/dashboard/mesajlar",
-    }).catch(() => {});
-
+    // TODO: Pi push servisi hazır olunca buraya webhook fetch'i eklenecek
     return NextResponse.json(message, { status: 201 });
   } catch (error) {
     console.error("Mesaj hatası:", error);

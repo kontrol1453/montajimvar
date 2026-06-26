@@ -40,10 +40,18 @@ export default function PushNotificationSetup() {
         applicationServerKey: urlBase64ToUint8Array(VAPID_KEY!),
       });
 
-      await fetch("/api/push/subscribe", {
+      // Get current user from session
+      const sessionRes = await fetch("/api/auth/session");
+      const session = await sessionRes.json();
+      const userId = session?.user?.id;
+      if (!userId) return; // not logged in
+
+      const pushUrl = process.env.NEXT_PUBLIC_PUSH_SERVICE_URL || "http://localhost:3001";
+      await fetch(`${pushUrl}/subscribe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          userId,
           endpoint: sub.endpoint,
           keys: { p256dh: arrayBufferToBase64(sub.getKey("p256dh")!), auth: arrayBufferToBase64(sub.getKey("auth")!) },
           userAgent: navigator.userAgent,
