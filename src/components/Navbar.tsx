@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
 import UnreadBadge from "./UnreadBadge";
@@ -40,6 +41,23 @@ export default function Navbar() {
             <Link href="/ara" className="text-muted-text hover:text-accent transition">
               Firmalar
             </Link>
+            {session ? (
+              <>
+                <Link href="/is-ver" className="text-muted-text hover:text-accent transition">
+                  İş Ver
+                </Link>
+                <Link href="/is-ilanlari" className="text-muted-text hover:text-accent transition">
+                  İş İlanları
+                </Link>
+              </>
+            ) : (
+              <Link href="/is-ver" className="text-muted-text hover:text-accent transition">
+                İş Ver
+              </Link>
+            )}
+            <Link href="/blog" className="text-muted-text hover:text-accent transition">
+              Blog
+            </Link>
             <ThemeToggle />
             {session ? (
               <div className="relative" ref={profileRef}>
@@ -47,9 +65,9 @@ export default function Navbar() {
                   onClick={() => setProfileOpen(!profileOpen)}
                   className="flex items-center gap-2 text-muted-text hover:text-accent transition"
                 >
-                  <span className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center text-accent font-semibold text-sm overflow-hidden">
+                          <span className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center text-accent font-semibold text-sm overflow-hidden relative">
                     {user?.avatar ? (
-                      <img src={user.avatar} alt="" className="w-full h-full object-cover" />
+                      <Image src={user.avatar} alt="" fill className="object-cover" unoptimized />
                     ) : (
                       user?.name?.[0]?.toUpperCase() || "?"
                     )}
@@ -77,6 +95,13 @@ export default function Navbar() {
                     >
                       Mesajlarım
                       <UnreadBadge />
+                    </Link>
+                    <Link
+                      href="/islerim"
+                      className="block px-4 py-2 text-sm text-gray-200 hover:bg-dark-section"
+                      onClick={() => setProfileOpen(false)}
+                    >
+                      İşlerim
                     </Link>
                     <Link
                       href="/dashboard/favoriler"
@@ -160,8 +185,29 @@ export default function Navbar() {
           >
             Firmalar
           </Link>
+          <Link
+            href="/is-ver"
+            className="block py-2 text-muted-text hover:text-accent"
+            onClick={() => setMenuOpen(false)}
+          >
+            İş Ver
+          </Link>
+          <Link
+            href="/blog"
+            className="block py-2 text-muted-text hover:text-accent"
+            onClick={() => setMenuOpen(false)}
+          >
+            Blog
+          </Link>
           {session ? (
             <>
+              <Link
+                href="/is-ilanlari"
+                className="block py-2 text-muted-text hover:text-accent"
+                onClick={() => setMenuOpen(false)}
+              >
+                İş İlanları
+              </Link>
               <Link
                 href="/dashboard"
                 className="block py-2 text-muted-text hover:text-accent"

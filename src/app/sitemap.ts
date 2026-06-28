@@ -3,15 +3,18 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export default async function sitemap() {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://montajimvar.com";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://montajimvar.xyz";
 
   // Static routes
   const staticRoutes = [
-    { url: baseUrl, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 1.0 },
-    { url: `${baseUrl}/ara`, lastModified: new Date(), changeFrequency: "daily" as const, priority: 0.9 },
-    { url: `${baseUrl}/yardim`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.4 },
-    { url: `${baseUrl}/auth/giris`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3 },
-    { url: `${baseUrl}/auth/kayit`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3 },
+    { url: baseUrl, lastModified: new Date(), changeFrequency: "weekly", priority: 1.0 },
+    { url: `${baseUrl}/ara`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
+    { url: `${baseUrl}/blog`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
+    { url: `${baseUrl}/yardim`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
+    { url: `${baseUrl}/gizlilik`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
+    { url: `${baseUrl}/kullanim-kosullari`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
+    { url: `${baseUrl}/auth/giris`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
+    { url: `${baseUrl}/auth/kayit`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
   ];
 
   // Category pages
@@ -39,5 +42,30 @@ export default async function sitemap() {
     priority: 0.8,
   }));
 
-  return [...staticRoutes, ...categoryRoutes, ...profileRoutes];
+  // Blog post routes
+  const blogPosts = await prisma.blogPost.findMany({
+    where: { isPublished: true },
+    select: { slug: true, updatedAt: true },
+  });
+
+  const blogRoutes = blogPosts.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: post.updatedAt,
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
+  // City/service pages
+  const cityPages = await prisma.cityServicePage.findMany({
+    select: { slug: true, updatedAt: true },
+  });
+
+  const cityRoutes = cityPages.map((page) => ({
+    url: `${baseUrl}/${page.slug}`,
+    lastModified: page.updatedAt,
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
+  return [...staticRoutes, ...categoryRoutes, ...profileRoutes, ...blogRoutes, ...cityRoutes];
 }
