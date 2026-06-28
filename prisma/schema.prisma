@@ -20,6 +20,10 @@ model User {
   emailVerified         Boolean   @default(false)
   emailVerificationToken String?   @unique
   emailVerificationExpires DateTime?
+  isPhoneVerified       Boolean   @default(false)
+  identityVerified      Boolean   @default(false)
+  bio                   String?
+  coverPhoto            String?
   premiumUntil          DateTime?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
@@ -30,6 +34,13 @@ model User {
   reviews              Review[]
   favorites            Favorite[]
   pushSubscriptions    PushSubscription[]
+  jobs                 Job[]            @relation("CustomerJobs")
+  offers               Offer[]          @relation("ArtisanOffers")
+  paymentsMade         Payment[]        @relation("CustomerPayments")
+  paymentsReceived     Payment[]        @relation("ArtisanPayments")
+  skills               ArtisanSkill[]
+  videos               ArtisanVideo[]
+  jobMessages          JobMessage[]
 }
 
 model Profile {
@@ -46,9 +57,13 @@ model Profile {
   whatsapp    String?
   latitude    Float?
   longitude   Float?
-  isVerified  Boolean  @default(false)
-  isFeatured  Boolean  @default(false)
-  viewCount   Int      @default(0)
+  isVerified      Boolean  @default(false)
+  isFeatured      Boolean  @default(false)
+  viewCount       Int      @default(0)
+  workingCities   String?  // JSON array
+  serviceArea     Int?     // km cinsinden hizmet alanı
+  hasInsurance    Boolean  @default(false)
+  hasGuarantee    Boolean  @default(false)
   ratingAvg   Float    @default(0)
   reviewCount Int      @default(0)
   subscriptionId Int?
@@ -66,17 +81,28 @@ model Profile {
   categories    ProfileCategory[]
   subscription  SubscriptionPlan? @relation(fields: [subscriptionId], references: [id])
   subscriptionPayments SubscriptionPayment[]
+  viewLogs      ProfileViewLog[]
 }
 
 model Category {
   id         Int       @id @default(autoincrement())
-  name       String    @unique
+  name       String
   slug       String    @unique
   icon       String?
+  image      String?
+  parentId   Int?
+  parent     Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children   Category[] @relation("CategoryTree")
+  metaTitle  String?
+  metaDesc   String?
+  sortOrder  Int       @default(0)
+  isActive   Boolean   @default(true)
   createdAt  DateTime  @default(now())
 
   profiles        Profile[]
   profileCategories ProfileCategory[]
+  jobs            JobCategory[]
+  skills          ArtisanSkill[]
 }
 
 model ProfileCategory {
@@ -91,16 +117,20 @@ model ProfileCategory {
 }
 
 model Message {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   senderId   Int
   receiverId Int
-  subject    String   @default("")
+  subject    String    @default("")
   content    String
-  isRead     Boolean  @default(false)
-  createdAt  DateTime @default(now())
+  isRead     Boolean   @default(false)
+  readAt     DateTime?
+  replyTo    Int?
+  createdAt  DateTime  @default(now())
 
-  sender   User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
-  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  sender     User      @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User      @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  parent     Message?  @relation("MessageReplies", fields: [replyTo], references: [id])
+  replies    Message[] @relation("MessageReplies")
 }
 
 model ProfileImage {
@@ -203,6 +233,18 @@ model PushSubscription {
   @@index([userId])
 }
 
+model ProfileViewLog {
+  id        Int      @id @default(autoincrement())
+  profileId Int
+  viewerId  Int?
+  createdAt DateTime @default(now())
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId, createdAt])
+  @@index([profileId])
+}
+
 model Notification {
   id        Int      @id @default(autoincrement())
   type      String   // new_user, new_profile, new_review, new_message, new_payment
@@ -222,5 +264,211 @@ model RolePermission {
   updatedAt DateTime @updatedAt
 
   @@unique([role, feature])
+}
+
+// ─── İş/Teklif Sistemi Modelleri ────────────────────────────────────
+
+model Job {
+  id            Int      @id @default(autoincrement())
+  customerId    Int
+  title         String
+  description   String
+  photos        String   @default("[]") // JSON: ["url1","url2"]
+  location      String?
+  lat           Float?
+  lng           Float?
+  city          String
+  district      String?
+  budgetMin     Int?
+  budgetMax     Int?
+  status        String   @default("pending")
+  // pending → offers_received → assigned → en_route → in_progress → completed → review_pending
+  // cancelled
+  urgency       String?  // normal, acil, cok_acil
+  accessInfo    String?  // bina giriş, site kodu vb.
+  aiAnalysis    String?  // JSON: AI analiz sonucu
+  aiSuggestedPrice Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  customer     User           @relation("CustomerJobs", fields: [customerId], references: [id])
+  categories   JobCategory[]
+  offers       Offer[]
+  timeline     JobTimeline[]
+  messages     JobMessage[]
+  review       JobReview?
+  payment      Payment?
+}
+
+model JobCategory {
+  id         Int      @id @default(autoincrement())
+  jobId      Int
+  categoryId Int
+
+  job      Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@unique([jobId, categoryId])
+}
+
+model Offer {
+  id          Int      @id @default(autoincrement())
+  jobId       Int
+  artisanId   Int
+  amount      Int      // ₺ (kuruş x 100)
+  description String?
+  duration    String?  // "3 saat", "1 gün" vb.
+  status      String   @default("pending") // pending, accepted, rejected, withdrawn
+  note        String?  // usta notu
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  job     Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  artisan User @relation("ArtisanOffers", fields: [artisanId], references: [id])
+}
+
+model JobTimeline {
+  id        Int      @id @default(autoincrement())
+  jobId     Int
+  status    String
+  note      String?
+  createdAt DateTime @default(now())
+
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+}
+
+model JobMessage {
+  id        Int      @id @default(autoincrement())
+  jobId     Int
+  senderId  Int
+  message   String
+  fileUrl   String?  // sesli mesaj / dosya
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  job    Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  sender User @relation(fields: [senderId], references: [id])
+}
+
+model JobReview {
+  id        Int      @id @default(autoincrement())
+  jobId     Int      @unique
+  rating    Int      // 1-5
+  comment   String?
+  photos    String?  // JSON: ["url1","url2"]
+  createdAt DateTime @default(now())
+
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id          Int      @id @default(autoincrement())
+  jobId       Int      @unique
+  customerId  Int
+  artisanId   Int
+  amount      Int      // ₺
+  commission  Int      @default(0) // platform komisyonu
+  status      String   @default("escrow") // escrow, released, refunded, cancelled
+  method      String?  // credit_card, bank_transfer
+  paidAt      DateTime?
+  releasedAt  DateTime?
+  createdAt   DateTime @default(now())
+
+  job      Job   @relation(fields: [jobId], references: [id])
+  customer User  @relation("CustomerPayments", fields: [customerId], references: [id])
+  artisan  User  @relation("ArtisanPayments", fields: [artisanId], references: [id])
+}
+
+model ArtisanSkill {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  categoryId  Int
+  title       String?  // "IKEA Mobilya Uzmanı"
+  yearsExp    Int?
+  certificate String?  // sertifika URL
+  verified    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@unique([userId, categoryId])
+}
+
+model ArtisanVideo {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  title       String
+  url         String
+  description String?
+  thumbnail   String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ─── Blog & SEO Modelleri ───────────────────────────────────────────
+
+model BlogPost {
+  id          Int      @id @default(autoincrement())
+  title       String
+  slug        String   @unique
+  content     String
+  excerpt     String?
+  coverImage  String?
+  categoryId  Int?
+  author      String?
+  tags        String   @default("[]") // JSON
+  metaTitle   String?
+  metaDesc    String?
+  city        String?  // şehir spesifik SEO
+  serviceSlug String?  // hizmet spesifik SEO
+  isPublished Boolean  @default(false)
+  viewCount   Int      @default(0)
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category BlogCategory? @relation(fields: [categoryId], references: [id])
+}
+
+model BlogCategory {
+  id        Int        @id @default(autoincrement())
+  name      String
+  slug      String     @unique
+  createdAt DateTime   @default(now())
+
+  posts     BlogPost[]
+}
+
+model CityServicePage {
+  id        Int      @id @default(autoincrement())
+  city      String
+  service   String
+  title     String
+  content   String
+  metaTitle String?
+  metaDesc  String?
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Premium Plan (Usta/Premium üyelik) ─────────────────────────────
+
+model PremiumPlan {
+  id            Int      @id @default(autoincrement())
+  name          String
+  slug          String   @unique
+  price         Int      // aylık ₺
+  features      String   @default("[]") // JSON
+  maxOffers     Int      @default(20)   // aylık teklif hakkı
+  profileBadge  String?  // rozet rengi
+  priorityScore Int      @default(0)    // sıralama puanı
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
 }
 
