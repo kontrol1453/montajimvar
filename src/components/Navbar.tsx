@@ -4,8 +4,22 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
+import {
+  Menu,
+  X,
+  Search,
+  Briefcase,
+  User,
+  LogOut,
+  MessageSquare,
+  Heart,
+  Crown,
+  Shield,
+  LayoutDashboard,
+  Newspaper,
+  ChevronDown,
+} from "lucide-react";
 import UnreadBadge from "./UnreadBadge";
-import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -13,7 +27,6 @@ export default function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
-  // Close profile dropdown when clicking outside
   useEffect(() => {
     if (!profileOpen) return;
     function handleClickOutside(e: MouseEvent) {
@@ -25,128 +38,165 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [profileOpen]);
 
-  const user = session?.user as { name?: string; email?: string; roles?: string[]; id?: number; avatar?: string } | undefined;
+  const user = session?.user as {
+    name?: string;
+    email?: string;
+    roles?: string[];
+    id?: number;
+    avatar?: string;
+  } | undefined;
 
   return (
-    <nav className="bg-dark-bg/85 backdrop-blur-xl border-b border-dark-border sticky top-0 z-50" style={{ backgroundColor: "color-mix(in srgb, var(--clr-bg) 85%, transparent)" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <nav className="bg-white/90 backdrop-blur-xl border-b border-[var(--color-border-light)] sticky top-0 z-50">
+      <div className="container-app">
+        <div className="flex items-center justify-between h-[60px]">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <span className="font-bold text-2xl text-accent">Montajım Var</span>
+            <span
+              className="font-extrabold text-xl tracking-tight"
+              style={{ fontFamily: "'Manrope', system-ui, sans-serif", color: "var(--color-dark)" }}
+            >
+              Montajım<span style={{ color: "var(--color-primary)" }}>Var</span>
+            </span>
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link href="/ara" className="text-muted-text hover:text-accent transition">
+          <div className="hidden md:flex items-center gap-1">
+            <Link
+              href="/ara"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
+            >
+              <Search size={16} />
               Firmalar
             </Link>
-            {session ? (
-              <>
-                <Link href="/is-ver" className="text-muted-text hover:text-accent transition">
-                  İş Ver
-                </Link>
-                <Link href="/is-ilanlari" className="text-muted-text hover:text-accent transition">
-                  İş İlanları
-                </Link>
-              </>
-            ) : (
-              <Link href="/is-ver" className="text-muted-text hover:text-accent transition">
-                İş Ver
+            <Link
+              href="/is-ver"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
+            >
+              <Briefcase size={16} />
+              İş Ver
+            </Link>
+            {session && (
+              <Link
+                href="/is-ilanlari"
+                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
+              >
+                İş İlanları
               </Link>
             )}
-            <Link href="/blog" className="text-muted-text hover:text-accent transition">
+            <Link
+              href="/blog"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
+            >
+              <Newspaper size={16} />
               Blog
             </Link>
-            <ThemeToggle />
+
+            <div className="w-px h-5 bg-[var(--color-border-light)] mx-2" />
+
             {session ? (
               <div className="relative" ref={profileRef}>
                 <button
                   onClick={() => setProfileOpen(!profileOpen)}
-                  className="flex items-center gap-2 text-muted-text hover:text-accent transition"
+                  className="flex items-center gap-2 pl-3 pr-2 py-1.5 rounded-lg hover:bg-[var(--color-surface-secondary)] transition-all"
                 >
-                          <span className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center text-accent font-semibold text-sm overflow-hidden relative">
+                  <span className="w-7 h-7 bg-[var(--color-primary)]/10 rounded-full flex items-center justify-center text-[var(--color-primary)] font-semibold text-xs overflow-hidden relative">
                     {user?.avatar ? (
                       <Image src={user.avatar} alt="" fill className="object-cover" unoptimized />
                     ) : (
                       user?.name?.[0]?.toUpperCase() || "?"
                     )}
                   </span>
-                  <span className="hidden lg:inline">{user?.name}</span>
+                  <span className="text-sm font-medium text-[var(--color-text-primary)] hidden lg:inline">
+                    {user?.name}
+                  </span>
+                  <ChevronDown size={14} className="text-[var(--color-text-tertiary)]" />
                 </button>
 
                 {profileOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-dark-card rounded-lg shadow-lg border border-dark-border py-1">
-                    <div className="px-4 py-2 border-b border-dark-border">
-                      <p className="text-sm font-medium text-white">{user?.name}</p>
-                      <p className="text-xs text-sub-text">{user?.email}</p>
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-elevated border border-[var(--color-border-light)] py-1.5 animate-fade-in">
+                    <div className="px-4 py-2.5 border-b border-[var(--color-border-light)]">
+                      <p className="text-sm font-semibold text-[var(--color-text-primary)]">
+                        {user?.name}
+                      </p>
+                      <p className="text-xs text-[var(--color-text-tertiary)]">{user?.email}</p>
                     </div>
-                    <Link
-                      href="/dashboard"
-                      className="block px-4 py-2 text-sm text-gray-200 hover:bg-dark-section"
-                      onClick={() => setProfileOpen(false)}
-                    >
-                      Panelim
-                    </Link>
-                    <Link
-                      href="/dashboard/mesajlar"
-                      className="block px-4 py-2 text-sm text-gray-200 hover:bg-dark-section relative"
-                      onClick={() => setProfileOpen(false)}
-                    >
-                      Mesajlarım
-                      <UnreadBadge />
-                    </Link>
-                    <Link
-                      href="/islerim"
-                      className="block px-4 py-2 text-sm text-gray-200 hover:bg-dark-section"
-                      onClick={() => setProfileOpen(false)}
-                    >
-                      İşlerim
-                    </Link>
-                    <Link
-                      href="/dashboard/favoriler"
-                      className="block px-4 py-2 text-sm text-gray-200 hover:bg-dark-section"
-                      onClick={() => setProfileOpen(false)}
-                    >
-                      Favorilerim
-                    </Link>
-                    <Link
-                      href="/dashboard/uyelik"
-                      className="block px-4 py-2 text-sm text-amber-400 hover:bg-dark-section font-medium"
-                      onClick={() => setProfileOpen(false)}
-                    >
-                      <svg className="w-4 h-4 inline-block mr-1 text-amber-400 -mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2L2 7l8 5 8-5-8-5zM2 12l8 5 8-5-8-5-8 5z" /></svg><span>Üyelik</span>
-                    </Link>
-                    {user?.roles?.includes("ADMIN") && (
+                    <div className="py-1">
                       <Link
-                        href="/admin"
-                        className="block px-4 py-2 text-sm text-accent hover:bg-dark-section font-medium"
+                        href="/dashboard"
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-secondary)]"
                         onClick={() => setProfileOpen(false)}
                       >
-                        Admin Paneli
+                        <LayoutDashboard size={16} />
+                        Panelim
                       </Link>
-                    )}
-                    <hr className="my-1 border-dark-border" />
-                    <button
-                      onClick={() => signOut()}
-                      className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-900/20"
-                    >
-                      Çıkış Yap
-                    </button>
+                      <Link
+                        href="/dashboard/mesajlar"
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-secondary)] relative"
+                        onClick={() => setProfileOpen(false)}
+                      >
+                        <MessageSquare size={16} />
+                        Mesajlarım
+                        <UnreadBadge />
+                      </Link>
+                      <Link
+                        href="/islerim"
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-secondary)]"
+                        onClick={() => setProfileOpen(false)}
+                      >
+                        <Briefcase size={16} />
+                        İşlerim
+                      </Link>
+                      <Link
+                        href="/dashboard/favoriler"
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-secondary)]"
+                        onClick={() => setProfileOpen(false)}
+                      >
+                        <Heart size={16} />
+                        Favorilerim
+                      </Link>
+                    </div>
+                    <div className="border-t border-[var(--color-border-light)] pt-1">
+                      <Link
+                        href="/dashboard/uyelik"
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-accent)] hover:bg-[var(--color-surface-secondary)] font-medium"
+                        onClick={() => setProfileOpen(false)}
+                      >
+                        <Crown size={16} />
+                        Üyelik
+                      </Link>
+                      {user?.roles?.includes("ADMIN") && (
+                        <Link
+                          href="/admin"
+                          className="flex items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] font-medium"
+                          onClick={() => setProfileOpen(false)}
+                        >
+                          <Shield size={16} />
+                          Admin Paneli
+                        </Link>
+                      )}
+                      <button
+                        onClick={() => signOut()}
+                        className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-red-500 hover:bg-red-50"
+                      >
+                        <LogOut size={16} />
+                        Çıkış Yap
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <Link
                   href="/auth/giris"
-                  className="text-muted-text hover:text-accent transition px-3 py-2"
+                  className="px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
                 >
                   Giriş Yap
                 </Link>
                 <Link
                   href="/auth/kayit"
-                  className="bg-accent text-[#1a1d27] px-4 py-2 rounded-lg hover:bg-accent-dark transition font-medium"
+                  className="btn-primary !py-2 !px-4 !text-sm"
                 >
                   Kaydol
                 </Link>
@@ -156,115 +206,116 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-dark-card"
+            className="md:hidden p-2 rounded-lg hover:bg-[var(--color-surface-secondary)] text-[var(--color-text-secondary)]"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Menüyü aç/kapa"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {menuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-dark-border px-4 py-3 space-y-2">
-          <div className="flex items-center justify-between pb-2 border-b border-dark-border mb-2">
-            <span className="text-xs text-sub-text">Menü</span>
-            <ThemeToggle />
-          </div>
+        <div className="md:hidden border-t border-[var(--color-border-light)] bg-white px-4 py-3 space-y-1 animate-fade-in">
           <Link
             href="/ara"
-            className="block py-2 text-muted-text hover:text-accent"
+            className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-text-secondary)]"
             onClick={() => setMenuOpen(false)}
           >
+            <Search size={18} />
             Firmalar
           </Link>
           <Link
             href="/is-ver"
-            className="block py-2 text-muted-text hover:text-accent"
+            className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-text-secondary)]"
             onClick={() => setMenuOpen(false)}
           >
+            <Briefcase size={18} />
             İş Ver
           </Link>
           <Link
             href="/blog"
-            className="block py-2 text-muted-text hover:text-accent"
+            className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-text-secondary)]"
             onClick={() => setMenuOpen(false)}
           >
+            <Newspaper size={18} />
             Blog
           </Link>
           {session ? (
             <>
+              <hr className="border-[var(--color-border-light)] my-1" />
               <Link
                 href="/is-ilanlari"
-                className="block py-2 text-muted-text hover:text-accent"
+                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-text-secondary)]"
                 onClick={() => setMenuOpen(false)}
               >
+                <Briefcase size={18} />
                 İş İlanları
               </Link>
               <Link
                 href="/dashboard"
-                className="block py-2 text-muted-text hover:text-accent"
+                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-text-secondary)]"
                 onClick={() => setMenuOpen(false)}
               >
+                <LayoutDashboard size={18} />
                 Panelim
               </Link>
               <Link
                 href="/dashboard/mesajlar"
-                className="block py-2 text-muted-text hover:text-accent relative inline-flex items-center"
+                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-text-secondary)]"
                 onClick={() => setMenuOpen(false)}
               >
+                <MessageSquare size={18} />
                 Mesajlarım
-                <span className="ml-1"><UnreadBadge /></span>
+                <UnreadBadge />
               </Link>
               <Link
                 href="/dashboard/favoriler"
-                className="block py-2 text-muted-text hover:text-accent"
+                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-text-secondary)]"
                 onClick={() => setMenuOpen(false)}
               >
+                <Heart size={18} />
                 Favorilerim
               </Link>
               <Link
                 href="/dashboard/uyelik"
-                className="block py-2 text-amber-400 font-medium"
+                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-accent)]"
                 onClick={() => setMenuOpen(false)}
               >
-                💎 Üyelik
+                <Crown size={18} />
+                Üyelik
               </Link>
               {user?.roles?.includes("ADMIN") && (
                 <Link
                   href="/admin"
-                  className="block py-2 text-accent font-medium"
+                  className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-primary)]"
                   onClick={() => setMenuOpen(false)}
                 >
+                  <Shield size={18} />
                   Admin Paneli
                 </Link>
               )}
               <button
                 onClick={() => { setMenuOpen(false); signOut(); }}
-                className="block w-full text-left py-2 text-red-400"
+                className="flex items-center gap-3 w-full py-2.5 text-sm font-medium text-red-500"
               >
+                <LogOut size={18} />
                 Çıkış Yap
               </button>
             </>
           ) : (
-            <div className="flex flex-col gap-2 pt-2">
+            <div className="flex flex-col gap-2 pt-3">
               <Link
                 href="/auth/giris"
-                className="block text-center py-2 text-muted-text border border-dark-border rounded-lg"
+                className="block text-center py-2.5 text-sm font-medium text-[var(--color-text-secondary)] border border-[var(--color-border-default)] rounded-lg"
                 onClick={() => setMenuOpen(false)}
               >
                 Giriş Yap
               </Link>
               <Link
                 href="/auth/kayit"
-                className="block text-center py-2 bg-accent text-[#1a1d27] rounded-lg"
+                className="btn-primary !w-full text-center"
                 onClick={() => setMenuOpen(false)}
               >
                 Kaydol

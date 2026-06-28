@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -7,10 +8,23 @@ import CookieBanner from "@/components/CookieBanner";
 import PushNotificationSetup from "@/components/PushNotificationSetup";
 import PwaInstallPrompt from "@/components/PwaInstallPrompt";
 
+/* ─── Typography ─────────────────────────────────────────────── */
+const inter = Inter({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const manrope = Manrope({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-manrope",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Montajım Var - Montaj Firmaları, Üreticiler ve Müşteriler Buluşuyor",
+  title: "Montajım Var - Profesyonel Montaj Platformu",
   description:
-    "Türkiye'nin montaj platformu. Montaj firmaları, üreticiler ve müşterileri bir araya getiriyor. Şehrinizdeki güvenilir montajcıları bulun.",
+    "Kurumsal firmalar ile doğrulanmış montaj ekiplerini buluşturuyoruz. Mobilya, reklam, AVM, fuar standı ve elektrik montaj hizmetleri.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -33,9 +47,9 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "Montajım Var - Montaj Firmaları Bulun",
+    title: "Montajım Var - Profesyonel Montaj Platformu",
     description:
-      "Türkiye'nin montaj platformu. Güvenilir montajcıları bulun, iletişime geçin.",
+      "Kurumsal firmalar ile doğrulanmış montaj ekiplerini buluşturuyoruz.",
     type: "website",
     locale: "tr_TR",
     siteName: "Montajım Var",
@@ -46,7 +60,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#ff7a00",
+  themeColor: "#0B5FFF",
 };
 
 export default function RootLayout({
@@ -55,13 +69,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr">
+    <html lang="tr" className={`${inter.variable} ${manrope.variable}`}>
       <head>
+        {/* Preconnect to Google Fonts (fallback) */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="//montajimvar.xyz" />
+        {/* Font preload hints for swap fallback */}
+        <link
+          rel="preload"
+          href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap"
+          as="style"
+        />
+        <link
+          rel="preload"
+          href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap"
+          as="style"
+        />
       </head>
-      <body className="min-h-screen flex flex-col">
+      <body
+        className={`${inter.className} min-h-screen flex flex-col`}
+        style={{ fontFamily: "'Inter', system-ui, -apple-system, sans-serif" }}
+      >
         <Provider>
           <script
             type="application/ld+json"
@@ -72,7 +101,7 @@ export default function RootLayout({
                 name: "Montajım Var",
                 url: "https://montajimvar.xyz",
                 description:
-                  "Türkiye'nin montaj platformu. Montaj firmaları, üreticiler ve müşterileri bir araya getiriyor.",
+                  "Kurumsal firmalar ile doğrulanmış montaj ekiplerini buluşturuyoruz.",
                 inLanguage: "tr",
                 potentialAction: {
                   "@type": "SearchAction",

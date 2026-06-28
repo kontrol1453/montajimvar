@@ -1,101 +1,220 @@
 @import "tailwindcss";
 
+/* ─── Design System Tokens ───────────────────────────────────── */
 @theme {
+  --color-primary: #0B5FFF;
+  --color-primary-dark: #0948cc;
+  --color-primary-light: #3d7fff;
+  --color-accent: #00C853;
+  --color-accent-dark: #00a844;
+  --color-dark: #101828;
+
+  /* Surface */
+  --color-surface: #ffffff;
+  --color-surface-secondary: #f5f7fa;
+  --color-surface-tertiary: #eef0f4;
+
+  /* Text */
+  --color-text-primary: #101828;
+  --color-text-secondary: #475467;
+  --color-text-tertiary: #98a2b3;
+  --color-text-white: #ffffff;
+
+  /* Border */
+  --color-border-light: #eaecf0;
+  --color-border-default: #d0d5dd;
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow-card-hover: 0 4px 12px rgba(16, 24, 40, 0.08), 0 2px 4px rgba(16, 24, 40, 0.04);
+  --shadow-elevated: 0 12px 32px rgba(16, 24, 40, 0.1), 0 4px 8px rgba(16, 24, 40, 0.06);
+  --shadow-button: 0 1px 2px rgba(16, 24, 40, 0.05);
+
+  /* Legacy vars — keep for compatibility */
   --color-montaj: #ff7a00;
   --color-montaj-dark: #e06e00;
   --color-montaj-light: #ff9433;
 }
 
-:root,
-[data-theme="dark"] {
-  --clr-bg: #0d0d0d;
-  --clr-section: #121212;
-  --clr-card: #181818;
-  --clr-border: rgba(255, 255, 255, 0.06);
-  --clr-muted: #d0d0d0;
-  --clr-sub: #888;
-  --clr-text: #ffffff;
-}
-
-[data-theme="light"] {
-  --clr-bg: #f5f5f5;
-  --clr-section: #ffffff;
-  --clr-card: #ffffff;
-  --clr-border: rgba(0, 0, 0, 0.08);
-  --clr-muted: #444444;
-  --clr-sub: #888888;
-  --clr-text: #1a1a1a;
-}
-
-/* Emulate Tailwind v4 dark theme colors via CSS variables */
-.bg-dark-bg { background: var(--clr-bg); }
-.bg-dark-section { background: var(--clr-section); }
-.bg-dark-card { background: var(--clr-card) !important; }
-.border-dark-border { border-color: var(--clr-border); }
-.text-muted-text { color: var(--clr-muted); }
-.text-sub-text { color: var(--clr-sub); }
-.text-white { color: var(--clr-text); }
-.divide-dark-border > :not([hidden]) ~ :not([hidden]) { border-color: var(--clr-border); }
-.hover\:border-dark-border:hover { border-color: var(--clr-border); }
-.hover\:bg-dark-section:hover { background: var(--clr-section); }
-.hover\:bg-dark-card:hover { background: var(--clr-card); }
-
-/* Keep montaj buttons with white text always */
-.bg-montaj.text-white,
-.bg-montaj-dark.text-white,
-button:where(.bg-montaj, .bg-montaj-dark) .text-white {
-  color: #ffffff !important;
-}
-
-/* Hero section has hardcoded dark BG, force white text always */
-.hero-section,
-.hero-section * {
-  color: #ffffff !important;
-}
-/* But allow the gradient text (Montajcınızı Bulun) to keep its gradient */
-.hero-section .text-transparent {
-  color: transparent !important;
-}
-
-/* Base layer */
+/* ─── Base ────────────────────────────────────────────────────── */
 @layer base {
   html {
     scroll-behavior: smooth;
   }
+
   body {
     @apply antialiased;
-    background: var(--clr-bg);
-    color: var(--clr-text);
+    background: var(--color-surface-secondary);
+    color: var(--color-text-primary);
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+  }
+
+  /* Selection */
+  ::selection {
+    background: rgba(11, 95, 255, 0.12);
+    color: var(--color-text-primary);
   }
 }
 
-/* Default body transition */
-body,
-.bg-dark-bg,
-.bg-dark-section,
-.bg-dark-card,
-.border-dark-border,
-.text-muted-text,
-.text-sub-text,
-.text-white,
-.divide-dark-border {
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+/* ─── Utility Classes ──────────────────────────────────────────── */
+.container-app {
+  width: 100%;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
-/* Legacy CSS variables */
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@media (max-width: 768px) {
+  .container-app {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Card base */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes slide-up {
+.card:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+/* Button base */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-primary);
+  color: white;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-button);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(11, 95, 255, 0.25);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border-radius: 10px;
+  border: 1px solid var(--color-border-default);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-button);
+}
+
+.btn-secondary:hover {
+  background: var(--color-surface-secondary);
+  border-color: var(--color-border-default);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.btn-accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-accent);
+  color: white;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-button);
+}
+
+.btn-accent:hover {
+  background: var(--color-accent-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 200, 83, 0.25);
+}
+
+/* Section label */
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  background: rgba(11, 95, 255, 0.06);
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 999px;
+}
+
+/* Heading styles */
+.heading-xl {
+  font-family: "Manrope", system-ui, sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--color-dark);
+}
+
+.heading-lg {
+  font-family: "Manrope", system-ui, sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--color-dark);
+}
+
+.heading-md {
+  font-family: "Manrope", system-ui, sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--color-dark);
+}
+
+/* Legacy support — keep bg/text classes working */
+.bg-dark-bg { background: var(--color-surface-secondary); }
+.bg-dark-section { background: var(--color-surface); }
+.bg-dark-card { background: var(--color-surface) !important; }
+.border-dark-border { border-color: var(--color-border-light); }
+.text-muted-text { color: var(--color-text-secondary); }
+.text-sub-text { color: var(--color-text-tertiary); }
+.text-white { color: var(--color-text-primary); }
+
+/* Animations */
+@keyframes fade-in-up {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -106,6 +225,29 @@ body,
   }
 }
 
-.animate-slide-up {
-  animation: slide-up 0.3s ease-out forwards;
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+/* Hero section keeps forced white text */
+.hero-section,
+.hero-section * {
+  color: #ffffff !important;
+}
+.hero-section .text-transparent {
+  color: transparent !important;
 }
