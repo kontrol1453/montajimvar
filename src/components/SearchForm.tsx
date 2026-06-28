@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import { TURKISH_CITIES } from "@/lib/utils";
 import CategoryFilter from "./CategoryFilter";
+import { Search, X, ChevronDown } from "lucide-react";
 
 interface Category {
   id: number;
@@ -42,8 +43,12 @@ export default function SearchForm({
 
   const [searchText, setSearchText] = useState(initialQ);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState<Category[]>([]);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Debounce text input — 300ms after user stops typing
+  // Debounce text input for URL update
   useEffect(() => {
     if (searchText === initialQ) return;
     const timer = setTimeout(() => {
@@ -56,6 +61,44 @@ export default function SearchForm({
     return () => clearTimeout(timer);
   }, [searchText, initialQ]);
 
+  // Fetch autocomplete suggestions
+  useEffect(() => {
+    if (searchText.length < 2) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    setIsLoadingSuggestions(true);
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/categories/search?q=${encodeURIComponent(searchText)}`);
+        if (res.ok) {
+          const data = await res.json();
+          setSuggestions(data);
+          setShowSuggestions(data.length > 0);
+        }
+      } catch (err) {
+        console.error("Autocomplete error:", err);
+        setSuggestions([]);
+      } finally {
+        setIsLoadingSuggestions(false);
+      }
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [searchText]);
+
+  // Click outside to close suggestions
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (inputRef.current && !inputRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   function updateURL(updates: Record<string, string | undefined>) {
     const params = new URLSearchParams(searchParams.toString());
     for (const [key, value] of Object.entries(updates)) {
@@ -66,16 +109,26 @@ export default function SearchForm({
     router.push(`${pathname}?${params.toString()}`);
   }
 
-  const handleCategoryToggle = useCallback(
-    (slug: string) => {
-      const current = initialSelectedSlugs;
-      const updated = current.includes(slug)
-        ? current.filter((s) => s !== slug)
-        : [...current, slug];
-      updateURL({ kategoriler: updated.length > 0 ? updated.join(",") : undefined });
-    },
-    [initialSelectedSlugs]
-  );
+  function handleCategoryToggle(slug: string) {
+    const current = initialSelectedSlugs;
+    const updated = current.includes(slug)
+      ? current.filter((s) => s !== slug)
+      : [...current, slug];
+    updateURL({ kategoriler: updated.length > 0 ? updated.join(",") : undefined });
+    setShowSuggestions(false);
+  }
+
+  function handleSuggestionClick(cat: Category) {
+    const current = initialSelectedSlugs;
+    const updated = current.includes(cat.slug)
+      ? current.filter((s) => s !== cat.slug)
+      : [...current, cat.slug];
+    updateURL({ kategoriler: updated.join(",") });
+    setSearchText("");
+    setSuggestions([]);
+    setShowSuggestions(false);
+    if (inputRef.current) inputRef.current.blur();
+  }
 
   // Active filter tags
   const activeTags = useMemo(() => {
@@ -101,42 +154,76 @@ export default function SearchForm({
   }
 
   return (
-    <div className="space-y-4">
-      {/* Desktop: inline input + selects */}
-      <div className="hidden md:flex flex-row gap-3">
-        <input
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          placeholder="Firma adı, açıklama veya kategori ile ara..."
-          className="flex-1 px-3 py-2 border border-dark-border rounded-lg text-sm bg-dark-bg text-white placeholder-gray-500"
-        />
+    <div className="space-y-4" ref={inputRef}>
+      {/* Desktop: Search with autocomplete + selects */}
+      <div className="hidden md:flex flex-row gap-3 items-start">
+        <div className="flex-1 relative">
+          <div className="relative">
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)]"
+              size={16}
+            />
+            <input
+              ref={inputRef}
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              onFocus={() => searchText.length >= 2 && suggestions.length > 0 && setShowSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+              placeholder="Hangi hizmeti arıyorsunuz?"
+              className="w-full pl-10 pr-10 py-3 border border-[var(--color-border-default)] rounded-xl text-base bg-white text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] transition-all"
+            />
+            {isLoadingSuggestions && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+            )}
+          </div>
+
+          {/* Autocomplete Dropdown */}
+          {showSuggestions && suggestions.length > 0 && (
+            <div className="absolute z-50 w-full mt-2 bg-white border border-[var(--color-border-light)] rounded-xl shadow-elevated overflow-hidden animate-fade-in">
+              {suggestions.map((cat) => (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => handleSuggestionClick(cat)}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[var(--color-surface-secondary)] transition-colors"
+                >
+                  <span className="text-lg">{cat.icon || "🔧"}</span>
+                  <span className="font-medium text-[var(--color-text-primary)]">{cat.name}</span>
+                  <span className="ml-auto text-xs text-[var(--color-text-tertiary)]">Kategori</span>
+                </button>
+              ))}
+              <div className="border-t border-[var(--color-border-light)] px-4 py-2 text-center text-xs text-[var(--color-text-tertiary)]">
+                Enter ile arama yapın
+              </div>
+            </div>
+          )}
+        </div>
+
         <select
           value={initialSehir}
           onChange={(e) => updateURL({ sehir: e.target.value || undefined })}
-          className="px-3 py-2 border border-dark-border rounded-lg text-sm bg-dark-bg text-white"
+          className="px-4 py-3 border border-[var(--color-border-default)] rounded-xl text-sm bg-white text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] appearance-none"
         >
           <option value="">Tüm Şehirler</option>
           {TURKISH_CITIES.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
+            <option key={c} value={c}>{c}</option>
           ))}
         </select>
+
         <select
           value={initialMinPuan}
           onChange={(e) => updateURL({ minPuan: e.target.value || undefined })}
-          className="px-3 py-2 border border-dark-border rounded-lg text-sm bg-dark-bg text-white"
+          className="px-4 py-3 border border-[var(--color-border-default)] rounded-xl text-sm bg-white text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] appearance-none"
         >
           {RATING_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
+
         <select
           value={initialSiralama}
           onChange={(e) => updateURL({ siralama: e.target.value || undefined })}
-          className="px-3 py-2 border border-dark-border rounded-lg text-sm bg-dark-bg text-white"
+          className="px-4 py-3 border border-[var(--color-border-default)] rounded-xl text-sm bg-white text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] appearance-none"
         >
           <option value="en_yeni">En Yeni</option>
           <option value="en_eski">En Eski</option>
@@ -147,33 +234,62 @@ export default function SearchForm({
       {/* Mobile: search input + filter toggle */}
       <div className="flex md:hidden flex-col gap-2">
         <div className="flex gap-2">
-          <input
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            placeholder="Firma adı, açıklama veya kategori ile ara..."
-            className="flex-1 px-3 py-2 border border-dark-border rounded-lg text-sm bg-dark-bg text-white placeholder-gray-500"
-          />
+          <div className="flex-1 relative">
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)]"
+              size={16}
+            />
+            <input
+              ref={inputRef}
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              onFocus={() => searchText.length >= 2 && suggestions.length > 0 && setShowSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+              placeholder="Hangi hizmeti arıyorsunuz?"
+              className="w-full pl-10 pr-10 py-3 border border-[var(--color-border-default)] rounded-xl text-base bg-white text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)]"
+            />
+            {isLoadingSuggestions && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+            )}
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="absolute z-50 w-full mt-2 bg-white border border-[var(--color-border-light)] rounded-xl shadow-elevated overflow-hidden animate-fade-in">
+                {suggestions.map((cat) => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => handleSuggestionClick(cat)}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[var(--color-surface-secondary)] transition-colors"
+                  >
+                    <span className="text-lg">{cat.icon || "🔧"}</span>
+                    <span className="font-medium text-[var(--color-text-primary)]">{cat.name}</span>
+                    <span className="ml-auto text-xs text-[var(--color-text-tertiary)]">Kategori</span>
+                  </button>
+                ))}
+                <div className="border-t border-[var(--color-border-light)] px-4 py-2 text-center text-xs text-[var(--color-text-tertiary)]">
+                  Enter ile arama yapın
+                </div>
+              </div>
+            )}
+          </div>
           <button
             type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
-            className={`px-3 py-2 border rounded-lg text-sm transition flex items-center gap-1 ${
+            className={`px-4 py-3 border rounded-xl text-sm transition flex items-center gap-2 ${
               mobileOpen
-                ? "bg-accent text-[#1a1d27] border-accent"
-                : "bg-dark-bg text-gray-300 border-dark-border"
+                ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]"
+                : "bg-white text-[var(--color-text-secondary)] border-[var(--color-border-default)]"
             }`}
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
-            </svg>
+            <ChevronDown size={16} />
             Filtreler
           </button>
         </div>
         {mobileOpen && (
-          <div className="flex flex-col gap-2 p-3 bg-dark-card border border-dark-border rounded-lg">
+          <div className="flex flex-col gap-3 p-4 bg-white border border-[var(--color-border-light)] rounded-xl shadow-card">
             <select
               value={initialSehir}
               onChange={(e) => updateURL({ sehir: e.target.value || undefined })}
-              className="px-3 py-2 border border-dark-border rounded-lg text-sm bg-dark-bg text-white"
+              className="px-4 py-3 border border-[var(--color-border-default)] rounded-xl text-sm bg-white text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] appearance-none"
             >
               <option value="">Tüm Şehirler</option>
               {TURKISH_CITIES.map((c) => (
@@ -183,7 +299,7 @@ export default function SearchForm({
             <select
               value={initialMinPuan}
               onChange={(e) => updateURL({ minPuan: e.target.value || undefined })}
-              className="px-3 py-2 border border-dark-border rounded-lg text-sm bg-dark-bg text-white"
+              className="px-4 py-3 border border-[var(--color-border-default)] rounded-xl text-sm bg-white text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] appearance-none"
             >
               {RATING_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -192,7 +308,7 @@ export default function SearchForm({
             <select
               value={initialSiralama}
               onChange={(e) => updateURL({ siralama: e.target.value || undefined })}
-              className="px-3 py-2 border border-dark-border rounded-lg text-sm bg-dark-bg text-white"
+              className="px-4 py-3 border border-[var(--color-border-default)] rounded-xl text-sm bg-white text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] appearance-none"
             >
               <option value="en_yeni">En Yeni</option>
               <option value="en_eski">En Eski</option>
@@ -208,23 +324,21 @@ export default function SearchForm({
           {activeTags.map((tag) => (
             <span
               key={tag.key}
-              className="inline-flex items-center gap-1 px-2 py-1 bg-accent/10 border border-accent/30 rounded-full text-xs text-accent"
+              className="inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--color-primary)]/5 border border-[var(--color-primary)]/10 rounded-full text-sm text-[var(--color-primary)]"
             >
               {tag.label}
               <button
                 type="button"
                 onClick={() => removeTag(tag.key)}
-                className="hover:text-white transition ml-0.5"
+                className="hover:text-[var(--color-primary)] transition p-0.5"
               >
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X size={14} />
               </button>
             </span>
           ))}
           <Link
             href="/ara"
-            className="text-xs text-sub-text hover:text-white transition ml-1"
+            className="text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] transition ml-1"
           >
             Temizle
           </Link>
@@ -233,7 +347,9 @@ export default function SearchForm({
 
       {/* Categories */}
       <div>
-        <p className="text-xs text-sub-text mb-2">Kategoriler</p>
+        <p className="text-xs font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider mb-3">
+          Kategoriler
+        </p>
         <CategoryFilter
           categories={categories}
           selectedSlugs={initialSelectedSlugs}
