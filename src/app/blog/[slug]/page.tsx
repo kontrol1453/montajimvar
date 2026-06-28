@@ -48,7 +48,7 @@ export default async function BlogPostPage({ params }: Props) {
 
       {post.coverImage && (
         <div className="rounded-xl overflow-hidden mb-6 aspect-video">
-          <img src={post.coverImage} alt="" className="w-full h-full object-cover" />
+          <img src={post.coverImage} alt="" loading="lazy" className="w-full h-full object-cover" />
         </div>
       )}
 

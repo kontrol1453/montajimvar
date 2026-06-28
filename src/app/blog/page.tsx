@@ -36,7 +36,7 @@ export default async function BlogPage() {
               <div className="flex items-start gap-4">
                 {post.coverImage && (
                   <div className="w-24 h-24 shrink-0 rounded-lg overflow-hidden hidden sm:block">
-                    <img src={post.coverImage} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    <img src={post.coverImage} alt="" loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                   </div>
                 )}
                 <div className="flex-1 min-w-0">

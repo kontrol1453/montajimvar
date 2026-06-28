@@ -1,10 +1,12 @@
-const CACHE_NAME = "montajimvar-v1";
+const CACHE_NAME = "montajimvar-v3";
 const STATIC_ASSETS = [
   "/",
   "/manifest.json",
   "/icon-192.png",
   "/icon-512.png",
+  "/badge-icon.svg",
   "/apple-touch-icon.png",
+  "/offline.html",
 ];
 
 // Install: cache static assets
@@ -43,12 +45,12 @@ self.addEventListener("push", (event) => {
   const options = {
     body: data.body || "",
     icon: data.icon || "/icon-192.png",
-    badge: data.badge || "/apple-touch-icon.png",
+    badge: data.badge || "/badge-icon.svg",
     data: { url: data.url || "/" },
     vibrate: [200, 100, 200],
     tag: data.tag || "default",
     renotify: true,
-    requireInteraction: true,
+    requireInteraction: data.requireInteraction !== false,
     silent: false,
   };
 
@@ -70,7 +72,7 @@ self.addEventListener("notificationclick", (event) => {
   );
 });
 
-// Fetch: network-first for pages, cache-first for static
+// Fetch: network-first with cache fallback for pages, cache-first for static
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
@@ -78,46 +80,60 @@ self.addEventListener("fetch", (event) => {
   // Only handle same-origin requests
   if (url.origin !== self.location.origin) return;
 
-  // Skip non-GET and API routes
+  // Skip non-GET
   if (request.method !== "GET") return;
+
+  // API routes: network-only, no caching
   if (url.pathname.startsWith("/api/")) return;
+
+  // Next.js static chunks: cache-first (never change once built)
   if (url.pathname.startsWith("/_next/static")) {
-    // Cache-first for Next.js static chunks
     event.respondWith(
       caches.match(request).then((cached) => {
-        return (
-          cached ||
-          fetch(request).then((response) => {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-            return response;
-          })
-        );
+        return cached || fetch(request).then((response) => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          return response;
+        });
       })
     );
     return;
   }
 
-  // Network-first for everything else (pages, images from uploads)
+  // Navigation requests (pages): stale-while-revalidate
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          const clone = response.clone();
+          if (response.ok) {
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(async () => {
+          const cached = await caches.match(request);
+          if (cached) return cached;
+          const offline = await caches.match("/offline.html");
+          if (offline) return offline;
+          return new Response("Bağlantı hatası.", { status: 503 });
+        })
+    );
+    return;
+  }
+
+  // Static assets and other requests: cache-first with network update
   event.respondWith(
-    fetch(request)
-      .then((response) => {
-        const clone = response.clone();
+    caches.match(request).then((cached) => {
+      const fetchPromise = fetch(request).then((response) => {
         if (response.ok) {
+          const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
         }
         return response;
-      })
-      .catch(() => {
-        return caches.match(request).then((cached) => {
-          return (
-            cached ||
-            new Response("Bağlantı hatası. Lütfen internetinizi kontrol edin.", {
-              status: 503,
-              statusText: "Offline",
-            })
-          );
-        });
-      })
+      }).catch(() => cached);
+
+      return cached || fetchPromise;
+    })
   );
 });

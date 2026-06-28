@@ -131,7 +131,7 @@ export default function ProfileForm({ user }: Props) {
         <div className="relative group">
           <div className="w-20 h-20 rounded-full overflow-hidden bg-montaj/20 flex items-center justify-center text-3xl font-bold text-montaj">
             {avatar ? (
-              <img src={avatar} alt="Profil fotoğrafı" className="w-full h-full object-cover" />
+              <img src={avatar} alt="Profil fotoğrafı" loading="lazy" className="w-full h-full object-cover" />
             ) : (
               user.name[0]?.toUpperCase() || "?"
             )}

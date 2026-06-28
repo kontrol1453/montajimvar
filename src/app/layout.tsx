@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import Provider from "@/components/Provider";
 import CookieBanner from "@/components/CookieBanner";
 import PushNotificationSetup from "@/components/PushNotificationSetup";
+import PwaInstallPrompt from "@/components/PwaInstallPrompt";
 
 export const metadata: Metadata = {
   title: "Montajım Var - Montaj Firmaları, Üreticiler ve Müşteriler Buluşuyor",
@@ -55,6 +56,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="//montajimvar.xyz" />
+      </head>
       <body className="min-h-screen flex flex-col">
         <Provider>
           <script
@@ -96,6 +102,7 @@ export default function RootLayout({
           <Footer />
           <CookieBanner />
           <PushNotificationSetup />
+          <PwaInstallPrompt />
         </Provider>
       </body>
     </html>
