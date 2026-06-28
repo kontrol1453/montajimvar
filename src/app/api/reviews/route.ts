@@ -8,17 +8,22 @@ import { notifyAdmin } from "@/lib/notifications";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const profileId = searchParams.get("profileId");
+  const admin = searchParams.get("admin") === "true";
 
-  if (!profileId) {
+  if (!profileId && !admin) {
     return NextResponse.json({ error: "profileId gerekli." }, { status: 400 });
   }
 
   try {
+    const where: Record<string, unknown> = {};
+    if (profileId) where.profileId = Number(profileId);
+
     const reviews = await prisma.review.findMany({
-      where: { profileId: Number(profileId) },
+      where,
       orderBy: { createdAt: "desc" },
       include: {
         user: { select: { id: true, name: true } },
+        profile: { select: { id: true, companyName: true } },
       },
     });
 
@@ -132,6 +137,24 @@ export async function POST(request: Request) {
       { error: "Yorum kaydedilirken hata oluştu." },
       { status: 500 }
     );
+  }
+}
+
+export async function DELETE(request: Request) {
+  const session = await auth();
+  if (!session?.user || !(session.user as any).roles?.includes("ADMIN")) {
+    return NextResponse.json({ error: "Yetkisiz erişim." }, { status: 403 });
+  }
+
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("id");
+  if (!id) return NextResponse.json({ error: "id gerekli." }, { status: 400 });
+
+  try {
+    await prisma.review.delete({ where: { id: Number(id) } });
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ error: "Silinemedi." }, { status: 500 });
   }
 }
 
