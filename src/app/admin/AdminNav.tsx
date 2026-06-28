@@ -7,10 +7,14 @@ const links = [
   { href: "/admin", label: "Panel" },
   { href: "/admin/kullanicilar", label: "Kullanıcılar" },
   { href: "/admin/firmalar", label: "Firmalar" },
-  { href: "/admin/google-firma-ekle", label: "Google Firma" },
-  { href: "/admin/kategoriler", label: "Kategoriler" },
+  { href: "/admin/isler", label: "İşler" },
+  { href: "/admin/yorumlar", label: "Yorumlar" },
+  { href: "/admin/bildirim", label: "Bildirim" },
   { href: "/admin/blog", label: "Blog" },
+  { href: "/admin/kategoriler", label: "Kategoriler" },
   { href: "/admin/izinler", label: "İzinler" },
+  { href: "/admin/google-firma-ekle", label: "Google Firma" },
+  { href: "/admin/abonelik-plani", label: "Abonelik" },
 ];
 
 export default function AdminNav() {
