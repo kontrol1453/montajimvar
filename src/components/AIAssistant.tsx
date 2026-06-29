@@ -1,17 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { messageSquare, sparkles, zap, phone, messageCircle, X } from "lucide-react";
+import { MessageSquare, Sparkles, Zap, MessageCircle, X } from "lucide-react";
 import Link from "next/link";
 
 export default function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
 
   const actions = [
-    { label: "Fiyat Hesapla", icon: zap, href: "/is-ver?ai=estimate", color: "#0B5FFF" },
-    { label: "Usta Bul", icon: messageSquare, href: "/ara?q=avni", color: "#00C853" },
-    { label: "İş Oluştur", icon: sparkles, href: "/is-ver", color: "#F59E0B" },
-    { label: "Destek", icon: messageCircle, href: "/yardim", color: "#8B5CF6" },
+    { label: "Fiyat Hesapla", Component: Zap, href: "/is-ver?ai=estimate", color: "#0B5FFF" },
+    { label: "Usta Bul", Component: MessageSquare, href: "/ara?q=avni", color: "#00C853" },
+    { label: "İş Oluştur", Component: Sparkles, href: "/is-ver", color: "#F59E0B" },
+    { label: "Destek", Component: MessageCircle, href: "/yardim", color: "#8B5CF6" },
   ];
 
   return (
@@ -71,28 +71,7 @@ export default function AIAssistant() {
                 >
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 flex items-center justify-center rounded-full" style={{ background: `${action.color}20` }}>
-                      <svg
-                        width={16}
-                        height={16}
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth={1.5}
-                        className={`text-[${action.color}]`}
-                      >
-                        {action.icon === "zap" && (
-                          <path d="M13 4l2-2m5 7L7 17m9-1v2M7 13h12" />
-                        )}
-                        {action.icon === "messageSquare" && (
-                          <path d="M21 15a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v10z" />
-                        )}
-                        {action.icon === "sparkles" && (
-                          <path d="M12 2.25l-1.291 1.893L6.96 5.25l2.172.317L5 6.75l1.291 1.893L9.45 8.25l1.893 1.291L12 9.75l1.893-1.291L14.55 8.25l1.291-1.893L17.04 5.25l-2.172.317L12 2.25z" />
-                        )}
-                        {action.icon === "messageCircle" && (
-                          <path d="M21 11.5a8.38 8.38 0 01-.9 5.8A10.566 10.566 0 0110.034 21a10.566 10.566 0 01-6.252-2.364" />
-                        )}
-                      </svg>
+                      <action.Component size={16} className={`text-[${action.color}]`} />
                     </div>
                     <div>
                       <p className="font-medium text-[var(--color-dark)]">{action.label}</p>
