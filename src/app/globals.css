@@ -211,7 +211,6 @@
 .border-dark-border { border-color: var(--color-border-light); }
 .text-muted-text { color: var(--color-text-secondary); }
 .text-sub-text { color: var(--color-text-tertiary); }
-.text-white { color: var(--color-text-primary); }
 
 /* Animations */
 @keyframes fade-in-up {

@@ -27,7 +27,7 @@ const montageTypes = [
 
 export default function HomeHero() {
   return (
-    <section className="relative min-h-[90vh] flex items-center bg-gradient-to-br from-[#0a1628] via-[#0f1f3a] to-[#060e1a] overflow-hidden">
+    <section className="hero-section relative min-h-[90vh] flex items-center bg-gradient-to-br from-[#0a1628] via-[#0f1f3a] to-[#060e1a] overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Grid */}
