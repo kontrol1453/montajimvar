@@ -122,7 +122,7 @@ function HomeBrands() {
           {brands.map((brand) => (
             <div
               key={brand.name}
-              className="flex items-center gap-2 text-[var(--color-text-tertiary)]/40 grayscale hover:grayscale-0 hover:text-[var(--color-text-tertiary)] transition-all duration-300"
+              className="flex items-center gap-2 text-[var(--color-text-tertiary)] grayscale hover:grayscale-0 hover:text-[var(--color-text-tertiary)] transition-all duration-300"
             >
               <brand.icon size={24} />
               <span className="text-lg font-bold tracking-tight">{brand.name}</span>
@@ -256,8 +256,8 @@ function VideoSection() {
             {["AVM Montajı", "Reklam Tabelası", "Mobilya Kurulumu", "Fuar Standı", "Elektrik Montajı", "Endüstriyel"].map((label, i) => (
               <div key={label} className="bg-[var(--color-dark)]/80 flex items-center justify-center p-4">
                 <div className="text-center">
-                  <HardHat size={32} className="mx-auto mb-2 text-white/30" />
-                  <p className="text-xs text-white/40">{label}</p>
+                  <HardHat size={32} className="mx-auto mb-2 text-white" />
+                  <p className="text-xs text-white">{label}</p>
                 </div>
               </div>
             ))}
@@ -269,7 +269,7 @@ function VideoSection() {
             <Play size={32} className="text-white ml-1" fill="white" />
           </div>
 
-          <p className="absolute bottom-6 left-6 text-white/60 text-sm font-medium flex items-center gap-2">
+          <p className="absolute bottom-6 left-6 text-white text-sm font-medium flex items-center gap-2">
             <Camera size={16} />
             Montaj görüntülerini izleyin
           </p>
@@ -436,7 +436,7 @@ async function BlogSection() {
                       loading="lazy"
                     />
                   ) : (
-                    <Camera size={32} className="text-[var(--color-text-tertiary)]/30" />
+                    <Camera size={32} className="text-[var(--color-text-tertiary)]" />
                   )}
                 </div>
                 <div className="p-5">

@@ -53,7 +53,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <span
-              className="font-extrabold text-xl tracking-tight"
+              className="font-extrabold text-2xl tracking-tight"
               style={{ fontFamily: "'Manrope', system-ui, sans-serif", color: "var(--color-dark)" }}
             >
               Montajım<span style={{ color: "var(--color-primary)" }}>Var</span>
@@ -64,14 +64,14 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-1">
             <Link
               href="/ara"
-              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-dark)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
             >
               <Search size={16} />
               Firmalar
             </Link>
             <Link
               href="/is-ver"
-              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-dark)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
             >
               <Briefcase size={16} />
               İş Ver
@@ -79,14 +79,14 @@ export default function Navbar() {
             {session && (
               <Link
                 href="/is-ilanlari"
-                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
+                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-dark)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
               >
                 İş İlanları
               </Link>
             )}
             <Link
               href="/blog"
-              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-dark)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
             >
               <Newspaper size={16} />
               Blog
@@ -124,7 +124,7 @@ export default function Navbar() {
                     <div className="py-1">
                       <Link
                         href="/dashboard"
-                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-secondary)]"
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-dark)] hover:bg-[var(--color-surface-secondary)]"
                         onClick={() => setProfileOpen(false)}
                       >
                         <LayoutDashboard size={16} />
@@ -132,7 +132,7 @@ export default function Navbar() {
                       </Link>
                       <Link
                         href="/dashboard/mesajlar"
-                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-secondary)] relative"
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-dark)] hover:bg-[var(--color-surface-secondary)] relative"
                         onClick={() => setProfileOpen(false)}
                       >
                         <MessageSquare size={16} />
@@ -141,7 +141,7 @@ export default function Navbar() {
                       </Link>
                       <Link
                         href="/islerim"
-                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-secondary)]"
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-dark)] hover:bg-[var(--color-surface-secondary)]"
                         onClick={() => setProfileOpen(false)}
                       >
                         <Briefcase size={16} />
@@ -149,7 +149,7 @@ export default function Navbar() {
                       </Link>
                       <Link
                         href="/dashboard/favoriler"
-                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-secondary)]"
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-[var(--color-dark)] hover:bg-[var(--color-surface-secondary)]"
                         onClick={() => setProfileOpen(false)}
                       >
                         <Heart size={16} />
@@ -190,7 +190,7 @@ export default function Navbar() {
               <div className="flex items-center gap-2">
                 <Link
                   href="/auth/giris"
-                  className="px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-[var(--color-dark)] hover:text-[var(--color-text-primary)] transition-colors"
                 >
                   Giriş Yap
                 </Link>
@@ -220,23 +220,23 @@ export default function Navbar() {
         <div className="md:hidden border-t border-[var(--color-border-light)] bg-white px-4 py-3 space-y-1 animate-fade-in">
           <Link
             href="/ara"
-            className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-text-secondary)]"
+            className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
             onClick={() => setMenuOpen(false)}
           >
             <Search size={18} />
             Firmalar
           </Link>
-          <Link
-            href="/is-ver"
-            className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-text-secondary)]"
-            onClick={() => setMenuOpen(false)}
-          >
+<Link
+                href="/islerim"
+                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
+                onClick={() => setMenuOpen(false)}
+              >
             <Briefcase size={18} />
             İş Ver
           </Link>
           <Link
             href="/blog"
-            className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-text-secondary)]"
+            className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
             onClick={() => setMenuOpen(false)}
           >
             <Newspaper size={18} />
@@ -247,7 +247,7 @@ export default function Navbar() {
               <hr className="border-[var(--color-border-light)] my-1" />
               <Link
                 href="/is-ilanlari"
-                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-text-secondary)]"
+                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
                 onClick={() => setMenuOpen(false)}
               >
                 <Briefcase size={18} />
@@ -255,15 +255,15 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/dashboard"
-                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-text-secondary)]"
+                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
                 onClick={() => setMenuOpen(false)}
               >
                 <LayoutDashboard size={18} />
                 Panelim
               </Link>
-              <Link
+<Link
                 href="/dashboard/mesajlar"
-                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-text-secondary)]"
+                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)] relative"
                 onClick={() => setMenuOpen(false)}
               >
                 <MessageSquare size={18} />
@@ -272,7 +272,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/dashboard/favoriler"
-                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-text-secondary)]"
+                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
                 onClick={() => setMenuOpen(false)}
               >
                 <Heart size={18} />
@@ -308,7 +308,7 @@ export default function Navbar() {
             <div className="flex flex-col gap-2 pt-3">
               <Link
                 href="/auth/giris"
-                className="block text-center py-2.5 text-sm font-medium text-[var(--color-text-secondary)] border border-[var(--color-border-default)] rounded-lg"
+                className="block text-center py-2.5 text-sm font-medium text-[var(--color-dark)] border border-[var(--color-border-default)] rounded-lg"
                 onClick={() => setMenuOpen(false)}
               >
                 Giriş Yap

@@ -26,7 +26,7 @@ export default function HomeCta() {
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       >
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/[0.05] border border-white/[0.08] rounded-full text-sm text-white/50 mb-8">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/[0.05] border border-white/[0.08] rounded-full text-sm text-white mb-8">
           <Sparkles size={14} className="text-[#00C853]" />
           Hemen Başlayın
         </div>
@@ -37,7 +37,7 @@ export default function HomeCta() {
         >
           Profesyonel Montajcı mısın?
         </h2>
-        <p className="text-lg text-white/40 max-w-xl mx-auto mb-10 leading-relaxed">
+        <p className="text-lg text-white max-w-xl mx-auto mb-10 leading-relaxed">
           Binlerce müşteriye ulaş, işini büyüt. Ücretsiz kayıt ol, hemen teklif almaya başla.
         </p>
 

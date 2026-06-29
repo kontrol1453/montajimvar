@@ -56,7 +56,7 @@ export default function HomeHero() {
             <div>
               {/* Badge */}
               <motion.div variants={itemVariants}>
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white/[0.06] border border-white/[0.08] rounded-full text-xs text-white/60 mb-8">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white/[0.06] border border-white/[0.08] rounded-full text-xs text-white mb-8">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#00C853] shadow-[0_0_8px_rgba(0,200,83,0.5)]" />
                   Profesyonel Montaj Platformu
                 </div>
@@ -79,7 +79,7 @@ export default function HomeHero() {
               {/* Description */}
               <motion.p
                 variants={itemVariants}
-                className="text-lg text-white/50 max-w-lg leading-relaxed mb-10"
+                className="text-lg text-white max-w-lg leading-relaxed mb-10"
               >
                 Kurumsal firmalar ile doğrulanmış montaj ekiplerini buluşturuyoruz.
               </motion.p>
@@ -105,7 +105,7 @@ export default function HomeHero() {
               </motion.div>
 
               {/* Trust line */}
-              <motion.div variants={itemVariants} className="mt-10 flex items-center gap-6 text-white/30 text-sm">
+              <motion.div variants={itemVariants} className="mt-10 flex items-center gap-6 text-white text-sm">
                 <div className="flex items-center gap-2">
                   <div className="flex -space-x-2">
                     {[1, 2, 3].map((i) => (
@@ -115,12 +115,12 @@ export default function HomeHero() {
                       />
                     ))}
                   </div>
-                  <span className="text-white/40">320+ aktif montajcı</span>
+                  <span className="text-white">320+ aktif montajcı</span>
                 </div>
-                <span className="w-px h-4 bg-white/10" />
-                <span className="text-white/40">81 şehir</span>
-                <span className="w-px h-4 bg-white/10" />
-                <span className="text-white/40">%97 memnuniyet</span>
+<span className="w-px h-4 bg-white" />
+<span className="text-white">81 şehir</span>
+<span className="w-px h-4 bg-white" />
+<span className="text-white">%97 memnuniyet</span>
               </motion.div>
             </div>
 
@@ -139,8 +139,8 @@ export default function HomeHero() {
                         opacity: 0,
                       }}
                     >
-                      <type.icon size={24} className="text-white/30 group-hover:text-[#0B5FFF] transition-colors mb-3" />
-                      <p className="text-white/60 text-sm font-medium">{type.label}</p>
+                      <type.icon size={24} className="text-white group-hover:text-[#0B5FFF] transition-colors mb-3" />
+                      <p className="text-white text-sm font-medium">{type.label}</p>
 
                       {/* Hover glow */}
                       <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#0B5FFF]/0 via-transparent to-[#00C853]/0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
