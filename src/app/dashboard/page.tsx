@@ -120,7 +120,7 @@ export default async function DashboardPage() {
             <p className="text-[var(--color-text-tertiary)] mt-1">Platformunuzun durumu ve hızlı erişim.</p>
           </div>
           {isPremium && (
-            <PremiumBadge label="Premium" color="amber" size="lg" />
+            <PremiumBadge label="Premium" color="amber" />
           )}
         </motion.div>
 
