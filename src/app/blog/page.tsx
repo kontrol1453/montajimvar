@@ -3,18 +3,25 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 export const metadata: Metadata = {
   title: "Blog - Montajım Var",
   description: "Montaj, mobilya kurulumu ve ev dekorasyonu hakkında ipuçları, rehberler ve sektör haberleri.",
 };
 
 export default async function BlogPage() {
-  const posts = await prisma.blogPost.findMany({
-    where: { isPublished: true },
-    include: { category: { select: { name: true, slug: true } } },
-    orderBy: { publishedAt: "desc" },
-    take: 50,
-  });
+  let posts: any[] = [];
+  try {
+    posts = await prisma.blogPost.findMany({
+      where: { isPublished: true },
+      include: { category: { select: { name: true, slug: true } } },
+      orderBy: { publishedAt: "desc" },
+      take: 50,
+    });
+  } catch (e) {
+    console.error("Blog sayfası DB hatası:", e);
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -27,7 +34,7 @@ export default async function BlogPage() {
         </div>
       ) : (
         <div className="grid gap-6">
-          {posts.map((post) => (
+          {posts.map((post: any) => (
             <Link
               key={post.id}
               href={`/blog/${post.slug}`}

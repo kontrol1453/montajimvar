@@ -8,6 +8,26 @@ const nextConfig = {
       { protocol: "https", hostname: "*.googleusercontent.com" },
     ],
   },
+  async headers() {
+    return [
+      {
+        source: "/blog",
+        headers: [
+          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+          { key: "CDN-Cache-Control", value: "no-cache" },
+          { key: "Vercel-CDN-Cache-Control", value: "no-cache" },
+        ],
+      },
+      {
+        source: "/blog/:path*",
+        headers: [
+          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+          { key: "CDN-Cache-Control", value: "no-cache" },
+          { key: "Vercel-CDN-Cache-Control", value: "no-cache" },
+        ],
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
