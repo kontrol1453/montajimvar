@@ -11,6 +11,7 @@ interface Category {
   id: number;
   name: string;
   slug: string;
+  icon?: string;
 }
 
 interface SearchFormProps {
