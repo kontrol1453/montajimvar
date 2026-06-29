@@ -1,0 +1,2 @@
+[     361ms] [ERROR] Access to fetch at 'https://push.montajimvar.xyz/subscribe' from origin 'null' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The 'Access-Control-Allow-Origin' header has a value 'https://montajimvar.xyz' that is not equal to the supplied origin. Have the server send the header with a valid value. @ about:blank:0
+[     362ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://push.montajimvar.xyz/subscribe:0

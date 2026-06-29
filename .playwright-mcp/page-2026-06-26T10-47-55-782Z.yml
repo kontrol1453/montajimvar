@@ -1,0 +1,161 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "Montajım Var" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]: Montajım Var
+      - generic [ref=e7]:
+        - link "Firmalar" [ref=e8] [cursor=pointer]:
+          - /url: /ara
+        - button "Açık temaya geç" [ref=e9]:
+          - img [ref=e10]
+        - generic [ref=e12]:
+          - link "Giriş Yap" [ref=e13] [cursor=pointer]:
+            - /url: /auth/giris
+          - link "Kaydol" [ref=e14] [cursor=pointer]:
+            - /url: /auth/kayit
+  - main [ref=e15]:
+    - generic [ref=e16]:
+      - generic [ref=e17]:
+        - generic:
+          - img
+        - generic [ref=e19]:
+          - generic [ref=e20]: Türkiye'nin Montaj Platformu
+          - heading "Montajcınızı Bulun İşinizi Büyütün" [level=1] [ref=e22]:
+            - text: Montajcınızı Bulun
+            - text: İşinizi Büyütün
+          - paragraph [ref=e23]: Türkiye'nin dört bir yanındaki güvenilir montaj firmalarını, üreticiler ve müşterileri bir araya getiren platform.
+          - generic [ref=e24]:
+            - link "Firmaları Keşfet" [ref=e25] [cursor=pointer]:
+              - /url: /ara
+              - text: Firmaları Keşfet
+              - img [ref=e26]
+            - link "Hemen Katıl" [ref=e28] [cursor=pointer]:
+              - /url: /auth/kayit
+          - generic [ref=e30]:
+            - generic [ref=e31]:
+              - generic [ref=e32]: 35+
+              - generic [ref=e33]: Kayıtlı Firma
+            - generic [ref=e34]:
+              - generic [ref=e35]: "16"
+              - generic [ref=e36]: Şehir
+            - generic [ref=e37]:
+              - generic [ref=e38]:
+                - img [ref=e39]
+                - text: "3.7"
+              - generic [ref=e41]: Ortalama Puan
+            - generic [ref=e42]:
+              - generic [ref=e43]: "15"
+              - generic [ref=e44]: Kategori
+      - generic [ref=e47]:
+        - generic [ref=e48]:
+          - generic [ref=e49]: Platform Verileri
+          - heading "Büyüyen Topluluk" [level=2] [ref=e50]
+          - paragraph [ref=e51]: Her geçen gün büyüyen montaj ekosistemimizin güncel istatistikleri.
+        - generic [ref=e52]:
+          - generic [ref=e55]:
+            - img [ref=e57]
+            - generic [ref=e59]: "35"
+            - generic [ref=e60]: Firma
+          - generic [ref=e63]:
+            - img [ref=e65]
+            - generic [ref=e68]: "16"
+            - generic [ref=e69]: Şehir
+          - generic [ref=e72]:
+            - img [ref=e74]
+            - generic [ref=e76]: "3.7"
+            - generic [ref=e77]: Ortalama Puan
+          - generic [ref=e80]:
+            - img [ref=e82]
+            - generic [ref=e85]: "15"
+            - generic [ref=e86]: Kategori
+      - generic [ref=e88]:
+        - generic [ref=e89]:
+          - generic [ref=e90]: Süreç
+          - heading "Nasıl Çalışır?" [level=2] [ref=e91]
+          - paragraph [ref=e92]: Üç basit adımda ihtiyacınız olan montaj firmasını bulun.
+        - generic [ref=e93]:
+          - generic [ref=e94]:
+            - generic [ref=e97]: "01"
+            - heading "Ara ve Bul" [level=3] [ref=e98]
+            - paragraph [ref=e99]: Şehrinize ve ihtiyacınıza uygun montaj firmalarını gelişmiş filtrelerle kolayca bulun.
+          - generic [ref=e100]:
+            - generic [ref=e103]: "02"
+            - heading "İncele ve Karşılaştır" [level=3] [ref=e104]
+            - paragraph [ref=e105]: Firma profillerini inceleyin, puanlarını görün ve size en uygun olanı seçin.
+          - generic [ref=e106]:
+            - generic [ref=e109]: "03"
+            - heading "İletişime Geçin" [level=3] [ref=e110]
+            - paragraph [ref=e111]: WhatsApp üzerinden direkt mesaj gönderin, teklif alın ve anlaşmaya varın.
+      - generic [ref=e114]:
+        - generic [ref=e115]:
+          - generic [ref=e116]: Premium
+          - heading "Firmanızı Öne Çıkarın" [level=2] [ref=e117]
+          - paragraph [ref=e118]: Premium üyeliğe geçerek firmanızı binlerce müşterinin önüne çıkarın.
+        - generic [ref=e119]:
+          - generic [ref=e120]:
+            - img [ref=e122]
+            - generic [ref=e124]:
+              - heading "Vitrin Desteği" [level=3] [ref=e125]
+              - paragraph [ref=e126]: Firmanız öne çıkan firmalar bölümünde listelenir, daha fazla görüntülenme alır.
+          - generic [ref=e127]:
+            - img [ref=e129]
+            - generic [ref=e131]:
+              - heading "Arama'da Üst Sıra" [level=3] [ref=e132]
+              - paragraph [ref=e133]: Premium firmalar arama sonuçlarında her zaman üst sıralarda gösterilir.
+          - generic [ref=e134]:
+            - img [ref=e136]
+            - generic [ref=e138]:
+              - heading "Premium Rozeti" [level=3] [ref=e139]
+              - paragraph [ref=e140]: Profilinizde premium rozeti görünür, müşteriler nezdinde güven oluşturur.
+          - generic [ref=e141]:
+            - img [ref=e143]
+            - generic [ref=e145]:
+              - heading "Detaylı Analiz" [level=3] [ref=e146]
+              - paragraph [ref=e147]: Profil görüntülenme, mesaj ve yorum istatistiklerinizi görüntüleyin.
+        - link "Premium'a Geç" [ref=e149] [cursor=pointer]:
+          - /url: /dashboard/uyelik
+          - text: Premium'a Geç
+          - img [ref=e150]
+      - generic [ref=e154]:
+        - generic [ref=e155]: Başlayın
+        - heading "Sen de Firmanı Ekle" [level=2] [ref=e156]
+        - paragraph [ref=e157]: Ücretsiz kayıt olun, firmanızı ekleyin ve binlerce müşteriyle buluşun. Türkiye'nin montaj platformuna katılın.
+        - generic [ref=e158]:
+          - link "Hemen Başla" [ref=e159] [cursor=pointer]:
+            - /url: /auth/kayit
+            - text: Hemen Başla
+            - img [ref=e160]
+          - link "Firmaları Keşfet" [ref=e162] [cursor=pointer]:
+            - /url: /ara
+  - contentinfo [ref=e163]:
+    - generic [ref=e164]:
+      - generic [ref=e165]:
+        - generic [ref=e166]:
+          - generic [ref=e167]: Montajım Var
+          - paragraph [ref=e168]: Türkiye'nin montaj platformu. Montaj firmaları, üreticiler ve müşterileri bir araya getiriyor.
+        - generic [ref=e169]:
+          - heading "Hızlı Linkler" [level=3] [ref=e170]
+          - list [ref=e171]:
+            - listitem [ref=e172]:
+              - link "Firmalar" [ref=e173] [cursor=pointer]:
+                - /url: /ara
+            - listitem [ref=e174]:
+              - link "Kaydol" [ref=e175] [cursor=pointer]:
+                - /url: /auth/kayit
+            - listitem [ref=e176]:
+              - link "Giriş Yap" [ref=e177] [cursor=pointer]:
+                - /url: /auth/giris
+        - generic [ref=e178]:
+          - heading "İletişim" [level=3] [ref=e179]
+          - list [ref=e180]:
+            - listitem [ref=e181]: "Email: info@montajimvar.com"
+            - listitem [ref=e182]: "Telefon: +90 (212) 555 0000"
+      - paragraph [ref=e184]: © 2026 Montajım Var. Tüm hakları saklıdır.
+  - alert [ref=e185]
+  - generic [ref=e187]:
+    - generic [ref=e188]: 🔔
+    - generic [ref=e189]:
+      - paragraph [ref=e190]: Bildirimler
+      - paragraph [ref=e191]: Bildirimleri almak icin giris yapmaniz gerekiyor.
+      - button "Tamam" [ref=e193]

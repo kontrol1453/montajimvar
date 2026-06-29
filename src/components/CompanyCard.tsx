@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Profile } from "@prisma/client";
 import Badge from "@/components/ui/Badge";
 import PremiumBadge from "@/components/PremiumBadge";
@@ -14,19 +15,19 @@ interface CompanyCardProps {
 function LogoDisplay({ companyName, logo }: { companyName: string; logo: string | null }) {
   if (logo) {
     return (
-      <img
-        src={logo}
-        alt={`${companyName} logosu`}
-        className="w-12 h-12 rounded-lg object-contain bg-dark-bg"
-        onError={(e) => {
-          (e.target as HTMLImageElement).style.display = "none";
-          (e.target as HTMLImageElement).nextElementSibling?.classList.remove("hidden");
-        }}
-      />
+      <div className="w-12 h-12 relative rounded-lg overflow-hidden bg-dark-bg shrink-0">
+        <Image
+          src={logo}
+          alt={`${companyName} logosu`}
+          fill
+          className="object-contain"
+          unoptimized
+        />
+      </div>
     );
   }
   return (
-    <div className="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center text-xl font-bold text-accent">
+    <div className="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center text-xl font-bold text-accent shrink-0">
       {companyName[0]?.toUpperCase() || "?"}
     </div>
   );

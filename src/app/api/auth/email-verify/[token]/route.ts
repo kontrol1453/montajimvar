@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendEmail, welcomeEmailHtml } from "@/lib/email";
 
 export async function GET(
   req: NextRequest,
@@ -33,6 +34,13 @@ export async function GET(
         emailVerificationToken: null,
         emailVerificationExpires: null,
       },
+    });
+
+    // Send welcome email after successful verification
+    await sendEmail({
+      to: user.email,
+      subject: "Hoş Geldiniz! - Montajım Var",
+      html: welcomeEmailHtml(user.name),
     });
 
     return NextResponse.json({

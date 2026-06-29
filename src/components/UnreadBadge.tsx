@@ -15,11 +15,10 @@ export default function UnreadBadge() {
 
     async function fetchUnread() {
       try {
-        const res = await fetch("/api/messages?type=inbox");
+        const res = await fetch("/api/messages?type=unread-count");
         if (!res.ok) return;
-        const messages = await res.json();
-        const count = messages.filter((m: { isRead: boolean }) => !m.isRead).length;
-        setUnread(count);
+        const data = await res.json();
+        setUnread(data.count || 0);
       } catch {
         // silently fail
       }
@@ -27,8 +26,7 @@ export default function UnreadBadge() {
 
     fetchUnread();
 
-    // Poll every 30 seconds
-    const interval = setInterval(fetchUnread, 30000);
+    const interval = setInterval(fetchUnread, 15000);
     return () => clearInterval(interval);
   }, [session]);
 

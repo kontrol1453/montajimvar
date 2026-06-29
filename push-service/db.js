@@ -24,6 +24,7 @@ function initSchema() {
       p256dh TEXT NOT NULL,
       auth TEXT NOT NULL,
       user_agent TEXT,
+      is_ios INTEGER DEFAULT 0,
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
     );
@@ -34,19 +35,23 @@ function initSchema() {
     CREATE INDEX IF NOT EXISTS idx_subscriptions_endpoint
       ON subscriptions(endpoint);
   `);
+  try {
+    db.exec("ALTER TABLE subscriptions ADD COLUMN is_ios INTEGER DEFAULT 0");
+  } catch {}
 }
 
 // Subscribe: upsert by endpoint
-function upsertSubscription({ userId, endpoint, keys, userAgent }) {
+function upsertSubscription({ userId, endpoint, keys, userAgent, isIOS }) {
   const db = getDb();
   const stmt = db.prepare(`
-    INSERT INTO subscriptions (user_id, endpoint, p256dh, auth, user_agent, updated_at)
-    VALUES (@userId, @endpoint, @p256dh, @auth, @userAgent, datetime('now'))
+    INSERT INTO subscriptions (user_id, endpoint, p256dh, auth, user_agent, is_ios, updated_at)
+    VALUES (@userId, @endpoint, @p256dh, @auth, @userAgent, @isIOS, datetime('now'))
     ON CONFLICT(endpoint) DO UPDATE SET
       user_id = @userId,
       p256dh = @p256dh,
       auth = @auth,
       user_agent = @userAgent,
+      is_ios = @isIOS,
       updated_at = datetime('now')
   `);
   stmt.run({
@@ -55,6 +60,7 @@ function upsertSubscription({ userId, endpoint, keys, userAgent }) {
     p256dh: keys.p256dh,
     auth: keys.auth,
     userAgent: userAgent || null,
+    isIOS: isIOS ? 1 : 0,
   });
   return { success: true };
 }

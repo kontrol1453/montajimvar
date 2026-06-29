@@ -91,7 +91,25 @@ export async function POST(request: Request) {
       link: "/admin/kullanicilar",
     });
 
-    // TODO: Pi push servisi hazır olunca buraya webhook fetch'i eklenecek
+    // Send push notification to receiver
+    const pushServiceUrl = process.env.NEXT_PUBLIC_PUSH_SERVICE_URL;
+    const pushServiceKey = process.env.PUSH_SERVICE_KEY;
+    if (pushServiceUrl && pushServiceKey) {
+      fetch(`${pushServiceUrl}/send`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Push-Service-Key": pushServiceKey,
+        },
+        body: JSON.stringify({
+          userId: targetUserId,
+          title: senderName,
+          body: content.substring(0, 120),
+          url: `/dashboard/mesajlar/${senderId}`,
+        }),
+      }).catch((err) => console.error("Push notification error:", err));
+    }
+
     return NextResponse.json(message, { status: 201 });
   } catch (error) {
     console.error("Mesaj hatası:", error);
@@ -102,7 +120,7 @@ export async function POST(request: Request) {
   }
 }
 
-// Get messages (inbox/sent/conversation)
+// Get messages (inbox/sent/conversation/unread-count)
 export async function GET(request: Request) {
   const session = await auth();
   if (!session?.user) {
@@ -113,17 +131,30 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const type = searchParams.get("type") || "inbox";
   const conversationWith = searchParams.get("conversationWith");
+  const since = searchParams.get("since");
 
   try {
+    if (type === "unread-count") {
+      const count = await prisma.message.count({
+        where: { receiverId: userId, isRead: false },
+      });
+      return NextResponse.json({ count });
+    }
+
     if (conversationWith) {
       const otherId = Number(conversationWith);
+      const where: Record<string, unknown> = {
+        OR: [
+          { senderId: userId, receiverId: otherId },
+          { senderId: otherId, receiverId: userId },
+        ],
+      };
+      if (since) {
+        where.createdAt = { gt: new Date(since) };
+      }
+
       const messages = await prisma.message.findMany({
-        where: {
-          OR: [
-            { senderId: userId, receiverId: otherId },
-            { senderId: otherId, receiverId: userId },
-          ],
-        },
+        where,
         orderBy: { createdAt: "asc" },
         include: {
           sender: { select: { id: true, name: true, avatar: true } },

@@ -45,6 +45,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Geçersiz kategori." }, { status: 400 });
     }
 
+    // Check duplicate by companyName + city
+    const duplicateByName = await prisma.profile.findFirst({
+      where: { companyName: { equals: companyName.trim(), mode: "insensitive" }, city: city.trim() },
+      select: { id: true, companyName: true },
+    });
+    if (duplicateByName) {
+      return NextResponse.json(
+        { error: `Bu şehirde "${companyName.trim()}" adıyla kayıtlı firma zaten var.` },
+        { status: 409 }
+      );
+    }
+
     // Check if website already has a profile (avoid duplicates)
     if (website && typeof website === "string" && website.trim().length > 0) {
       let normalizedUrl = website.trim();

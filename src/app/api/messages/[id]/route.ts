@@ -18,7 +18,7 @@ export async function PATCH(_request: Request, { params }: Props) {
   try {
     const message = await prisma.message.update({
       where: { id: Number(id) },
-      data: { isRead: true },
+      data: { isRead: true, readAt: new Date() },
     });
 
     return NextResponse.json(message);

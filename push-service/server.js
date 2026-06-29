@@ -70,7 +70,8 @@ app.post("/subscribe", (req, res) => {
       return res.status(400).json({ error: "Geçersiz subscription bilgisi." });
     }
 
-    db.upsertSubscription({ userId, endpoint, keys, userAgent });
+    const isIOS = userAgent && /iPad|iPhone|iPod/.test(userAgent);
+    db.upsertSubscription({ userId, endpoint, keys, userAgent, isIOS });
     res.json({ success: true });
   } catch (err) {
     console.error("Subscribe error:", err);
@@ -114,13 +115,7 @@ app.post("/send", (req, res) => {
     return res.status(400).json({ error: "userId ve title gerekli." });
   }
 
-  const payload = {
-    title,
-    body: body || "",
-    icon: icon || "/icon-192.png",
-    badge: badge || "/apple-touch-icon.png",
-    url: url || "/",
-  };
+  const baseUrl = process.env.CORS_ORIGIN || "https://montajimvar.xyz";
 
   const subs = db.getSubscriptionsByUserId(userId);
 
@@ -135,13 +130,26 @@ app.post("/send", (req, res) => {
       keys: { p256dh: sub.p256dh, auth: sub.auth },
     };
 
+    const isIOS = sub.is_ios === 1;
+    const payload = {
+      title,
+      body: body || "",
+      icon: icon || `${baseUrl}/icon-192.png`,
+      badge: isIOS ? undefined : (badge || `${baseUrl}/apple-touch-icon.png`),
+      url: url || "/",
+    };
+
+    const options = {
+      TTL: 86400,
+      requireInteraction: !isIOS,
+    };
+
     return webpush
-      .sendNotification(subscription, JSON.stringify(payload), { TTL: 86400 })
+      .sendNotification(subscription, JSON.stringify(payload), options)
       .then(() => {
         sent++;
       })
       .catch((err) => {
-        // Gone/expired subscription
         if (err.statusCode === 410 || err.statusCode === 404) {
           db.deleteSubscriptionByEndpoint(sub.endpoint);
         }

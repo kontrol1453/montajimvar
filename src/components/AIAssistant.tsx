@@ -59,7 +59,7 @@ export default function AIAssistant() {
             </div>
             <p className="text-sm text-[var(--color-text-tertiary)] mb-4">
               Size yardımcı olmaya hazırım!
-            </div>
+            </p>
             <div className="space-y-3">
               {actions.map((action, i) => (
                 <Link
