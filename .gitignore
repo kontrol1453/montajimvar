@@ -52,3 +52,5 @@ next-env.d.ts
 .vercel
 
 push-service/logs/
+
+.playwright-mcp/
