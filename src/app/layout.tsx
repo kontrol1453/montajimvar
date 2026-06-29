@@ -7,6 +7,8 @@ import Provider from "@/components/Provider";
 import CookieBanner from "@/components/CookieBanner";
 import PushNotificationSetup from "@/components/PushNotificationSetup";
 import PwaInstallPrompt from "@/components/PwaInstallPrompt";
+import MobileBottomNav from "@/components/MobileBottomNav";
+import AIAssistant from "@/components/AIAssistant";
 
 /* ─── Typography ─────────────────────────────────────────────── */
 const inter = Inter({
@@ -132,6 +134,8 @@ export default function RootLayout({
           <CookieBanner />
           <PushNotificationSetup />
           <PwaInstallPrompt />
+          <MobileBottomNav />
+          <AIAssistant />
         </Provider>
       </body>
     </html>
