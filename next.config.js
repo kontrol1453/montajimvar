@@ -26,6 +26,22 @@ const nextConfig = {
           { key: "Vercel-CDN-Cache-Control", value: "no-cache" },
         ],
       },
+      {
+        source: "/yazilar",
+        headers: [
+          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+          { key: "CDN-Cache-Control", value: "no-cache" },
+          { key: "Vercel-CDN-Cache-Control", value: "no-cache" },
+        ],
+      },
+      {
+        source: "/yazilar/:path*",
+        headers: [
+          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+          { key: "CDN-Cache-Control", value: "no-cache" },
+          { key: "Vercel-CDN-Cache-Control", value: "no-cache" },
+        ],
+      },
     ];
   },
 };
