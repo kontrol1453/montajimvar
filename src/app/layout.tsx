@@ -100,6 +100,37 @@ export default function RootLayout({
             }}
           />
           <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                name: "Montajım Var",
+                url: "https://montajimvar.xyz",
+                logo: "https://montajimvar.xyz/icon-512.png",
+                description:
+                  "Türkiye'nin profesyonel montaj platformu. Mobilya, klima, tabela, AVM, fuar standı, elektrik ve endüstriyel montaj.",
+                sameAs: [
+                  "https://www.linkedin.com/company/montajimvar",
+                  "https://twitter.com/montajimvar",
+                  "https://www.instagram.com/montajimvar",
+                ],
+                contactPoint: {
+                  "@type": "ContactPoint",
+                  telephone: "+90-212-000-00-00",
+                  contactType: "customer service",
+                  availableLanguage: "Turkish",
+                },
+                address: {
+                  "@type": "PostalAddress",
+                  addressCountry: "TR",
+                  addressLocality: "İstanbul",
+                  addressRegion: "İstanbul",
+                },
+              }),
+            }}
+          />
+          <script
             dangerouslySetInnerHTML={{
               __html: `
                 if ('serviceWorker' in navigator) {
