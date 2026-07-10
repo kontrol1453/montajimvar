@@ -2,15 +2,24 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ArrowRight, Camera } from "lucide-react";
 
+function estimateReadTime(text: string) {
+  const words = text.split(/\s+/).length;
+  return Math.max(1, Math.ceil(words / 200));
+}
+
+function formatDate(d: Date) {
+  return d.toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" });
+}
+
 export default async function BlogSection() {
-  let posts: { title: string; slug: string; excerpt: string | null; coverImage: string | null }[] = [];
+  let posts: { title: string; slug: string; excerpt: string | null; coverImage: string | null; publishedAt: Date | null }[] = [];
 
   try {
     const result = await prisma.blogPost.findMany({
       where: { isPublished: true },
       orderBy: { publishedAt: "desc" },
       take: 3,
-      select: { title: true, slug: true, excerpt: true, coverImage: true },
+      select: { title: true, slug: true, excerpt: true, coverImage: true, publishedAt: true },
     });
     posts = result;
   } catch {
@@ -52,6 +61,15 @@ export default async function BlogSection() {
                   )}
                 </div>
                 <div className="p-5">
+                  <div className="flex items-center gap-3 text-xs text-[var(--color-text-tertiary)] mb-2">
+                    {post.publishedAt && <span>{formatDate(new Date(post.publishedAt))}</span>}
+                    {post.excerpt && (
+                      <>
+                        <span className="w-1 h-1 rounded-full bg-[var(--color-text-tertiary)]" />
+                        <span>{estimateReadTime(post.excerpt)} dk okuma</span>
+                      </>
+                    )}
+                  </div>
                   <h3 className="font-bold text-[var(--color-dark)] mb-2 line-clamp-2 group-hover:text-[var(--color-primary)] transition-colors">
                     {post.title}
                   </h3>
