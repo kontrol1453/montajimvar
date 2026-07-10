@@ -8,6 +8,7 @@ import {
   Building2,
   HardHat,
   Shield,
+  CheckCircle,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -164,10 +165,20 @@ export default function HomeHero() {
 
               <motion.div
                 variants={itemVariants}
-                className="mt-8 flex items-center gap-4 text-white/60 text-sm"
+                className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-white/50 text-xs"
               >
-                <Shield size={14} />
-                <span>Türkiye genelinde büyüyen montaj ağı</span>
+                <span className="flex items-center gap-1.5">
+                  <Shield size={12} />
+                  Doğrulanmış ekipler
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <ArrowRight size={12} />
+                  Şeffaf teklif süreci
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle size={12} />
+                  Güvenli ödeme
+                </span>
               </motion.div>
             </div>
 
@@ -186,33 +197,27 @@ export default function HomeHero() {
                     </span>
                   </div>
                   <div className="p-5 space-y-4">
+                    {/* Visual stat indicators — placeholder UI */}
                     <div className="grid grid-cols-3 gap-3">
                       {[
-                        { label: "Aktif İşler", value: "24", color: "#0B5FFF" },
-                        {
-                          label: "Montaj Ekibi",
-                          value: "12",
-                          color: "#00C853",
-                        },
-                        {
-                          label: "Tamamlanma",
-                          value: "%94",
-                          color: "#F59E0B",
-                        },
+                        { label: "Aktif İşler", color: "#0B5FFF" },
+                        { label: "Montaj Ekibi", color: "#00C853" },
+                        { label: "Tamamlanma", color: "#F59E0B" },
                       ].map((stat) => (
                         <div
                           key={stat.label}
                           className="bg-white/[0.04] rounded-xl p-4 border border-white/[0.06]"
                         >
-                          <p className="text-white/40 text-xs mb-1">
+                          <p className="text-white/40 text-xs mb-2">
                             {stat.label}
                           </p>
-                          <p
-                            className="text-white text-2xl font-bold"
-                            style={{ color: stat.color }}
-                          >
-                            {stat.value}
-                          </p>
+                          <div
+                            className="h-2 rounded-full"
+                            style={{
+                              background: `linear-gradient(90deg, ${stat.color}60, ${stat.color}20)`,
+                              width: `${60 + Math.random() * 30}%`,
+                            }}
+                          />
                         </div>
                       ))}
                     </div>
@@ -223,17 +228,17 @@ export default function HomeHero() {
                       <div className="space-y-3">
                         {[
                           {
-                            job: "AVM Montajı - İstanbul",
+                            job: "AVM Montajı — İstanbul",
                             status: "Devam Ediyor",
                             color: "#0B5FFF",
                           },
                           {
-                            job: "Mobilya Kurulumu - Ankara",
+                            job: "Mobilya Kurulumu — Ankara",
                             status: "Tamamlandı",
                             color: "#00C853",
                           },
                           {
-                            job: "Fuar Standı - İzmir",
+                            job: "Fuar Standı — İzmir",
                             status: "Onay Bekliyor",
                             color: "#F59E0B",
                           },
@@ -263,9 +268,10 @@ export default function HomeHero() {
                         </div>
                         <p className="text-white text-sm">Canlı Ekip Takibi</p>
                       </div>
-                      <span className="text-white/40 text-xs">
-                        3 ekip aktif
-                      </span>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#00C853] animate-pulse" />
+                        <span className="text-white/40 text-xs">Aktif</span>
+                      </div>
                     </div>
                   </div>
                 </div>

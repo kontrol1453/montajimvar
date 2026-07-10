@@ -19,6 +19,7 @@ import PlatformFeatures from "./PlatformFeatures";
 import CorporateSection from "./CorporateSection";
 import WhySection from "./WhySection";
 import FinalCta from "./FinalCta";
+import ProductShowcase from "./ProductShowcase";
 
 export const dynamic = "force-dynamic";
 
@@ -76,6 +77,9 @@ export default async function HomePage() {
 
       {/* ─── NASIL ÇALIŞIR ─── */}
       <HomeHowItWorks />
+
+      {/* ─── ÜRÜN TANITIMI ─── */}
+      <ProductShowcase />
 
       {/* ─── PLATFORM ÖZELLİKLERİ ─── */}
       <PlatformFeatures />
