@@ -78,22 +78,22 @@ export default function HomeStats({
       icon: Building2,
     },
     {
-      value: categoryCount || 136,
+      value: categoryCount,
       suffix: "+",
-      label: "Tamamlanan İş",
+      label: "Kategori",
       icon: Layers,
     },
     {
-      value: cityCount || 81,
+      value: cityCount,
       label: "Şehir",
       icon: MapPin,
     },
     {
-      value: avgRating > 0 ? avgRating : 97,
-      suffix: "%",
-      label: "Memnuniyet",
+      value: avgRating,
+      suffix: "",
+      label: "Puan",
       icon: Star,
-      decimals: avgRating > 0 ? 1 : 0,
+      decimals: 1,
     },
   ];
 
