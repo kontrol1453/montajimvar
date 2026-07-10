@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight, Wrench } from "lucide-react";
 import { motion } from "framer-motion";
