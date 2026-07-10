@@ -20,11 +20,11 @@ export default function JobReviewsSection({ artisanId }: { artisanId: number }) 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/jobs?artisanId=${artisanId}&status=completed`)
+    fetch(`/api/jobs/reviews?artisanId=${artisanId}&limit=20`)
       .then((r) => r.json())
       .then((data) => {
-        if (data.jobs) {
-          setReviews(data.jobs);
+        if (data.reviews) {
+          setReviews(data.reviews);
         }
       })
       .catch(() => {})
@@ -32,7 +32,6 @@ export default function JobReviewsSection({ artisanId }: { artisanId: number }) 
   }, [artisanId]);
 
   if (loading) return null;
-
   if (reviews.length === 0) return null;
 
   return (
