@@ -36,19 +36,22 @@ export default function FinalCta() {
           {CTA_DATA.subtitle}
         </p>
 
-        <div className="flex flex-wrap justify-center gap-4">
+        <div className="flex flex-wrap justify-center gap-5">
           {CTA_DATA.actions.map((action) => (
             <Link
               key={action.label}
               href={action.href}
               className={
                 action.primary
-                  ? "inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-sm font-semibold text-[var(--color-dark)] hover:bg-white/90 transition-all hover:-translate-y-0.5 shadow-lg shadow-white/10"
-                  : "inline-flex items-center gap-2 px-7 py-3.5 rounded-xl border border-white/20 text-sm font-semibold text-white hover:bg-white/[0.06] transition-all hover:-translate-y-0.5"
+                  ? "flex flex-col items-center gap-1 px-8 py-4 rounded-xl bg-white text-[var(--color-dark)] hover:bg-white/90 transition-all hover:-translate-y-0.5 shadow-lg shadow-white/10 min-w-[200px]"
+                  : "flex flex-col items-center gap-1 px-8 py-4 rounded-xl border border-white/20 text-white hover:bg-white/[0.06] transition-all hover:-translate-y-0.5 min-w-[200px]"
               }
             >
-              {action.label}
-              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+              <span className="text-sm font-semibold flex items-center gap-2">
+                {action.label}
+                <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+              </span>
+              <span className="text-xs opacity-60">{action.description}</span>
             </Link>
           ))}
         </div>
