@@ -101,6 +101,19 @@ export default function JobDetailClient({ job, userId, isOwner, isArtisan, exist
   const [bidError, setBidError] = useState("");
   const [bidDone, setBidDone] = useState(false);
 
+  const [sortBy, setSortBy] = useState<string>("price_asc");
+  const sortedOffers = [...job.offers].sort((a, b) => {
+    if (sortBy === "price_asc") return a.amount - b.amount;
+    if (sortBy === "price_desc") return b.amount - a.amount;
+    if (sortBy === "rating_desc") {
+      const ra = a.artisan.profile?.ratingAvg || 0;
+      const rb = b.artisan.profile?.ratingAvg || 0;
+      return rb - ra;
+    }
+    return 0;
+  });
+  const bestOffer = sortedOffers.length > 0 ? sortedOffers[0] : null;
+
   const [actionLoading, setActionLoading] = useState<Record<number, boolean>>({});
   const [actionError, setActionError] = useState("");
 
@@ -410,8 +423,29 @@ export default function JobDetailClient({ job, userId, isOwner, isArtisan, exist
                 <p className="text-sub-text">Teklifler geldiğinde burada göreceksiniz.</p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {job.offers.map((offer) => {
+              <>
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-xs text-sub-text">Sırala:</span>
+                  {[
+                    { key: "price_asc", label: "En Düşük Fiyat" },
+                    { key: "price_desc", label: "En Yüksek Fiyat" },
+                    { key: "rating_desc", label: "En Yüksek Puan" },
+                  ].map((opt) => (
+                    <button
+                      key={opt.key}
+                      onClick={() => setSortBy(opt.key)}
+                      className={`px-3 py-1 rounded-full text-xs font-medium transition ${
+                        sortBy === opt.key
+                          ? "bg-montaj text-white"
+                          : "bg-dark-section text-sub-text hover:text-white"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="space-y-4">
+                  {sortedOffers.map((offer) => {
                   const isAccepted = offer.status === "accepted";
                   const isRejected = offer.status === "rejected";
                   const isPending = offer.status === "pending";
@@ -494,6 +528,7 @@ export default function JobDetailClient({ job, userId, isOwner, isArtisan, exist
                   );
                 })}
               </div>
+            </>
             )}
           </div>
         )}
