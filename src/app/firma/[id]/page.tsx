@@ -147,6 +147,12 @@ export default async function CompanyProfilePage({ params }: Props) {
               {profile.isVerified && (
                 <Badge variant="success">Onaylı Firma</Badge>
               )}
+              {profile.hasInsurance && (
+                <Badge variant="default" className="bg-blue-900/30 text-blue-400">Sigortalı</Badge>
+              )}
+              {profile.hasGuarantee && (
+                <Badge variant="default" className="bg-purple-900/30 text-purple-400">Garantili</Badge>
+              )}
               {isPublicProfile && canAddFavorite && <FavoriteButton profileId={profile.id} />}
             </div>
 

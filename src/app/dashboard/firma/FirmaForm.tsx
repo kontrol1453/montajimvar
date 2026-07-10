@@ -41,6 +41,8 @@ export default function FirmaForm({ profile, categoryIds: initialCategoryIds, ca
     whatsapp: (profile as any)?.whatsapp || "",
     latitude: (profile as any)?.latitude ?? "",
     longitude: (profile as any)?.longitude ?? "",
+    hasInsurance: (profile as any)?.hasInsurance ?? false,
+    hasGuarantee: (profile as any)?.hasGuarantee ?? false,
   });
   const [selectedCategories, setSelectedCategories] = useState<number[]>(
     initialCategoryIds.length > 0
@@ -72,6 +74,8 @@ export default function FirmaForm({ profile, categoryIds: initialCategoryIds, ca
           whatsapp: form.whatsapp || undefined,
           latitude: form.latitude || undefined,
           longitude: form.longitude || undefined,
+          hasInsurance: form.hasInsurance,
+          hasGuarantee: form.hasGuarantee,
           categoryIds: selectedCategories,
         }),
       });
@@ -221,6 +225,33 @@ export default function FirmaForm({ profile, categoryIds: initialCategoryIds, ca
             value={form.website}
             onChange={(e) => setForm({ ...form, website: e.target.value })}
           />
+        </div>
+
+        <div className="flex flex-wrap gap-6">
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={form.hasInsurance}
+              onChange={(e) => setForm({ ...form, hasInsurance: e.target.checked })}
+              className="w-5 h-5 rounded border-dark-border bg-dark-card text-montaj focus:ring-montaj"
+            />
+            <div>
+              <span className="text-sm font-medium text-white">Sigortalı Hizmet</span>
+              <p className="text-xs text-sub-text">İş güvenliği sigortası mevcut</p>
+            </div>
+          </label>
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={form.hasGuarantee}
+              onChange={(e) => setForm({ ...form, hasGuarantee: e.target.checked })}
+              className="w-5 h-5 rounded border-dark-border bg-dark-card text-montaj focus:ring-montaj"
+            />
+            <div>
+              <span className="text-sm font-medium text-white">Garantili Hizmet</span>
+              <p className="text-xs text-sub-text">Yapılan işe garanti veriliyor</p>
+            </div>
+          </label>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
