@@ -54,3 +54,6 @@ next-env.d.ts
 push-service/logs/
 
 .playwright-mcp/
+
+graphify-out/
+.omo/

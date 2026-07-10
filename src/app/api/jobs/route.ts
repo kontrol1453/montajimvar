@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendEmail } from "@/lib/email";
+
+const PUSH_SERVICE_URL = process.env.NEXT_PUBLIC_PUSH_SERVICE_URL || "http://localhost:3001";
+const PUSH_SERVICE_KEY = process.env.PUSH_SERVICE_KEY;
 
 export const dynamic = "force-dynamic";
 
@@ -170,6 +174,11 @@ export async function POST(request: Request) {
       },
     });
 
+    // Notify matching artisans (push + email) — fire-and-forget
+    notifyMatchingArtisans(job.id, categoryIds, city, title).catch((err) =>
+      console.error("Notification dispatch failed:", err)
+    );
+
     return NextResponse.json({ job, message: "İş başarıyla oluşturuldu." }, { status: 201 });
   } catch (error) {
     console.error("İş oluşturma hatası:", error);
@@ -177,5 +186,64 @@ export async function POST(request: Request) {
       { error: "İş oluşturulurken hata oluştu." },
       { status: 500 }
     );
+  }
+}
+
+async function notifyMatchingArtisans(
+  jobId: number,
+  categoryIds: number[],
+  city: string,
+  title: string
+) {
+  try {
+    // Find artisan profiles matching these categories AND this city
+    const profiles = await prisma.profile.findMany({
+      where: {
+        user: { roles: { has: "ARTISAN" } },
+        city,
+      },
+      select: { userId: true, user: { select: { email: true } } },
+    });
+
+    if (profiles.length === 0) return;
+
+    const artisanIds = profiles.map((p) => p.userId);
+    const jobUrl = `/isler/${jobId}`;
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://montajimvar.xyz";
+    const pushBody = `${city} bölgesinde yeni iş: ${title}`;
+
+    // Push notification — skip if push service not configured
+    if (PUSH_SERVICE_URL && PUSH_SERVICE_KEY) {
+      fetch(`${PUSH_SERVICE_URL}/send`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Push-Service-Key": PUSH_SERVICE_KEY,
+        },
+        body: JSON.stringify({
+          userIds: artisanIds,
+          title: "Yeni İş Talebi",
+          body: pushBody,
+          url: jobUrl,
+        }),
+      }).catch((err) => console.error("Push dispatch failed:", err));
+    }
+
+    // Email notification
+    for (const profile of profiles) {
+      if (profile.user.email) {
+        sendEmail({
+          to: profile.user.email,
+          subject: `Yeni İş Talebi: ${title}`,
+          html: `<p>${city} bölgesinde yeni bir montaj işi talebi oluşturuldu.</p>
+<p><strong>${title}</strong></p>
+<p><a href="${baseUrl}${jobUrl}">İşi görüntüle ve teklif ver</a></p>`,
+        });
+      }
+    }
+
+    console.log(`Notified ${profiles.length} artisans for job #${jobId}`);
+  } catch (err) {
+    console.error("notifyMatchingArtisans error:", err);
   }
 }

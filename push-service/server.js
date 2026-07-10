@@ -100,7 +100,8 @@ app.post("/unsubscribe", (req, res) => {
 
 // ─── Send Push (internal - called by main site) ─────────────────────
 // POST /send
-// Body: { userId, title, body, icon?, badge?, url? }
+// Body: { userId, title, body, icon?, badge?, url? }  — single user
+//   OR: { userIds: [1,2,3], title, body, icon?, badge?, url? }  — multiple users
 // Auth: X-Push-Service-Key header must match PUSH_SERVICE_KEY
 app.post("/send", (req, res) => {
   // Auth check
@@ -109,56 +110,66 @@ app.post("/send", (req, res) => {
     return res.status(401).json({ error: "Yetkisiz erişim." });
   }
 
-  const { userId, title, body, icon, badge, url } = req.body;
+  const { userId, userIds, title, body, icon, badge, url } = req.body;
+  const targetIds = userIds || (userId ? [userId] : []);
 
-  if (!userId || !title) {
-    return res.status(400).json({ error: "userId ve title gerekli." });
+  if (targetIds.length === 0 || !title) {
+    return res.status(400).json({ error: "userId/userIds ve title gerekli." });
   }
 
   const baseUrl = process.env.CORS_ORIGIN || "https://montajimvar.xyz";
+  let sent = 0;
+  let total = 0;
+  const allResults = [];
 
-  const subs = db.getSubscriptionsByUserId(userId);
+  for (const uid of targetIds) {
+    const subs = db.getSubscriptionsByUserId(uid);
+    total += subs.length;
 
-  if (subs.length === 0) {
+    if (subs.length === 0) continue;
+
+    for (const sub of subs) {
+      const subscription = {
+        endpoint: sub.endpoint,
+        keys: { p256dh: sub.p256dh, auth: sub.auth },
+      };
+
+      const isIOS = sub.is_ios === 1;
+      const payload = {
+        title,
+        body: body || "",
+        icon: icon || `${baseUrl}/icon-192.png`,
+        badge: isIOS ? undefined : (badge || `${baseUrl}/apple-touch-icon.png`),
+        url: url || "/",
+      };
+
+      const options = {
+        TTL: 86400,
+        requireInteraction: !isIOS,
+      };
+
+      allResults.push(
+        webpush
+          .sendNotification(subscription, JSON.stringify(payload), options)
+          .then(() => {
+            sent++;
+          })
+          .catch((err) => {
+            if (err.statusCode === 410 || err.statusCode === 404) {
+              db.deleteSubscriptionByEndpoint(sub.endpoint);
+            }
+            console.error(`Push failed for ${sub.endpoint.substring(0, 50)}...:`, err.message);
+          })
+      );
+    }
+  }
+
+  if (allResults.length === 0) {
     return res.json({ sent: 0, total: 0, message: "Abonelik bulunamadı." });
   }
 
-  let sent = 0;
-  const results = subs.map((sub) => {
-    const subscription = {
-      endpoint: sub.endpoint,
-      keys: { p256dh: sub.p256dh, auth: sub.auth },
-    };
-
-    const isIOS = sub.is_ios === 1;
-    const payload = {
-      title,
-      body: body || "",
-      icon: icon || `${baseUrl}/icon-192.png`,
-      badge: isIOS ? undefined : (badge || `${baseUrl}/apple-touch-icon.png`),
-      url: url || "/",
-    };
-
-    const options = {
-      TTL: 86400,
-      requireInteraction: !isIOS,
-    };
-
-    return webpush
-      .sendNotification(subscription, JSON.stringify(payload), options)
-      .then(() => {
-        sent++;
-      })
-      .catch((err) => {
-        if (err.statusCode === 410 || err.statusCode === 404) {
-          db.deleteSubscriptionByEndpoint(sub.endpoint);
-        }
-        console.error(`Push failed for ${sub.endpoint.substring(0, 50)}...:`, err.message);
-      });
-  });
-
-  Promise.allSettled(results).then(() => {
-    res.json({ sent, total: subs.length });
+  Promise.allSettled(allResults).then(() => {
+    res.json({ sent, total, users: targetIds.length });
   });
 });
 

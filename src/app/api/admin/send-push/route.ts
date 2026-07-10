@@ -14,10 +14,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Push servisi anahtari yapilandirilmamis." }, { status: 500 });
   }
 
-  const { userId, title, body } = await request.json();
+  const { userId, userIds, title, body } = await request.json();
 
-  if (!userId || !title) {
-    return NextResponse.json({ error: "userId ve title gerekli." }, { status: 400 });
+  if ((!userId && !userIds) || !title) {
+    return NextResponse.json({ error: "userId (veya userIds) ve title gerekli." }, { status: 400 });
   }
 
   try {
@@ -27,7 +27,12 @@ export async function POST(request: Request) {
         "Content-Type": "application/json",
         "X-Push-Service-Key": PUSH_SERVICE_KEY,
       },
-      body: JSON.stringify({ userId, title, body: body || "", url: "/" }),
+      body: JSON.stringify({
+        ...(userIds ? { userIds } : { userId }),
+        title,
+        body: body || "",
+        url: "/",
+      }),
     });
 
     const data = await res.json();
