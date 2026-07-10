@@ -665,10 +665,27 @@ export default function JobDetailClient({ job, userId, isOwner, isArtisan, exist
                   {bidDone ? "✓ Teklifiniz gönderildi!" : "✓ Teklifiniz gönderilmiş"}
                 </p>
                 {existingOffer && (
-                  <p className="text-green-300 text-sm mt-1">
-                    Tutar: {formatCur(existingOffer.amount)}
-                    {existingOffer.duration && ` · Süre: ${existingOffer.duration}`}
-                  </p>
+                  <>
+                    <p className="text-green-300 text-sm mt-1">
+                      Tutar: {formatCur(existingOffer.amount)}
+                      {existingOffer.duration && ` · Süre: ${existingOffer.duration}`}
+                    </p>
+                    {existingOffer.status === "pending" && (
+                      <button
+                        onClick={async () => {
+                          const res = await fetch(`/api/offers/${existingOffer.id}`, {
+                            method: "PATCH",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ action: "withdrawn" }),
+                          });
+                          if (res.ok) router.refresh();
+                        }}
+                        className="mt-3 px-4 py-1.5 text-sm font-medium text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/10 transition"
+                      >
+                        Teklifi Geri Çek
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             ) : (

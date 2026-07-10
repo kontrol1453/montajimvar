@@ -19,11 +19,11 @@ export async function PATCH(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { action } = body; // "accepted" | "rejected"
+    const { action } = body; // "accepted" | "rejected" | "withdrawn"
 
-    if (!action || !["accepted", "rejected"].includes(action)) {
+    if (!action || !["accepted", "rejected", "withdrawn"].includes(action)) {
       return NextResponse.json(
-        { error: "Geçersiz işlem. 'accepted' veya 'rejected' olmalıdır." },
+        { error: "Geçersiz işlem. 'accepted', 'rejected' veya 'withdrawn' olmalıdır." },
         { status: 400 }
       );
     }
@@ -37,18 +37,35 @@ export async function PATCH(
       return NextResponse.json({ error: "Teklif bulunamadı." }, { status: 404 });
     }
 
+    if (offer.status !== "pending") {
+      return NextResponse.json(
+        { error: `Bu teklif zaten "${offer.status}" durumunda.` },
+        { status: 400 }
+      );
+    }
+
+    // Withdraw: artisan can withdraw own offer
+    if (action === "withdrawn") {
+      if (offer.artisanId !== userId) {
+        return NextResponse.json(
+          { error: "Bu teklifi geri çekme yetkiniz yok." },
+          { status: 403 }
+        );
+      }
+
+      await prisma.offer.update({
+        where: { id: Number(id) },
+        data: { status: "withdrawn" },
+      });
+
+      return NextResponse.json({ message: "Teklifiniz geri çekildi." });
+    }
+
     // Only job owner can accept/reject
     if (offer.job.customerId !== userId) {
       return NextResponse.json(
         { error: "Bu teklifi yanıtlama yetkiniz yok." },
         { status: 403 }
-      );
-    }
-
-    if (offer.status !== "pending") {
-      return NextResponse.json(
-        { error: `Bu teklif zaten "${offer.status}" durumunda.` },
-        { status: 400 }
       );
     }
 
