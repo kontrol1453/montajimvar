@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import HomeHero from "./HomeHero";
 import HomeBrands from "./HomeBrands";
@@ -15,6 +16,17 @@ import BlogSection from "./BlogSection";
 import FaqSection from "./FaqSection";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Montajım Var - Profesyonel Montaj Platformu",
+  description:
+    "Türkiye'nin profesyonel montaj platformu. Mobilya, klima, tabela, AVM, fuar standı, elektrik ve endüstriyel montaj hizmetleri için doğrulanmış ekiplerden anında teklif alın.",
+  openGraph: {
+    title: "Montajım Var - Profesyonel Montaj Platformu",
+    description:
+      "Mobilya, klima, tabela, AVM, fuar standı ve elektrik montaj hizmetleri için doğrulanmış ekiplerden anında teklif alın.",
+  },
+};
 
 async function getHomeData() {
   const [profileCount, cities, ratingAgg, categoryCount, parentCategories] =
