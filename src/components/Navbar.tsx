@@ -7,7 +7,6 @@ import { useState, useRef, useEffect } from "react";
 import {
   Menu,
   X,
-  Search,
   Briefcase,
   User,
   LogOut,
@@ -66,24 +65,26 @@ export default function Navbar() {
               href="/ara"
               className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-dark)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
             >
-              <Search size={16} />
-              Firmalar
+              Hizmetler
             </Link>
             <Link
-              href="/is-ver"
+              href="/#nasil-calisir"
               className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-dark)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
             >
-              <Briefcase size={16} />
-              İş Ver
+              Nasıl Çalışır?
             </Link>
-            {session && (
-              <Link
-                href="/is-ilanlari"
-                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-dark)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
-              >
-                İş İlanları
-              </Link>
-            )}
+            <Link
+              href="/ara?tip=kurumsal"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-dark)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
+            >
+              Kurumsal
+            </Link>
+            <Link
+              href="/auth/kayit"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-dark)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
+            >
+              Montaj Ekipleri
+            </Link>
             <Link
               href="/blog"
               className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-dark)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
@@ -195,10 +196,10 @@ export default function Navbar() {
                   Giriş Yap
                 </Link>
                 <Link
-                  href="/auth/kayit"
+                  href="/is-ver"
                   className="btn-primary !py-2 !px-4 !text-sm"
                 >
-                  Kaydol
+                  İş Oluştur
                 </Link>
               </div>
             )}
@@ -223,36 +224,39 @@ export default function Navbar() {
             className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
             onClick={() => setMenuOpen(false)}
           >
-            <Search size={18} />
-            Firmalar
+            Hizmetler
           </Link>
-<Link
-                href="/islerim"
-                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
-                onClick={() => setMenuOpen(false)}
-              >
-            <Briefcase size={18} />
-            İş Ver
+          <Link
+            href="/#nasil-calisir"
+            className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
+            onClick={() => setMenuOpen(false)}
+          >
+            Nasıl Çalışır?
+          </Link>
+          <Link
+            href="/ara?tip=kurumsal"
+            className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
+            onClick={() => setMenuOpen(false)}
+          >
+            Kurumsal
+          </Link>
+          <Link
+            href="/auth/kayit"
+            className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
+            onClick={() => setMenuOpen(false)}
+          >
+            Montaj Ekipleri
           </Link>
           <Link
             href="/blog"
             className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
             onClick={() => setMenuOpen(false)}
           >
-            <Newspaper size={18} />
             Blog
           </Link>
           {session ? (
             <>
               <hr className="border-[var(--color-border-light)] my-1" />
-              <Link
-                href="/is-ilanlari"
-                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
-                onClick={() => setMenuOpen(false)}
-              >
-                <Briefcase size={18} />
-                İş İlanları
-              </Link>
               <Link
                 href="/dashboard"
                 className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
@@ -261,7 +265,7 @@ export default function Navbar() {
                 <LayoutDashboard size={18} />
                 Panelim
               </Link>
-<Link
+              <Link
                 href="/dashboard/mesajlar"
                 className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)] relative"
                 onClick={() => setMenuOpen(false)}
@@ -269,6 +273,14 @@ export default function Navbar() {
                 <MessageSquare size={18} />
                 Mesajlarım
                 <UnreadBadge />
+              </Link>
+              <Link
+                href="/islerim"
+                className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
+                onClick={() => setMenuOpen(false)}
+              >
+                <Briefcase size={18} />
+                İşlerim
               </Link>
               <Link
                 href="/dashboard/favoriler"
@@ -314,11 +326,18 @@ export default function Navbar() {
                 Giriş Yap
               </Link>
               <Link
-                href="/auth/kayit"
+                href="/is-ver"
                 className="btn-primary !w-full text-center"
                 onClick={() => setMenuOpen(false)}
               >
-                Kaydol
+                İş Oluştur
+              </Link>
+              <Link
+                href="/auth/kayit"
+                className="block text-center py-2.5 text-sm font-medium text-[var(--color-dark)] border border-[var(--color-border-default)] rounded-lg"
+                onClick={() => setMenuOpen(false)}
+              >
+                Montajcı Kaydı
               </Link>
             </div>
           )}

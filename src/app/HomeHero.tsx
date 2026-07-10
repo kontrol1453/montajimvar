@@ -1,7 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Play, HardHat, Building2, Monitor, Layout, Zap } from "lucide-react";
+import {
+  ArrowRight,
+  Briefcase,
+  User,
+  Building2,
+  HardHat,
+  Shield,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 const containerVariants = {
@@ -14,31 +21,25 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, cubicBezier: [0.16, 1, 0.3, 1] } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, cubicBezier: [0.16, 1, 0.3, 1] },
+  },
 };
-
-const montageTypes = [
-  { label: "AVM Montajı", icon: Building2 },
-  { label: "Reklam Tabelası", icon: Monitor },
-  { label: "Mobilya Kurulumu", icon: Layout },
-  { label: "Fuar Standı", icon: Zap },
-  { label: "Elektrik Montajı", icon: Zap },
-];
 
 export default function HomeHero() {
   return (
     <section className="hero-section relative min-h-[90vh] flex items-center bg-gradient-to-br from-[#0a1628] via-[#0f1f3a] to-[#060e1a] overflow-hidden">
-      {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Grid */}
         <div
           className="absolute inset-0 opacity-[0.03]"
           style={{
-            backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.5) 1px, transparent 0)",
+            backgroundImage:
+              "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.5) 1px, transparent 0)",
             backgroundSize: "40px 40px",
           }}
         />
-        {/* Gradient Orbs */}
         <div className="absolute top-1/4 -left-32 w-[600px] h-[600px] bg-[#0B5FFF]/10 rounded-full blur-[200px]" />
         <div className="absolute bottom-1/4 -right-32 w-[500px] h-[500px] bg-[#00C853]/8 rounded-full blur-[180px]" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-[#0B5FFF]/5 rounded-full blur-[150px]" />
@@ -52,9 +53,8 @@ export default function HomeHero() {
       >
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Text + CTAs */}
+            {/* Left */}
             <div>
-              {/* Badge */}
               <motion.div variants={itemVariants}>
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white/[0.06] border border-white/[0.08] rounded-full text-xs text-white mb-8">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#00C853] shadow-[0_0_8px_rgba(0,200,83,0.5)]" />
@@ -62,108 +62,219 @@ export default function HomeHero() {
                 </div>
               </motion.div>
 
-              {/* Heading */}
               <motion.h1
                 variants={itemVariants}
                 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.08] tracking-tight text-white mb-6"
                 style={{ fontFamily: "'Manrope', system-ui, sans-serif" }}
               >
-                Türkiye&apos;nin{" "}
+                Montaj İşlerinizi{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0B5FFF] via-[#3d7fff] to-[#00C853]">
-                  Profesyonel
+                  Tek Platformdan
                 </span>
                 <br />
-                Montaj Platformu
+                Yönetin
               </motion.h1>
 
-              {/* Description */}
               <motion.p
                 variants={itemVariants}
-                className="text-lg text-white max-w-lg leading-relaxed mb-10"
+                className="text-lg text-white/80 max-w-lg leading-relaxed mb-10"
               >
-                Kurumsal firmalar ile doğrulanmış montaj ekiplerini buluşturuyoruz.
+                İhtiyacınızı oluşturun, doğrulanmış montaj ekiplerinden teklif
+                alın, süreci takip edin ve işi güvenle tamamlayın.
               </motion.p>
 
-              {/* CTAs */}
-              <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4">
+              <motion.div
+                variants={itemVariants}
+                className="flex flex-col sm:flex-row gap-4"
+              >
                 <Link
                   href="/is-ver"
                   className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#00C853] hover:bg-[#00a844] text-white font-bold text-lg rounded-2xl transition-all shadow-xl shadow-[#00C853]/25 hover:shadow-[#00C853]/40 hover:-translate-y-0.5"
                 >
-                  <span className="text-2xl">🟢</span>
-                  İş Veriyorum
-                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                  <Briefcase size={20} />
+                  İş Oluştur
+                  <ArrowRight
+                    size={20}
+                    className="group-hover:translate-x-1 transition-transform"
+                  />
+                </Link>
+                <Link
+                  href="/ara"
+                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold text-lg rounded-2xl transition-all border border-white/20 hover:border-white/30"
+                >
+                  Montajcı Bul
+                  <ArrowRight
+                    size={20}
+                    className="group-hover:translate-x-1 transition-transform"
+                  />
+                </Link>
+              </motion.div>
+
+              <motion.div
+                variants={itemVariants}
+                className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3"
+              >
+                <Link
+                  href="/is-ver"
+                  className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] hover:border-white/20 transition-all"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-[#0B5FFF]/20 flex items-center justify-center">
+                    <User size={18} className="text-[#0B5FFF]" />
+                  </div>
+                  <div>
+                    <p className="text-white text-sm font-semibold">Bireysel</p>
+                    <p className="text-white/50 text-xs">
+                      Montaj ihtiyacını oluştur
+                    </p>
+                  </div>
+                </Link>
+                <Link
+                  href="/kurumsal"
+                  className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] hover:border-white/20 transition-all"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-[#00C853]/20 flex items-center justify-center">
+                    <Building2 size={18} className="text-[#00C853]" />
+                  </div>
+                  <div>
+                    <p className="text-white text-sm font-semibold">
+                      Kurumsal
+                    </p>
+                    <p className="text-white/50 text-xs">
+                      Operasyonlarını yönet
+                    </p>
+                  </div>
                 </Link>
                 <Link
                   href="/auth/kayit"
-                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#0B5FFF] hover:bg-[#0948cc] text-white font-bold text-lg rounded-2xl transition-all shadow-xl shadow-[#0B5FFF]/25 hover:shadow-[#0B5FFF]/40 hover:-translate-y-0.5"
+                  className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] hover:border-white/20 transition-all"
                 >
-                  <span className="text-2xl">🔵</span>
-                  Montaj Ekibiyim
-                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                  <div className="w-10 h-10 rounded-lg bg-[#F59E0B]/20 flex items-center justify-center">
+                    <HardHat size={18} className="text-[#F59E0B]" />
+                  </div>
+                  <div>
+                    <p className="text-white text-sm font-semibold">
+                      Montaj Ekibi
+                    </p>
+                    <p className="text-white/50 text-xs">
+                      İş fırsatlarına ulaş
+                    </p>
+                  </div>
                 </Link>
               </motion.div>
 
-              {/* Trust line */}
-              <motion.div variants={itemVariants} className="mt-10 flex items-center gap-6 text-white text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="flex -space-x-2">
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="w-8 h-8 rounded-full border-2 border-[#0a1628] bg-gradient-to-br from-[#0B5FFF]/30 to-[#00C853]/30"
-                      />
-                    ))}
-                  </div>
-                  <span className="text-white">320+ aktif montajcı</span>
-                </div>
-<span className="w-px h-4 bg-white" />
-<span className="text-white">81 şehir</span>
-<span className="w-px h-4 bg-white" />
-<span className="text-white">%97 memnuniyet</span>
+              <motion.div
+                variants={itemVariants}
+                className="mt-8 flex items-center gap-4 text-white/60 text-sm"
+              >
+                <Shield size={14} />
+                <span>Türkiye genelinde büyüyen montaj ağı</span>
               </motion.div>
             </div>
 
-            {/* Right: Montage Type Grid */}
+            {/* Right: Dashboard Mockup */}
             <motion.div variants={itemVariants} className="hidden lg:block">
               <div className="relative">
-                {/* Floating grid of montage types */}
-                <div className="grid grid-cols-2 gap-4">
-                  {montageTypes.map((type, i) => (
-                    <div
-                      key={type.label}
-                      className="group relative bg-white/[0.04] border border-white/[0.06] rounded-2xl p-6 backdrop-blur-sm hover:bg-white/[0.08] hover:border-white/20 transition-all hover:-translate-y-1"
-                      style={{
-                        animation: `fade-in-up 0.6s ease-out forwards`,
-                        animationDelay: `${0.5 + i * 0.1}s`,
-                        opacity: 0,
-                      }}
-                    >
-                      <type.icon size={24} className="text-white group-hover:text-[#0B5FFF] transition-colors mb-3" />
-                      <p className="text-white text-sm font-medium">{type.label}</p>
-
-                      {/* Hover glow */}
-                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#0B5FFF]/0 via-transparent to-[#00C853]/0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                <div className="bg-[#0d1e33] rounded-2xl border border-white/[0.08] overflow-hidden shadow-2xl shadow-[#0B5FFF]/10">
+                  <div className="flex items-center gap-2 px-5 py-3 bg-white/[0.03] border-b border-white/[0.06]">
+                    <div className="flex gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-red-500/60" />
+                      <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
+                      <div className="w-3 h-3 rounded-full bg-green-500/60" />
                     </div>
-                  ))}
-                </div>
-
-                {/* Center play badge */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                  <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center">
-                    <Play size={24} className="text-white ml-0.5" fill="white" />
+                    <span className="text-white/30 text-xs ml-2 font-mono">
+                      panel.montajimvar.com
+                    </span>
+                  </div>
+                  <div className="p-5 space-y-4">
+                    <div className="grid grid-cols-3 gap-3">
+                      {[
+                        { label: "Aktif İşler", value: "24", color: "#0B5FFF" },
+                        {
+                          label: "Montaj Ekibi",
+                          value: "12",
+                          color: "#00C853",
+                        },
+                        {
+                          label: "Tamamlanma",
+                          value: "%94",
+                          color: "#F59E0B",
+                        },
+                      ].map((stat) => (
+                        <div
+                          key={stat.label}
+                          className="bg-white/[0.04] rounded-xl p-4 border border-white/[0.06]"
+                        >
+                          <p className="text-white/40 text-xs mb-1">
+                            {stat.label}
+                          </p>
+                          <p
+                            className="text-white text-2xl font-bold"
+                            style={{ color: stat.color }}
+                          >
+                            {stat.value}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="bg-white/[0.03] rounded-xl p-4 border border-white/[0.06]">
+                      <p className="text-white/50 text-xs mb-3 font-medium uppercase tracking-wider">
+                        Son İşler
+                      </p>
+                      <div className="space-y-3">
+                        {[
+                          {
+                            job: "AVM Montajı - İstanbul",
+                            status: "Devam Ediyor",
+                            color: "#0B5FFF",
+                          },
+                          {
+                            job: "Mobilya Kurulumu - Ankara",
+                            status: "Tamamlandı",
+                            color: "#00C853",
+                          },
+                          {
+                            job: "Fuar Standı - İzmir",
+                            status: "Onay Bekliyor",
+                            color: "#F59E0B",
+                          },
+                        ].map((item) => (
+                          <div
+                            key={item.job}
+                            className="flex items-center justify-between"
+                          >
+                            <p className="text-white text-sm">{item.job}</p>
+                            <span
+                              className="text-xs px-2 py-0.5 rounded-full"
+                              style={{
+                                background: `${item.color}20`,
+                                color: item.color,
+                              }}
+                            >
+                              {item.status}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="bg-white/[0.03] rounded-xl p-4 border border-white/[0.06] flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-[#00C853]/20 flex items-center justify-center">
+                          <div className="w-2 h-2 rounded-full bg-[#00C853]" />
+                        </div>
+                        <p className="text-white text-sm">Canlı Ekip Takibi</p>
+                      </div>
+                      <span className="text-white/40 text-xs">
+                        3 ekip aktif
+                      </span>
+                    </div>
                   </div>
                 </div>
-
-                {/* Decorative ring */}
-                <div className="absolute -inset-8 rounded-full border border-white/[0.03] -z-10" />
-                <div className="absolute -inset-16 rounded-full border border-white/[0.02] -z-10" />
+                <div className="absolute -inset-4 bg-gradient-to-r from-[#0B5FFF]/10 to-[#00C853]/10 rounded-3xl blur-3xl -z-10" />
               </div>
             </motion.div>
           </div>
         </div>
 
-        {/* Bottom fade */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[var(--color-surface-secondary)] to-transparent" />
       </motion.div>
     </section>

@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Home,
@@ -22,7 +23,10 @@ const navItems = [
 ];
 
 export default function MobileBottomNav() {
+  const { data: session } = useSession();
   const pathname = usePathname();
+
+  if (!session) return null;
 
   return (
     <motion.nav

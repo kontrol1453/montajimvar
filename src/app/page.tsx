@@ -12,6 +12,9 @@ import {
   Camera,
   Building2,
   HardHat,
+  Sparkles,
+  LayoutDashboard,
+  Map,
 } from "lucide-react";
 import HomeHero from "./HomeHero";
 import HomeServices from "./HomeServices";
@@ -87,6 +90,9 @@ export default async function HomePage() {
       {/* ─── AI TEKLİF ─── */}
       <AiSection />
 
+      {/* ─── GÜVEN ─── */}
+      <TrustSection />
+
       {/* ─── BLOG ─── */}
       <BlogSection />
 
@@ -103,29 +109,29 @@ export default async function HomePage() {
    MARKALAR
    ================================================================ */
 function HomeBrands() {
-  const brands = [
-    { name: "Vestel", icon: Building2 },
-    { name: "Koçtaş", icon: Building2 },
-    { name: "Tekzen", icon: Building2 },
-    { name: "MediaMarkt", icon: Building2 },
-    { name: "IKEA", icon: Building2 },
-    { name: "Bellona", icon: Building2 },
+  const sectors = [
+    { name: "AVM & Alışveriş Merkezi", icon: Building2 },
+    { name: "Perakende & Mağaza", icon: Building2 },
+    { name: "Reklam & Tabela", icon: Building2 },
+    { name: "Fuarcılık & Etkinlik", icon: Building2 },
+    { name: "Mobilya & Dekorasyon", icon: Building2 },
+    { name: "Elektrik & Altyapı", icon: Building2 },
   ];
 
   return (
     <section className="py-16 bg-white">
       <div className="container-app">
         <p className="text-center text-sm font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider mb-8">
-          Montajım Var&apos;a güvenen markalar
+          Hizmet Verdiğimiz Sektörler
         </p>
         <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-6">
-          {brands.map((brand) => (
+          {sectors.map((sector) => (
             <div
-              key={brand.name}
+              key={sector.name}
               className="flex items-center gap-2 text-[var(--color-text-tertiary)] grayscale hover:grayscale-0 hover:text-[var(--color-text-tertiary)] transition-all duration-300"
             >
-              <brand.icon size={24} />
-              <span className="text-lg font-bold tracking-tight">{brand.name}</span>
+              <sector.icon size={24} />
+              <span className="text-lg font-bold tracking-tight">{sector.name}</span>
             </div>
           ))}
         </div>
@@ -170,7 +176,7 @@ const steps = [
 
 function HomeHowItWorks() {
   return (
-    <section className="py-24 bg-white">
+    <section className="py-24 bg-white" id="nasil-calisir">
       <div className="container-app">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
@@ -288,7 +294,7 @@ function AiSection() {
       <div className="container-app">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left - Mock AI Flow */}
+            {/* Left - AI Flow */}
             <div className="relative">
               <div className="absolute -inset-4 bg-gradient-to-r from-[var(--color-primary)]/5 to-[var(--color-accent)]/5 rounded-3xl blur-2xl" />
               <div className="relative bg-[var(--color-surface-secondary)] rounded-2xl p-8 border border-[var(--color-border-light)]">
@@ -320,15 +326,9 @@ function AiSection() {
                   {/* Step 3 */}
                   <div className="flex items-center gap-4 p-4 bg-white rounded-xl border border-[var(--color-border-light)] shadow-sm">
                     <div className="w-10 h-10 rounded-xl bg-[var(--color-primary)]/10 flex items-center justify-center text-[var(--color-primary)] font-bold text-sm">3</div>
-                    <div className="flex gap-6">
-                      <div>
-                        <p className="text-sm font-semibold text-[var(--color-dark)]">Tahmini Süre</p>
-                        <p className="text-xs text-[var(--color-text-tertiary)]">~2 saat</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-[var(--color-dark)]">Tahmini Bütçe</p>
-                        <p className="text-xs text-[var(--color-accent)] font-semibold">₺1.200 - ₺1.800</p>
-                      </div>
+                    <div>
+                      <p className="text-sm font-semibold text-[var(--color-dark)]">Tahmini Fiyat & Süre</p>
+                      <p className="text-xs text-[var(--color-text-tertiary)]">AI ile akıllı analiz</p>
                     </div>
                   </div>
                   {/* Arrow */}
@@ -341,9 +341,15 @@ function AiSection() {
                     <div className="flex items-center gap-2">
                       <CheckCircle size={16} className="text-[var(--color-accent)]" />
                       <p className="text-sm font-semibold text-[var(--color-dark)]">Teklifler Hazır</p>
-                      <span className="text-xs bg-[var(--color-accent)]/10 text-[var(--color-accent)] px-2 py-0.5 rounded-full font-medium">3 teklif</span>
+                      <span className="text-xs bg-[var(--color-accent)]/10 text-[var(--color-accent)] px-2 py-0.5 rounded-full font-medium">Hazır</span>
                     </div>
                   </div>
+                </div>
+                <div className="absolute top-3 right-3">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-500/15 text-amber-600 text-[10px] font-semibold rounded-full border border-amber-500/20">
+                    <Sparkles size={10} />
+                    Yakında
+                  </span>
                 </div>
               </div>
             </div>
@@ -375,12 +381,87 @@ function AiSection() {
                   </li>
                 ))}
               </ul>
-              <Link href="/is-ver" className="btn-primary">
-                Şimdi Dene
-                <ArrowRight size={18} />
-              </Link>
+              <div className="flex items-center gap-4">
+                <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-[var(--color-surface-secondary)] text-[var(--color-text-tertiary)] text-sm font-medium rounded-xl border border-[var(--color-border-light)]">
+                  <Sparkles size={14} />
+                  Geliştirme aşamasında
+                </span>
+                <Link href="/is-ver" className="btn-primary">
+                  İş Oluştur
+                  <ArrowRight size={18} />
+                </Link>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ================================================================
+   GÜVEN
+   ================================================================ */
+function TrustSection() {
+  const items = [
+    {
+      icon: Shield,
+      title: "Doğrulanmış Ekipler",
+      desc: "Kimlik, şirket ve uzmanlık bilgileri kontrol edilen montaj ekipleriyle çalışın.",
+      color: "#0B5FFF",
+    },
+    {
+      icon: Search,
+      title: "Şeffaf Teklif Sistemi",
+      desc: "Gelen teklifleri fiyat, puan ve deneyime göre karşılaştırın, size en uygun olanı seçin.",
+      color: "#00C853",
+    },
+    {
+      icon: Map,
+      title: "Uçtan Uca İş Takibi",
+      desc: "İşin her aşamasını platform üzerinden takip edin, durum güncellemelerini anlık görün.",
+      color: "#F59E0B",
+    },
+    {
+      icon: LayoutDashboard,
+      title: "Kurumsal Operasyon Yönetimi",
+      desc: "Çok lokasyonlu montaj projelerini tek panelden yönetin, ekipleri koordine edin.",
+      color: "#8B5CF6",
+    },
+  ];
+
+  return (
+    <section className="py-24 bg-[var(--color-surface-secondary)]">
+      <div className="container-app">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <span className="section-label">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]" />
+            Güven
+          </span>
+          <h2 className="heading-lg mt-4 mb-3">
+            Neden Montajım Var?
+          </h2>
+          <p className="text-lg text-[var(--color-text-secondary)]">
+            Platformumuzu farklı kılan özellikler.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          {items.map((item) => (
+            <div key={item.title} className="card p-6 text-center group">
+              <div
+                className="w-14 h-14 mx-auto rounded-2xl flex items-center justify-center mb-5 transition-all group-hover:scale-110"
+                style={{ background: `${item.color}12` }}
+              >
+                <item.icon size={26} style={{ color: item.color }} />
+              </div>
+              <h3 className="text-base font-bold text-[var(--color-dark)] mb-2">
+                {item.title}
+              </h3>
+              <p className="text-sm text-[var(--color-text-tertiary)] leading-relaxed">
+                {item.desc}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -482,11 +563,11 @@ function FaqSection() {
     },
     {
       q: "Ödeme nasıl korunuyor?",
-      a: "Ödemeniz iş tamamlanana kadar emanet sistemimizde tutulur. İşi onayladığınızda ödeme otomatik olarak montaj ekibine aktarılır.",
+      a: "Ödeme işleminiz, iş tamamlanana kadar güvence altında tutulur. İşi onayladığınızda ödeme montaj ekibine aktarılır.",
     },
     {
       q: "Hangi şehirlerde hizmet veriyorsunuz?",
-      a: "Türkiye genelinde 81 şehirde hizmet veriyoruz. Büyükşehirlerde aynı gün hizmet, diğer şehirlerde 24-48 saat içinde montaj ekibi yönlendiriyoruz.",
+      a: "Türkiye genelinde hizmet ağımız bulunuyor. Uygun ekiplerin olduğu bölgelerde talepler kısa sürede eşleştirilir.",
     },
     {
       q: "Kurumsal çözümler sunuyor musunuz?",

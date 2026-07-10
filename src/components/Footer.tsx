@@ -20,7 +20,6 @@ export default function Footer() {
             </p>
             <div className="mt-5 text-sm text-[#98a2b3] space-y-1">
               <p>info@montajimvar.com</p>
-              <p>+90 (212) 555 0000</p>
             </div>
           </div>
 

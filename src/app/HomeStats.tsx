@@ -12,9 +12,9 @@ function AnimatedCounter({
   suffix?: string;
   decimals?: number;
 }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLDivElement>(null);
+  const [count, setCount] = useState(end);
   const hasAnimated = useRef(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!ref.current || hasAnimated.current) return;
@@ -23,6 +23,7 @@ function AnimatedCounter({
       ([entry]) => {
         if (entry.isIntersecting && !hasAnimated.current) {
           hasAnimated.current = true;
+          setCount(0);
           const duration = 2000;
           const steps = 60;
           const increment = end / steps;
@@ -47,7 +48,10 @@ function AnimatedCounter({
 
   return (
     <div ref={ref}>
-      <span className="text-4xl md:text-5xl font-extrabold text-[var(--color-dark)] tabular-nums">
+      <span
+        className="text-4xl md:text-5xl font-extrabold text-[var(--color-dark)] tabular-nums"
+        data-value={`${end}${suffix}`}
+      >
         {count.toFixed(decimals)}
         {suffix}
       </span>

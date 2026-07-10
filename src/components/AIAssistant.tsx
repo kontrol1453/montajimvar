@@ -1,22 +1,47 @@
 "use client";
 
 import { useState } from "react";
-import { MessageSquare, Sparkles, Zap, MessageCircle, X } from "lucide-react";
+import { Briefcase, DollarSign, Search, HardHat, Building2, X } from "lucide-react";
 import Link from "next/link";
 
 export default function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const actions = [
-    { label: "Fiyat Hesapla", Component: Zap, href: "/is-ver?ai=estimate", color: "#0B5FFF" },
-    { label: "Usta Bul", Component: MessageSquare, href: "/ara?q=avni", color: "#00C853" },
-    { label: "İş Oluştur", Component: Sparkles, href: "/is-ver", color: "#F59E0B" },
-    { label: "Destek", Component: MessageCircle, href: "/yardim", color: "#8B5CF6" },
+  const options = [
+    {
+      label: "Montaj işi oluşturmak istiyorum",
+      icon: Briefcase,
+      href: "/is-ver",
+      color: "#0B5FFF",
+    },
+    {
+      label: "Yaklaşık fiyat öğrenmek istiyorum",
+      icon: DollarSign,
+      href: "/ara",
+      color: "#00C853",
+    },
+    {
+      label: "Montaj ekibi arıyorum",
+      icon: Search,
+      href: "/ara",
+      color: "#F59E0B",
+    },
+    {
+      label: "Montajcı olarak kayıt olmak istiyorum",
+      icon: HardHat,
+      href: "/auth/kayit",
+      color: "#8B5CF6",
+    },
+    {
+      label: "Kurumsal çözüm arıyorum",
+      icon: Building2,
+      href: "/ara?tip=kurumsal",
+      color: "#EC4899",
+    },
   ];
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
-      {/* Main AI Button */}
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -36,19 +61,17 @@ export default function AIAssistant() {
           </svg>
         </button>
 
-        {/* Floating label */}
         <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[var(--color-primary)] text-white text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap">
           Montaj Asistanı
         </div>
       </div>
 
-      {/* Quick Actions Panel */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 z-50 w-64 bg-white rounded-2xl shadow-2xl border border-[var(--color-border-light)] animate-fade-in">
-          <div className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-lg font-semibold text-[var(--color-dark)]">
-                Yapay Zeka Asistanı
+        <div className="fixed bottom-24 right-6 z-50 w-72 bg-white rounded-2xl shadow-2xl border border-[var(--color-border-light)] animate-fade-in">
+          <div className="p-5">
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="text-base font-semibold text-[var(--color-dark)]">
+                Montaj Asistanı
               </h3>
               <button
                 onClick={() => setIsOpen(false)}
@@ -58,39 +81,26 @@ export default function AIAssistant() {
               </button>
             </div>
             <p className="text-sm text-[var(--color-text-tertiary)] mb-4">
-              Size yardımcı olmaya hazırım!
+              Size nasıl yardımcı olabiliriz?
             </p>
-            <div className="space-y-3">
-              {actions.map((action, i) => (
+            <div className="space-y-2">
+              {options.map((opt) => (
                 <Link
-                  key={action.label}
-                  href={action.href}
-                  className={`flex items-center gap-3 p-3 rounded-xl border border-[var(--color-border-light)] ${
-                    i % 2 === 0 ? "bg-[var(--color-primary)]/5" : "bg-[var(--color-accent)]/5"
-                  } hover:bg-[var(--color-surface-secondary)] transition-colors`}
+                  key={opt.label}
+                  href={opt.href}
+                  className="flex items-center gap-3 p-3 rounded-xl border border-[var(--color-border-light)] hover:bg-[var(--color-surface-secondary)] transition-colors"
                 >
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 flex items-center justify-center rounded-full" style={{ background: `${action.color}20` }}>
-                      <action.Component size={16} className={`text-[${action.color}]`} />
-                    </div>
-                    <div>
-                      <p className="font-medium text-[var(--color-dark)]">{action.label}</p>
-                      <p className="text-xs text-[var(--color-text-tertiary)]">AI destekli hızlı işlem</p>
-                    </div>
+                  <div
+                    className="w-9 h-9 flex items-center justify-center rounded-full shrink-0"
+                    style={{ background: `${opt.color}15` }}
+                  >
+                    <opt.icon size={16} style={{ color: opt.color }} />
                   </div>
+                  <p className="text-sm font-medium text-[var(--color-dark)] leading-snug">
+                    {opt.label}
+                  </p>
                 </Link>
               ))}
-            </div>
-            <div className="mt-4 text-center">
-              <p className="text-xs text-[var(--color-text-tertiary)]">
-                Daha akıllı sugger için Premium'a geçin
-              </p>
-              <Link
-                href="/dashboard/uyelik"
-                className="text-sm font-medium text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] underline"
-              >
-                Premium Özellikler
-              </Link>
             </div>
           </div>
         </div>
