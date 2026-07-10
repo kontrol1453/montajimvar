@@ -117,8 +117,56 @@ export default async function CompanyProfilePage({ params }: Props) {
 
   const isPublicProfile = !["ASSEMBLER", "MANUFACTURER"].some(r => (profile.user.roles as string[]).includes(r));
 
+  // JSON-LD for LocalBusiness
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: profile.companyName,
+    image: profile.logo || undefined,
+    url: `https://montajimvar.xyz/firma/${profile.id}`,
+    description: profile.description?.slice(0, 160) || undefined,
+    address: profile.address ? {
+      "@type": "PostalAddress",
+      streetAddress: profile.address,
+      addressLocality: profile.city,
+      addressCountry: "TR",
+    } : undefined,
+    geo: (profile.latitude && profile.longitude) ? {
+      "@type": "GeoCoordinates",
+      latitude: profile.latitude,
+      longitude: profile.longitude,
+    } : undefined,
+    telephone: profile.phone || undefined,
+    email: profile.user.email || undefined,
+    website: profile.website || undefined,
+    priceRange: undefined,
+    aggregateRating: profile.ratingAvg > 0 ? {
+      "@type": "AggregateRating",
+      ratingValue: profile.ratingAvg.toFixed(1),
+      reviewCount: profile.reviewCount,
+    } : undefined,
+    sameAs: profile.website ? [profile.website] : undefined,
+    areaServed: profile.city ? {
+      "@type": "City",
+      name: profile.city,
+    } : undefined,
+    paymentAccepted: "Cash, Credit Card",
+    openingHoursSpecification: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: [
+        "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"
+      ],
+      opens: "09:00",
+      closes: "18:00",
+    },
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Kapak Fotoğrafı */}
       {profile.user.coverPhoto && (
         <div className="relative h-48 md:h-64 rounded-xl overflow-hidden mb-6">
