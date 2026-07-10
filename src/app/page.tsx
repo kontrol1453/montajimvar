@@ -1,9 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import {
-  Briefcase,
-  Users,
-  Shield,
   CheckCircle,
   ArrowRight,
   Camera,
@@ -13,13 +10,14 @@ import {
 import HomeHero from "./HomeHero";
 import HomeServices from "./HomeServices";
 import HomeStats from "./HomeStats";
-// HomeBrands, HomeHowItWorks, FaqSection defined inline below
+// HomeBrands, FaqSection defined inline below
 import AudienceSection from "./AudienceSection";
 import PlatformFeatures from "./PlatformFeatures";
 import CorporateSection from "./CorporateSection";
 import WhySection from "./WhySection";
 import FinalCta from "./FinalCta";
 import ProductShowcase from "./ProductShowcase";
+import HowItWorksV4 from "./HowItWorksV4";
 
 export const dynamic = "force-dynamic";
 
@@ -76,7 +74,7 @@ export default async function HomePage() {
       <HomeServices categories={data.parentCategories} />
 
       {/* ─── NASIL ÇALIŞIR ─── */}
-      <HomeHowItWorks />
+      <HowItWorksV4 />
 
       {/* ─── ÜRÜN TANITIMI ─── */}
       <ProductShowcase />
@@ -140,102 +138,6 @@ function HomeBrands() {
             >
               <sector.icon size={24} />
               <span className="text-lg font-bold tracking-tight">{sector.name}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ================================================================
-   NASIL ÇALIŞIR
-   ================================================================ */
-const steps = [
-  {
-    number: "01",
-    title: "İşini Ver",
-    desc: "Fotoğraf ekle, konum seç ve işini açıkla. Bütçeni belirt, teklif almaya başla.",
-    icon: Briefcase,
-    color: "#0B5FFF",
-  },
-  {
-    number: "02",
-    title: "Teklif Al",
-    desc: "Doğrulanmış montaj ekiplerinden teklifler gelir. Puanları ve fiyatları karşılaştır.",
-    icon: Users,
-    color: "#00C853",
-  },
-  {
-    number: "03",
-    title: "İşi Takip Et",
-    desc: "Canlı haritada ekibini takip et, iş ilerledikçe durum güncellemelerini gör.",
-    icon: CheckCircle,
-    color: "#0B5FFF",
-  },
-  {
-    number: "04",
-    title: "Güvenle Öde",
-    desc: "İş tamamlanana kadar ödemen emanette. Onay verince ustanın hesabına aktarılır.",
-    icon: Shield,
-    color: "#00C853",
-  },
-];
-
-function HomeHowItWorks() {
-  return (
-    <section className="py-24 bg-white" id="nasil-calisir">
-      <div className="container-app">
-        {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <span className="section-label">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]" />
-            Süreç
-          </span>
-          <h2 className="heading-lg mt-4 mb-3">
-            Nasıl Çalışır?
-          </h2>
-          <p className="text-lg text-[var(--color-text-secondary)]">
-            Dört basit adımda ihtiyacınız olan montaj uzmanını bulun ve işinizi halledin.
-          </p>
-        </div>
-
-        {/* Steps */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {steps.map((step, i) => (
-            <div
-              key={step.number}
-              className="card p-8 text-center group"
-              style={{ animationDelay: `${i * 0.1}s` }}
-            >
-              <div className="relative mx-auto mb-6">
-                <div
-                  className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center transition-all group-hover:scale-110"
-                  style={{ background: `${step.color}10` }}
-                >
-                  <step.icon size={28} style={{ color: step.color }} />
-                </div>
-                <span
-                  className="absolute -top-1 -right-1 w-7 h-7 rounded-full text-white text-xs font-bold flex items-center justify-center"
-                  style={{ background: step.color }}
-                >
-                  {step.number}
-                </span>
-              </div>
-              <h3
-                className="text-lg font-bold mb-2"
-                style={{ fontFamily: "'Manrope', system-ui, sans-serif", color: "var(--color-dark)" }}
-              >
-                {step.title}
-              </h3>
-              <p className="text-sm text-[var(--color-text-tertiary)] leading-relaxed max-w-xs mx-auto">
-                {step.desc}
-              </p>
-              {i < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-1/2 -right-3 text-[var(--color-border-default)]">
-                  <ArrowRight size={20} />
-                </div>
-              )}
             </div>
           ))}
         </div>
