@@ -17,9 +17,10 @@ import {
   CreditCard,
   Menu,
   X,
-  ChevronLeft,
   ExternalLink,
+  ChevronDown,
 } from "lucide-react";
+import NotificationBell from "./NotificationBell";
 
 const links = [
   { href: "/admin", label: "Panel", icon: LayoutDashboard },
@@ -44,22 +45,29 @@ export default function AdminNav() {
     return pathname.startsWith(href);
   }
 
-  const sidebar = (
+  const sidebarContent = (
     <div className="flex flex-col h-full">
-      {/* Logo */}
-      <div className="flex items-center justify-between px-5 h-14 border-b border-dark-border shrink-0">
+      {/* Sidebar header */}
+      <div className="flex items-center justify-between px-4 h-14 border-b border-dark-border shrink-0">
         <Link href="/admin" className="flex items-center gap-2">
-          <span className="text-montaj font-bold text-sm">Montajım Var</span>
-          <span className="text-[10px] bg-montaj/20 text-montaj px-1.5 py-0.5 rounded-full">
+          <span className="text-montaj font-bold text-sm tracking-tight">
+            Montajım<span className="text-white">Var</span>
+          </span>
+          <span className="text-[10px] bg-montaj/15 text-montaj px-1.5 py-0.5 rounded-md font-semibold leading-none">
             Admin
           </span>
         </Link>
-        <button
-          onClick={() => setSidebarOpen(false)}
-          className="lg:hidden p-1 rounded-lg hover:bg-dark-section text-sub-text"
-        >
-          <X size={18} />
-        </button>
+        <div className="flex items-center gap-1">
+          <div className="hidden lg:block">
+            <NotificationBell />
+          </div>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden p-1.5 rounded-lg hover:bg-dark-section text-sub-text transition-colors"
+          >
+            <X size={18} />
+          </button>
+        </div>
       </div>
 
       {/* Navigation */}
@@ -73,24 +81,30 @@ export default function AdminNav() {
               onClick={() => setSidebarOpen(false)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 active
-                  ? "bg-montaj/15 text-montaj"
+                  ? "bg-montaj/12 text-montaj shadow-sm"
                   : "text-sub-text hover:text-white hover:bg-dark-section"
               }`}
             >
-              <link.icon size={18} className={active ? "text-montaj" : ""} />
+              <link.icon
+                size={18}
+                className={active ? "text-montaj" : "text-sub-text"}
+              />
               <span>{link.label}</span>
+              {active && (
+                <span className="ml-auto w-1 h-4 rounded-full bg-montaj" />
+              )}
             </Link>
           );
         })}
       </nav>
 
       {/* Bottom */}
-      <div className="border-t border-dark-border px-3 py-3 space-y-2 shrink-0">
+      <div className="border-t border-dark-border px-3 py-3 shrink-0">
         <Link
           href="/"
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sub-text hover:text-white hover:bg-dark-section transition-all"
         >
-          <ExternalLink size={18} />
+          <ExternalLink size={16} />
           Siteye Dön
         </Link>
       </div>
@@ -101,20 +115,17 @@ export default function AdminNav() {
     <>
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex flex-col fixed left-0 top-0 bottom-0 w-56 bg-black border-r border-dark-border z-40">
-        {sidebar}
+        {sidebarContent}
       </aside>
 
       {/* Mobile overlay */}
       {sidebarOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black/60 z-50"
-          onClick={() => setSidebarOpen(false)}
-        >
+        <div className="fixed inset-0 bg-black/50 z-50 lg:hidden">
           <aside
-            className="fixed left-0 top-0 bottom-0 w-64 bg-black border-r border-dark-border z-50 animate-fade-in"
+            className="fixed left-0 top-0 bottom-0 w-64 bg-black border-r border-dark-border z-50"
             onClick={(e) => e.stopPropagation()}
           >
-            {sidebar}
+            {sidebarContent}
           </aside>
         </div>
       )}
@@ -124,24 +135,28 @@ export default function AdminNav() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-1.5 rounded-lg hover:bg-dark-section text-sub-text"
+            className="p-1.5 rounded-lg hover:bg-dark-section text-sub-text transition-colors"
           >
             <Menu size={20} />
           </button>
           <Link href="/admin" className="flex items-center gap-2">
-            <span className="text-montaj font-bold text-sm">Montajım Var</span>
-            <span className="text-[10px] bg-montaj/20 text-montaj px-1.5 py-0.5 rounded-full">
+            <span className="text-montaj font-bold text-sm tracking-tight">
+              Montajım<span className="text-white">Var</span>
+            </span>
+            <span className="text-[10px] bg-montaj/15 text-montaj px-1.5 py-0.5 rounded-md font-semibold leading-none">
               Admin
             </span>
           </Link>
         </div>
-        <Link
-          href="/"
-          className="text-xs text-sub-text hover:text-montaj transition flex items-center gap-1"
-        >
-          <ExternalLink size={12} />
-          Site
-        </Link>
+        <div className="flex items-center gap-2">
+          <NotificationBell />
+          <Link
+            href="/"
+            className="text-xs text-sub-text hover:text-montaj transition flex items-center gap-1"
+          >
+            <ExternalLink size={12} />
+          </Link>
+        </div>
       </div>
     </>
   );
