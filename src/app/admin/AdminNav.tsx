@@ -33,6 +33,7 @@ const links = [
   { href: "/admin/kategoriler", label: "Kategoriler", icon: Grid3X3 },
   { href: "/admin/izinler", label: "İzinler", icon: Shield },
   { href: "/admin/google-firma-ekle", label: "Google Firma", icon: MapPin },
+  { href: "/admin/sehir-sayfalari", label: "Şehir Sayfaları", icon: MapPin },
   { href: "/admin/abonelik-plani", label: "Abonelik", icon: CreditCard },
 ];
 
