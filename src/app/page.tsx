@@ -1,26 +1,24 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import {
-  Search,
   Briefcase,
   Users,
   Shield,
   CheckCircle,
   ArrowRight,
-  Star,
-  Play,
   Camera,
   Building2,
-  HardHat,
   Sparkles,
-  LayoutDashboard,
-  Map,
 } from "lucide-react";
 import HomeHero from "./HomeHero";
 import HomeServices from "./HomeServices";
 import HomeStats from "./HomeStats";
-// HomeBrands, HomeHowItWorks defined inline below
-import HomeCta from "./HomeCta";
+// HomeBrands, HomeHowItWorks, FaqSection defined inline below
+import AudienceSection from "./AudienceSection";
+import PlatformFeatures from "./PlatformFeatures";
+import CorporateSection from "./CorporateSection";
+import WhySection from "./WhySection";
+import FinalCta from "./FinalCta";
 
 export const dynamic = "force-dynamic";
 
@@ -67,8 +65,11 @@ export default async function HomePage() {
       {/* ─── HERO ─── */}
       <HomeHero />
 
-      {/* ─── MARKALAR ─── */}
+      {/* ─── SEKTÖRLER ─── */}
       <HomeBrands />
+
+      {/* ─── HEDEF KİTLE ─── */}
+      <AudienceSection />
 
       {/* ─── HİZMET KATEGORİLERİ ─── */}
       <HomeServices categories={data.parentCategories} />
@@ -76,8 +77,11 @@ export default async function HomePage() {
       {/* ─── NASIL ÇALIŞIR ─── */}
       <HomeHowItWorks />
 
-      {/* ─── VİDEO SEKTÖRÜ ─── */}
-      <VideoSection />
+      {/* ─── PLATFORM ÖZELLİKLERİ ─── */}
+      <PlatformFeatures />
+
+      {/* ─── KURUMSAL ─── */}
+      <CorporateSection />
 
       {/* ─── İSTATİSTİKLER ─── */}
       <HomeStats
@@ -90,8 +94,8 @@ export default async function HomePage() {
       {/* ─── AI TEKLİF ─── */}
       <AiSection />
 
-      {/* ─── GÜVEN ─── */}
-      <TrustSection />
+      {/* ─── NEDEN BİZ ─── */}
+      <WhySection />
 
       {/* ─── BLOG ─── */}
       <BlogSection />
@@ -99,8 +103,8 @@ export default async function HomePage() {
       {/* ─── SSS ─── */}
       <FaqSection />
 
-      {/* ─── CTA ─── */}
-      <HomeCta />
+      {/* ─── FİNAL CTA ─── */}
+      <FinalCta />
     </div>
   );
 }
@@ -237,55 +241,6 @@ function HomeHowItWorks() {
 }
 
 /* ================================================================
-   VİDEO
-   ================================================================ */
-function VideoSection() {
-  return (
-    <section className="py-24 bg-[var(--color-surface-secondary)]">
-      <div className="container-app">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="section-label">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]" />
-            Montaj Süreci
-          </span>
-          <h2 className="heading-lg mt-4 mb-3">
-            Profesyonel Montajın Her Aşaması
-          </h2>
-          <p className="text-lg text-[var(--color-text-secondary)]">
-            Saha ekiplerimizin gerçek montaj görüntüleri.
-          </p>
-        </div>
-
-        <div className="relative max-w-5xl mx-auto rounded-2xl overflow-hidden bg-[var(--color-dark)] aspect-video flex items-center justify-center group cursor-pointer shadow-elevated">
-          {/* Placeholder visual */}
-          <div className="absolute inset-0 grid grid-cols-3 gap-px opacity-40">
-            {["AVM Montajı", "Reklam Tabelası", "Mobilya Kurulumu", "Fuar Standı", "Elektrik Montajı", "Endüstriyel"].map((label, i) => (
-              <div key={label} className="bg-[var(--color-dark)]/80 flex items-center justify-center p-4">
-                <div className="text-center">
-                  <HardHat size={32} className="mx-auto mb-2 text-white" />
-                  <p className="text-xs text-white">{label}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Play button */}
-          <div className="relative z-10 w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all group-hover:scale-110 group-hover:bg-white/30">
-            <div className="absolute inset-0 rounded-full bg-white/10 animate-ping" />
-            <Play size={32} className="text-white ml-1" fill="white" />
-          </div>
-
-          <p className="absolute bottom-6 left-6 text-white text-sm font-medium flex items-center gap-2">
-            <Camera size={16} />
-            Montaj görüntülerini izleyin
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ================================================================
    AI TEKLİF
    ================================================================ */
 function AiSection() {
@@ -393,75 +348,6 @@ function AiSection() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ================================================================
-   GÜVEN
-   ================================================================ */
-function TrustSection() {
-  const items = [
-    {
-      icon: Shield,
-      title: "Doğrulanmış Ekipler",
-      desc: "Kimlik, şirket ve uzmanlık bilgileri kontrol edilen montaj ekipleriyle çalışın.",
-      color: "#0B5FFF",
-    },
-    {
-      icon: Search,
-      title: "Şeffaf Teklif Sistemi",
-      desc: "Gelen teklifleri fiyat, puan ve deneyime göre karşılaştırın, size en uygun olanı seçin.",
-      color: "#00C853",
-    },
-    {
-      icon: Map,
-      title: "Uçtan Uca İş Takibi",
-      desc: "İşin her aşamasını platform üzerinden takip edin, durum güncellemelerini anlık görün.",
-      color: "#F59E0B",
-    },
-    {
-      icon: LayoutDashboard,
-      title: "Kurumsal Operasyon Yönetimi",
-      desc: "Çok lokasyonlu montaj projelerini tek panelden yönetin, ekipleri koordine edin.",
-      color: "#8B5CF6",
-    },
-  ];
-
-  return (
-    <section className="py-24 bg-[var(--color-surface-secondary)]">
-      <div className="container-app">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <span className="section-label">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]" />
-            Güven
-          </span>
-          <h2 className="heading-lg mt-4 mb-3">
-            Neden Montajım Var?
-          </h2>
-          <p className="text-lg text-[var(--color-text-secondary)]">
-            Platformumuzu farklı kılan özellikler.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {items.map((item) => (
-            <div key={item.title} className="card p-6 text-center group">
-              <div
-                className="w-14 h-14 mx-auto rounded-2xl flex items-center justify-center mb-5 transition-all group-hover:scale-110"
-                style={{ background: `${item.color}12` }}
-              >
-                <item.icon size={26} style={{ color: item.color }} />
-              </div>
-              <h3 className="text-base font-bold text-[var(--color-dark)] mb-2">
-                {item.title}
-              </h3>
-              <p className="text-sm text-[var(--color-text-tertiary)] leading-relaxed">
-                {item.desc}
-              </p>
-            </div>
-          ))}
         </div>
       </div>
     </section>

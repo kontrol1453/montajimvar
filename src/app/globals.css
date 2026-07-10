@@ -176,10 +176,10 @@
   border-radius: 999px;
 }
 
-/* Heading styles */
+/* Heading styles (responsive clamp) */
 .heading-xl {
   font-family: "Manrope", system-ui, sans-serif;
-  font-size: 3rem;
+  font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.03em;
@@ -188,7 +188,7 @@
 
 .heading-lg {
   font-family: "Manrope", system-ui, sans-serif;
-  font-size: 2.5rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -197,11 +197,32 @@
 
 .heading-md {
   font-family: "Manrope", system-ui, sans-serif;
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.02em;
   color: var(--color-dark);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Dark section base */
+.section-dark {
+  background: linear-gradient(135deg, #0a1628, #0f1f3a);
+  color: #ffffff;
+}
+.section-dark .heading-lg,
+.section-dark .heading-md,
+.section-dark .heading-xl,
+.section-dark h2,
+.section-dark h3 {
+  color: #ffffff;
 }
 
 /* Legacy support — keep bg/text classes working */
@@ -234,12 +255,21 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 .animate-fade-in-up {
   animation: fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-fade-in {
   animation: fade-in 0.4s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Hero section keeps forced white text */
