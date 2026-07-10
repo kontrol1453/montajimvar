@@ -588,6 +588,43 @@ export default function JobDetailClient({ job, userId, isOwner, isArtisan, exist
           </div>
         )}
 
+        {/* Artisan: Status controls (en_route / in_progress only) */}
+        {!isOwner && isArtisan && offerAccepted?.artisanId === userId && (job.status === "assigned" || job.status === "en_route") && (
+          <div className="bg-dark-card border border-white/[0.06] rounded-xl p-6">
+            <h3 className="text-lg font-semibold text-white mb-1">İş Takibi</h3>
+            <p className="text-sub-text text-sm mb-4">İş durumunuzu güncelleyin</p>
+
+            {statusError && (
+              <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+                <p className="text-sm text-red-400">{statusError}</p>
+              </div>
+            )}
+
+            <div className="flex flex-wrap gap-3">
+              {job.status === "assigned" && (
+                <Button
+                  variant="primary"
+                  size="lg"
+                  loading={statusLoading}
+                  onClick={() => handleStatusAdvance("en_route", "Usta yola çıktı")}
+                >
+                  🚶 Yola Çıktım
+                </Button>
+              )}
+              {job.status === "en_route" && (
+                <Button
+                  variant="primary"
+                  size="lg"
+                  loading={statusLoading}
+                  onClick={() => handleStatusAdvance("in_progress", "Montaj başladı")}
+                >
+                  🛠 Montaja Başladım
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Customer: Review form */}
         {isOwner && job.status === "completed" && !existingReview && (
           <div className="bg-dark-card border border-white/[0.06] rounded-xl p-6">

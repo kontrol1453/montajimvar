@@ -87,8 +87,16 @@ export async function PATCH(
       return NextResponse.json({ error: "İş bulunamadı." }, { status: 404 });
     }
 
-    // Only customer can update
-    if (job.customerId !== userId) {
+    // Customer can always update; artisan can update en_route / in_progress
+    const isCustomer = job.customerId === userId;
+    const isArtisan =
+      !isCustomer &&
+      (newStatus === "en_route" || newStatus === "in_progress") &&
+      !!(await prisma.offer.findFirst({
+        where: { jobId: Number(id), artisanId: userId, status: "accepted" },
+      }));
+
+    if (!isCustomer && !isArtisan) {
       return NextResponse.json(
         { error: "Bu işi güncelleme yetkiniz yok." },
         { status: 403 }
