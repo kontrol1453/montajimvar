@@ -48,8 +48,44 @@ export default async function CityServicePage({ params }: Props) {
     take: 20,
   });
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    headline: page.title,
+    description: page.metaDesc || page.content.slice(0, 160),
+    url: `https://montajimvar.xyz/${city}/${service}`,
+    about: {
+      "@type": "Service",
+      serviceType: service,
+      areaServed: {
+        "@type": "City",
+        name: city,
+      },
+    },
+    hasPart: profiles.map((profile) => ({
+      "@type": "LocalBusiness",
+      name: profile.companyName,
+      image: profile.logo || undefined,
+      url: `https://montajimvar.xyz/firma/${profile.id}`,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: city,
+        addressCountry: "TR",
+      },
+      aggregateRating: profile.ratingAvg > 0 ? {
+        "@type": "AggregateRating",
+        ratingValue: profile.ratingAvg.toFixed(1),
+        reviewCount: profile.reviewCount,
+      } : undefined,
+    })).filter(Boolean),
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="text-sm text-sub-text mb-4">
         <Link href="/" className="hover:text-montaj">Anasayfa</Link>
         <span className="mx-2">/</span>
