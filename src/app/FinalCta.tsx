@@ -35,6 +35,23 @@ export default function FinalCta() {
         <p className="text-lg text-white/70 max-w-xl mx-auto mb-10 leading-relaxed">
           {CTA_DATA.subtitle}
         </p>
+
+        <div className="flex flex-wrap justify-center gap-4">
+          {CTA_DATA.actions.map((action) => (
+            <Link
+              key={action.label}
+              href={action.href}
+              className={
+                action.primary
+                  ? "inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-sm font-semibold text-[var(--color-dark)] hover:bg-white/90 transition-all hover:-translate-y-0.5 shadow-lg shadow-white/10"
+                  : "inline-flex items-center gap-2 px-7 py-3.5 rounded-xl border border-white/20 text-sm font-semibold text-white hover:bg-white/[0.06] transition-all hover:-translate-y-0.5"
+              }
+            >
+              {action.label}
+              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+            </Link>
+          ))}
+        </div>
       </motion.div>
     </section>
   );
