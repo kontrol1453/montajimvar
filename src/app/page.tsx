@@ -6,8 +6,8 @@ import AudienceGateway from "./v5/AudienceGateway";
 import ServiceDiscovery from "./v5/ServiceDiscovery";
 import ProductWorkflow from "./v5/ProductWorkflow";
 import PlatformCapabilities from "./v5/PlatformCapabilities";
-import HomeStats from "./HomeStats";
-import CorporateSection from "./CorporateSection";
+import CorporateOperations from "./v5/CorporateOperations";
+import VerifiedMetrics from "./v5/VerifiedMetrics";
 import WhySection from "./WhySection";
 import FinalCta from "./FinalCta";
 import ProductShowcase from "./ProductShowcase";
@@ -90,11 +90,11 @@ export default async function HomePage() {
       {/* ─── PLATFORM ÖZELLİKLERİ (v5) ─── */}
       <PlatformCapabilities />
 
-      {/* ─── KURUMSAL ─── */}
-      <CorporateSection />
+      {/* ─── KURUMSAL (v5) ─── */}
+      <CorporateOperations />
 
-      {/* ─── İSTATİSTİKLER ─── */}
-      <HomeStats
+      {/* ─── İSTATİSTİKLER (v5) ─── */}
+      <VerifiedMetrics
         profileCount={data.profileCount}
         cityCount={data.cityCount}
         avgRating={data.avgRating}
