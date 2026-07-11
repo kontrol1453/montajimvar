@@ -61,6 +61,33 @@ export default function JobMessagesPanel({ jobId, customerId, artisanId }: Props
     return () => clearInterval(interval);
   }, [jobId, open, isParticipant]);
 
+  async function shareLocation() {
+    if (!navigator.geolocation || sending) return;
+    setSending(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+        const msg = `📍 Konumum: ${mapsUrl}`;
+        try {
+          const res = await fetch("/api/job-messages", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ jobId, message: msg }),
+          });
+          if (res.ok) {
+            const m = await res.json();
+            setMessages((prev) => [...prev, m]);
+          }
+        } catch {}
+        setSending(false);
+      },
+      () => { setSending(false); },
+      { timeout: 10000 }
+    );
+  }
+
   async function sendMessage() {
     if ((!newMessage.trim() && !pendingFile) || sending || !isParticipant) return;
     setSending(true);
@@ -167,6 +194,14 @@ export default function JobMessagesPanel({ jobId, customerId, artisanId }: Props
               title="Dosya ekle"
             >
               📎
+            </button>
+            <button
+              onClick={shareLocation}
+              disabled={sending}
+              className="p-2 rounded-lg border border-dark-border text-sub-text hover:text-white hover:border-montaj transition disabled:opacity-50"
+              title="Konum gönder"
+            >
+              📍
             </button>
             <input
               ref={fileInputRef}
