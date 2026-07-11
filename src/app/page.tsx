@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import HomeHero from "./HomeHero";
+import HeroV5 from "./v5/HeroV5";
+import TrustBar from "./v5/TrustBar";
 import HomeBrands from "./HomeBrands";
 import HomeServices from "./HomeServices";
 import HomeStats from "./HomeStats";
@@ -69,10 +70,13 @@ export default async function HomePage() {
 
   return (
     <div className="overflow-hidden">
-      {/* ─── HERO ─── */}
-      <HomeHero />
+      {/* ─── HERO (v5) ─── */}
+      <HeroV5 />
 
-      {/* ─── SEKTÖRLER ─── */}
+      {/* ─── TRUST BAR (v5) ─── */}
+      <TrustBar />
+
+      {/* ─── SEKTÖRLER (legacy — FAZ 4'te ServiceDiscovery ile değişecek) ─── */}
       <HomeBrands />
 
       {/* ─── HEDEF KİTLE ─── */}
