@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import FirmaForm from "./FirmaForm";
 import PortfolioSection from "@/components/PortfolioSection";
+import VideoSection from "@/components/VideoSection";
 
 export default async function FirmaPage() {
   const session = await auth();
@@ -45,6 +46,12 @@ export default async function FirmaPage() {
             initialCoverPhoto={user?.coverPhoto}
             initialBio={user?.bio}
           />
+        </div>
+      )}
+
+      {profile && (
+        <div className="mt-8">
+          <VideoSection />
         </div>
       )}
     </div>
