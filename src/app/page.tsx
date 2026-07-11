@@ -4,13 +4,13 @@ import HeroV5 from "./v5/HeroV5";
 import TrustBar from "./v5/TrustBar";
 import AudienceGateway from "./v5/AudienceGateway";
 import ServiceDiscovery from "./v5/ServiceDiscovery";
+import ProductWorkflow from "./v5/ProductWorkflow";
+import PlatformCapabilities from "./v5/PlatformCapabilities";
 import HomeStats from "./HomeStats";
-import PlatformFeatures from "./PlatformFeatures";
 import CorporateSection from "./CorporateSection";
 import WhySection from "./WhySection";
 import FinalCta from "./FinalCta";
 import ProductShowcase from "./ProductShowcase";
-import HowItWorksV4 from "./HowItWorksV4";
 import AiSection from "./AiSection";
 import BlogSection from "./BlogSection";
 import FaqSection from "./FaqSection";
@@ -81,14 +81,14 @@ export default async function HomePage() {
       {/* ─── HİZMET KEŞFİ (v5) ─── */}
       <ServiceDiscovery categories={data.parentCategories} />
 
-      {/* ─── NASIL ÇALIŞIR ─── */}
-      <HowItWorksV4 />
+      {/* ─── NASIL ÇALIŞIR (v5) ─── */}
+      <ProductWorkflow />
 
-      {/* ─── ÜRÜN TANITIMI ─── */}
+      {/* ─── ÜRÜN TANITIMI (legacy — FAZ 5'te ProductProof ile değişecek) ─── */}
       <ProductShowcase />
 
-      {/* ─── PLATFORM ÖZELLİKLERİ ─── */}
-      <PlatformFeatures />
+      {/* ─── PLATFORM ÖZELLİKLERİ (v5) ─── */}
+      <PlatformCapabilities />
 
       {/* ─── KURUMSAL ─── */}
       <CorporateSection />
