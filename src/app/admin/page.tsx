@@ -3,7 +3,7 @@ import Card from "@/components/ui/Card";
 import Link from "next/link";
 
 export default async function AdminDashboardPage() {
-  const [userCount, profileCount, messageCount, unverifiedCount, reviewCount, permCount, jobCount, blogCount, jobReviewCount] =
+  const [userCount, profileCount, messageCount, unverifiedCount, reviewCount, permCount, jobCount, blogCount, jobReviewCount, paymentStats] =
     await Promise.all([
       prisma.user.count(),
       prisma.profile.count(),
@@ -14,6 +14,10 @@ export default async function AdminDashboardPage() {
       prisma.job.count(),
       prisma.blogPost.count(),
       prisma.jobReview.count(),
+      prisma.payment.aggregate({
+        _sum: { amount: true, commission: true },
+        _count: true,
+      }),
     ]);
 
   function StatIcon({ icon, label }: { icon: string; label: string }) {
@@ -113,7 +117,51 @@ export default async function AdminDashboardPage() {
                     className={`w-12 h-12 ${stat.color} rounded-lg flex items-center justify-center text-white`}
                   >
                     <StatIcon icon={stat.icon} label={stat.label} />
-                  </div>
+      </div>
+
+      {/* Gelir Özeti */}
+      <h2 className="text-lg font-semibold text-white mb-4">Gelir Özeti</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <Card>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-green-900/30 rounded-lg flex items-center justify-center">
+              <svg className="w-6 h-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm text-sub-text">Toplam Gelir</p>
+              <p className="text-2xl font-bold text-white">{((paymentStats._sum.amount || 0) / 100).toLocaleString("tr-TR")} TL</p>
+            </div>
+          </div>
+        </Card>
+        <Card>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-amber-900/30 rounded-lg flex items-center justify-center">
+              <svg className="w-6 h-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm text-sub-text">Toplam Komisyon</p>
+              <p className="text-2xl font-bold text-white">{((paymentStats._sum.commission || 0) / 100).toLocaleString("tr-TR")} TL</p>
+            </div>
+          </div>
+        </Card>
+        <Card>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-blue-900/30 rounded-lg flex items-center justify-center">
+              <svg className="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm text-sub-text">Toplam Ödeme</p>
+              <p className="text-2xl font-bold text-white">{paymentStats._count}</p>
+            </div>
+          </div>
+        </Card>
+      </div>
                 <div>
                   <p className="text-sm text-sub-text">{stat.label}</p>
                   <p className="text-2xl font-bold text-white">{stat.value}</p>
