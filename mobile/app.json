@@ -1,53 +1,42 @@
 {
   "expo": {
     "name": "Montajım Var",
-    "slug": "montajimvar-app",
+    "slug": "montajimvar",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0a0a0a"
+      "backgroundColor": "#1a1d27"
     },
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.kontrol1453.montajimvar",
-      "infoPlist": {
-        "CFBundleAllowMixedLocalizations": true
-      }
+      "bundleIdentifier": "app.montajimvar.mobile"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#0a0a0a",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1a1d27"
       },
-      "predictiveBackGestureEnabled": false,
-      "package": "com.kontrol1453.montajimvar",
-      "intentFilters": [
-        {
-          "action": "VIEW",
-          "data": {
-            "scheme": "https",
-            "host": "montajimvar.xyz"
-          },
-          "category": ["BROWSABLE", "DEFAULT"]
-        }
-      ]
+      "package": "app.montajimvar.mobile"
     },
     "web": {
+      "bundler": "metro",
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-status-bar"
+      "expo-router",
+      "expo-notifications",
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "PORTRAIT_UP"
+        }
+      ]
     ],
-    "extra": {
-      "eas": {
-        "projectId": "bf4ae8cd-8fa6-437c-8204-68253e3c9eca"
-      }
-    }
+    "scheme": "montajimvar"
   }
 }
