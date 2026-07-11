@@ -14,8 +14,8 @@ interface Category {
 }
 
 interface Props {
-  data: { categoryIds: number[] };
-  updateData: (partial: { categoryIds: number[] }) => void;
+  data: { categoryIds: number[]; categoryNames?: string[] };
+  updateData: (partial: { categoryIds: number[]; categoryNames?: string[] }) => void;
   onNext: () => void;
 }
 
@@ -54,11 +54,15 @@ export default function StepCategory({ data, updateData, onNext }: Props) {
   }, []);
 
   const toggleCategory = (id: number) => {
-    updateData({
-      categoryIds: data.categoryIds.includes(id)
-        ? data.categoryIds.filter((c) => c !== id)
-        : [...data.categoryIds, id],
-    });
+    const all = parents.flatMap((p) => [p, ...(p.children || [])]);
+    const cat = all.find((c) => c.id === id);
+    const newIds = data.categoryIds.includes(id)
+      ? data.categoryIds.filter((c) => c !== id)
+      : [...data.categoryIds, id];
+    const newNames = newIds
+      .map((cid) => all.find((c) => c.id === cid)?.name)
+      .filter(Boolean) as string[];
+    updateData({ categoryIds: newIds, categoryNames: newNames });
   };
 
   if (loading) {

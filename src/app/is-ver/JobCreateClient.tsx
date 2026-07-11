@@ -11,6 +11,7 @@ import StepConfirm from "./StepConfirm";
 
 interface FormData {
   categoryIds: number[];
+  categoryNames: string[];
   photos: string[];
   city: string;
   district: string;
@@ -25,6 +26,7 @@ interface FormData {
 
 const initialFormData: FormData = {
   categoryIds: [],
+  categoryNames: [],
   photos: [],
   city: "",
   district: "",

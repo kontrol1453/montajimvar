@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Button from "@/components/ui/Button";
+import PriceAnalyzer from "@/components/PriceAnalyzer";
 
 const URGENCY_OPTIONS = [
   { value: "normal", label: "Normal", desc: "1-3 gün içinde", icon: "📅" },
@@ -15,6 +16,10 @@ interface FormData {
   urgency: string;
   budgetMin: string;
   budgetMax: string;
+  categoryIds?: number[];
+  categoryNames?: string[];
+  city?: string;
+  photos?: string[];
 }
 
 interface Props {
@@ -99,6 +104,17 @@ export default function StepDetails({ data, updateData, onNext, onBack }: Props)
           ))}
         </div>
       </div>
+
+      {data.city && data.categoryIds && data.categoryIds.length > 0 && (
+        <PriceAnalyzer
+          categoryIds={data.categoryIds}
+          categoryNames={data.categoryNames || []}
+          city={data.city}
+          urgency={data.urgency}
+          description={data.description}
+          photoCount={data.photos?.length || 0}
+        />
+      )}
 
       <div>
         <label className="block text-sm font-medium text-muted-text mb-2">Bütçe Aralığı (opsiyonel)</label>
