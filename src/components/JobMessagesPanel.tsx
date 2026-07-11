@@ -25,6 +25,9 @@ export default function JobMessagesPanel({ jobId, customerId, artisanId }: Props
   const [messages, setMessages] = useState<JobMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const userId = (session?.user as any)?.id;
@@ -59,18 +62,35 @@ export default function JobMessagesPanel({ jobId, customerId, artisanId }: Props
   }, [jobId, open, isParticipant]);
 
   async function sendMessage() {
-    if (!newMessage.trim() || sending || !isParticipant) return;
+    if ((!newMessage.trim() && !pendingFile) || sending || !isParticipant) return;
     setSending(true);
     try {
+      let fileUrl = "";
+      if (pendingFile) {
+        setUploadingFile(true);
+        const fd = new FormData();
+        fd.append("files", pendingFile);
+        const uploadRes = await fetch("/api/upload/review", { method: "POST", body: fd });
+        if (!uploadRes.ok) return;
+        const uploadData = await uploadRes.json();
+        fileUrl = uploadData.urls?.[0] || "";
+        setUploadingFile(false);
+      }
+
       const res = await fetch("/api/job-messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobId, message: newMessage.trim() }),
+        body: JSON.stringify({
+          jobId,
+          message: newMessage.trim() || "(Dosya eklendi)",
+          fileUrl: fileUrl || undefined,
+        }),
       });
       if (res.ok) {
         const msg = await res.json();
         setMessages((prev) => [...prev, msg]);
         setNewMessage("");
+        setPendingFile(null);
       }
     } catch {}
     setSending(false);
@@ -135,6 +155,26 @@ export default function JobMessagesPanel({ jobId, customerId, artisanId }: Props
           </div>
 
           <div className="border-t border-dark-border p-3 flex gap-2">
+            {pendingFile && (
+              <div className="flex items-center gap-2 bg-dark-section rounded-lg px-2 py-1 text-xs text-muted-text">
+                <span className="truncate max-w-[80px]">{pendingFile.name}</span>
+                <button onClick={() => setPendingFile(null)} className="text-red-400 hover:text-red-300">✕</button>
+              </div>
+            )}
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="p-2 rounded-lg border border-dark-border text-sub-text hover:text-white hover:border-montaj transition"
+              title="Dosya ekle"
+            >
+              📎
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*,.pdf,.doc,.docx"
+              className="hidden"
+              onChange={(e) => setPendingFile(e.target.files?.[0] || null)}
+            />
             <input
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
@@ -144,10 +184,10 @@ export default function JobMessagesPanel({ jobId, customerId, artisanId }: Props
             />
             <button
               onClick={sendMessage}
-              disabled={!newMessage.trim() || sending}
+              disabled={(!newMessage.trim() && !pendingFile) || sending || uploadingFile}
               className="px-4 py-2 bg-montaj text-white rounded-lg text-sm hover:bg-montaj/90 transition disabled:opacity-50"
             >
-              Gönder
+              {uploadingFile ? "Yükleniyor..." : "Gönder"}
             </button>
           </div>
         </div>
