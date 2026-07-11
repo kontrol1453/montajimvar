@@ -17,6 +17,7 @@ import {
   AlertTriangle,
   MapPin,
   CreditCard,
+  BarChart3,
   Menu,
   X,
   ExternalLink,
@@ -39,6 +40,7 @@ const links = [
   { href: "/admin/google-firma-ekle", label: "Google Firma", icon: MapPin },
   { href: "/admin/sehir-sayfalari", label: "Şehir Sayfaları", icon: MapPin },
   { href: "/admin/abonelik-plani", label: "Abonelik", icon: CreditCard },
+  { href: "/admin/crm", label: "CRM", icon: BarChart3 },
 ];
 
 export default function AdminNav() {
