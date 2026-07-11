@@ -41,6 +41,8 @@ model User {
   skills               ArtisanSkill[]
   videos               ArtisanVideo[]
   jobMessages          JobMessage[]
+  invoices             Invoice[]
+  disputesOpened       Dispute[]
 }
 
 model Profile {
@@ -298,6 +300,8 @@ model Job {
   messages     JobMessage[]
   review       JobReview?
   payment      Payment?
+  dispute      Dispute?
+  invoices     Invoice[]
 }
 
 model JobCategory {
@@ -362,21 +366,60 @@ model JobReview {
 }
 
 model Payment {
-  id          Int      @id @default(autoincrement())
-  jobId       Int      @unique
-  customerId  Int
-  artisanId   Int
-  amount      Int      // ₺
-  commission  Int      @default(0) // platform komisyonu
-  status      String   @default("escrow") // escrow, released, refunded, cancelled
-  method      String?  // credit_card, bank_transfer
-  paidAt      DateTime?
-  releasedAt  DateTime?
-  createdAt   DateTime @default(now())
+  id                   Int       @id @default(autoincrement())
+  jobId                Int       @unique
+  customerId           Int
+  artisanId            Int
+  amount               Int       // ₺ (kuruş)
+  commission           Int       @default(0) // platform komisyonu
+  status               String    @default("escrow") // escrow, released, refunded, cancelled
+  method               String?   // credit_card, bank_transfer, iyzico
+  provider             String?   // "iyzico", "paytr", "stripe"
+  providerPaymentId    String?   // servis sağlayıcıdaki işlem ID
+  providerConvId       String?   // servis sağlayıcı onay kodu
+  paidAt               DateTime?
+  releasedAt           DateTime?
+  createdAt            DateTime  @default(now())
 
   job      Job   @relation(fields: [jobId], references: [id])
   customer User  @relation("CustomerPayments", fields: [customerId], references: [id])
   artisan  User  @relation("ArtisanPayments", fields: [artisanId], references: [id])
+  dispute  Dispute?
+  invoices Invoice[]
+}
+
+model Dispute {
+  id          Int      @id @default(autoincrement())
+  jobId       Int      @unique
+  paymentId   Int?     @unique
+  openedById  Int
+  reason      String
+  resolution  String?   // "refund_customer", "release_artisan", "split_50", "split_custom"
+  status      String   @default("open") // open → resolved
+  note        String?   // admin notu
+  createdAt   DateTime @default(now())
+  resolvedAt  DateTime?
+
+  job      Job      @relation(fields: [jobId], references: [id])
+  payment  Payment? @relation(fields: [paymentId], references: [id])
+  openedBy User     @relation(fields: [openedById], references: [id])
+}
+
+model Invoice {
+  id          Int      @id @default(autoincrement())
+  jobId       Int
+  paymentId   Int?
+  invoiceNo   String   @unique
+  amount      Int
+  recipientId Int
+  type        String   @default("sale") // sale, commission, refund
+  status      String   @default("pending") // pending, paid, cancelled
+  pdfUrl      String?
+  createdAt   DateTime @default(now())
+
+  job       Job      @relation(fields: [jobId], references: [id])
+  payment   Payment? @relation(fields: [paymentId], references: [id])
+  recipient User     @relation(fields: [recipientId], references: [id])
 }
 
 model ArtisanSkill {
