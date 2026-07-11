@@ -29,6 +29,10 @@ export default async function UyelikPage() {
     orderBy: { sortOrder: "asc" },
   });
 
+  const premiumTiers = await prisma.premiumPlan.findMany({
+    orderBy: { priorityScore: "asc" },
+  });
+
   // Premium analitik verileri (sadece profil sahipleri için)
   const premiumAnalytics = profile ? {
     viewCount: profile.viewCount,
@@ -265,6 +269,58 @@ export default async function UyelikPage() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Premium Tier Karşılaştırma */}
+      {premiumTiers.length > 0 && (
+        <div className="mt-10">
+          <h2 className="text-xl font-bold text-white mb-1">Premium Seviyeleri</h2>
+          <p className="text-sm text-sub-text mb-6">Detaylı özellik karşılaştırması</p>
+          <div className="overflow-x-auto bg-dark-card rounded-xl border border-dark-border">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-dark-border bg-dark-section">
+                  <th className="text-left p-4 text-sub-text font-medium">Özellik</th>
+                  {premiumTiers.map((t) => (
+                    <th key={t.id} className="p-4 text-center font-semibold text-white">{t.name}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-dark-border">
+                {(() => {
+                  const allFeatures = [...new Set(premiumTiers.flatMap((t) => {
+                    try { return JSON.parse(t.features); } catch { return []; }
+                  }))];
+                  return allFeatures.map((feat, i) => (
+                    <tr key={i} className="hover:bg-dark-section/50">
+                      <td className="p-4 text-muted-text">{feat}</td>
+                      {premiumTiers.map((t) => {
+                        const tierFeats: string[] = (() => { try { return JSON.parse(t.features); } catch { return []; } })();
+                        return (
+                          <td key={t.id} className="p-4 text-center">
+                            {tierFeats.includes(feat) ? (
+                              <span className="text-green-400 text-lg">✓</span>
+                            ) : (
+                              <span className="text-dark-border">—</span>
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ));
+                })()}
+                <tr className="bg-dark-section/30">
+                  <td className="p-4 text-muted-text font-medium">Fiyat</td>
+                  {premiumTiers.map((t) => (
+                    <td key={t.id} className="p-4 text-center font-bold text-white">
+                      {(t.price / 100).toFixed(0)} TL<span className="text-sub-text text-xs font-normal">/ay</span>
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
