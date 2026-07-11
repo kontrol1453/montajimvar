@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import HeroV5 from "./v5/HeroV5";
 import TrustBar from "./v5/TrustBar";
-import HomeBrands from "./HomeBrands";
-import HomeServices from "./HomeServices";
+import AudienceGateway from "./v5/AudienceGateway";
+import ServiceDiscovery from "./v5/ServiceDiscovery";
 import HomeStats from "./HomeStats";
-import AudienceSection from "./AudienceSection";
 import PlatformFeatures from "./PlatformFeatures";
 import CorporateSection from "./CorporateSection";
 import WhySection from "./WhySection";
@@ -76,14 +75,11 @@ export default async function HomePage() {
       {/* ─── TRUST BAR (v5) ─── */}
       <TrustBar />
 
-      {/* ─── SEKTÖRLER (legacy — FAZ 4'te ServiceDiscovery ile değişecek) ─── */}
-      <HomeBrands />
+      {/* ─── HEDEF KİTLE (v5) ─── */}
+      <AudienceGateway />
 
-      {/* ─── HEDEF KİTLE ─── */}
-      <AudienceSection />
-
-      {/* ─── HİZMET KATEGORİLERİ ─── */}
-      <HomeServices categories={data.parentCategories} />
+      {/* ─── HİZMET KEŞFİ (v5) ─── */}
+      <ServiceDiscovery categories={data.parentCategories} />
 
       {/* ─── NASIL ÇALIŞIR ─── */}
       <HowItWorksV4 />
