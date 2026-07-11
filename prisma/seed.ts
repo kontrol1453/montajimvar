@@ -273,6 +273,21 @@ async function main() {
 
   console.log("✓ Demo premium üyelik atandı");
 
+  // Seed PremiumPlan (3-tier)
+  const premiumTiers = [
+    { name: "Premium", slug: "premium", price: 19900, maxOffers: 20, profileBadge: "bronze", priorityScore: 1, features: JSON.stringify(["20 aylık teklif hakkı", "Profil rozeti", "Temel istatistikler", "Standart destek"]) },
+    { name: "Gold", slug: "gold", price: 49900, maxOffers: 100, profileBadge: "gold", priorityScore: 2, features: JSON.stringify(["100 aylık teklif hakkı", "Gold rozeti", "Detaylı istatistikler", "Haftada 1 öne çıkan profil", "Öncelikli destek"]) },
+    { name: "Platinum", slug: "platinum", price: 99900, maxOffers: 9999, profileBadge: "platinum", priorityScore: 3, features: JSON.stringify(["Sınırsız teklif", "Platinum rozeti", "Gelişmiş istatistikler", "Her gün öne çıkan profil", "7/24 öncelikli destek"]) },
+  ];
+  for (const tier of premiumTiers) {
+    await prisma.premiumPlan.upsert({
+      where: { slug: tier.slug },
+      update: { name: tier.name, price: tier.price, maxOffers: tier.maxOffers, profileBadge: tier.profileBadge, priorityScore: tier.priorityScore, features: tier.features },
+      create: tier,
+    });
+  }
+  console.log("✓ Premium planları oluşturuldu");
+
   console.log("\n✅ Seed işlemi tamamlandı!");
   console.log("\n📧 Test hesapları:");
   console.log("   Admin:      admin@montajimvar.com / 123456");
