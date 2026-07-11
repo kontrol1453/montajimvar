@@ -122,11 +122,13 @@ export default function JobDetailClient({ job, userId, isOwner, isArtisan, exist
 
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewComment, setReviewComment] = useState("");
+  const [reviewPhotos, setReviewPhotos] = useState<string[]>([]);
+  const [reviewPhotoUploading, setReviewPhotoUploading] = useState(false);
   const [reviewLoading, setReviewLoading] = useState(false);
   const [reviewError, setReviewError] = useState("");
   const [reviewSuccess, setReviewSuccess] = useState("");
   const [existingReview, setExistingReview] = useState(false);
-  const [review, setReview] = useState<{ rating: number; comment: string | null } | null>(null);
+  const [review, setReview] = useState<{ rating: number; comment: string | null; photos?: string[] | null } | null>(null);
 
   useEffect(() => {
     fetch(`/api/jobs/${job.id}/review`)
@@ -134,7 +136,11 @@ export default function JobDetailClient({ job, userId, isOwner, isArtisan, exist
       .then((data) => {
         if (data.review) {
           setExistingReview(true);
-          setReview(data.review);
+          const photoStr = data.photos || data.review?.photos;
+          const parsedPhotos = photoStr
+            ? (typeof photoStr === "string" ? JSON.parse(photoStr) : photoStr)
+            : null;
+          setReview({ rating: data.review.rating, comment: data.review.comment, photos: parsedPhotos });
         }
       })
       .catch(() => {});
@@ -166,6 +172,46 @@ export default function JobDetailClient({ job, userId, isOwner, isArtisan, exist
     }
   };
 
+  const handleReviewPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    if (reviewPhotos.length + files.length > 5) {
+      setReviewError("En fazla 5 fotoğraf yükleyebilirsiniz.");
+      return;
+    }
+
+    setReviewPhotoUploading(true);
+    setReviewError("");
+
+    try {
+      const formData = new FormData();
+      files.forEach((f) => formData.append("files", f));
+
+      const res = await fetch("/api/upload/review", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setReviewError(data.error || "Fotoğraf yüklenemedi.");
+        return;
+      }
+
+      setReviewPhotos((prev) => [...prev, ...data.urls]);
+    } catch {
+      setReviewError("Fotoğraf yükleme hatası.");
+    } finally {
+      setReviewPhotoUploading(false);
+      e.target.value = "";
+    }
+  };
+
+  const handleRemoveReviewPhoto = (idx: number) => {
+    setReviewPhotos((prev) => prev.filter((_, i) => i !== idx));
+  };
+
   const handleReviewSubmit = async () => {
     if (reviewRating === 0) {
       setReviewError("Lütfen bir puan seçin.");
@@ -183,6 +229,7 @@ export default function JobDetailClient({ job, userId, isOwner, isArtisan, exist
         body: JSON.stringify({
           rating: reviewRating,
           comment: reviewComment || undefined,
+          photos: reviewPhotos.length > 0 ? reviewPhotos : undefined,
         }),
       });
 
@@ -195,7 +242,7 @@ export default function JobDetailClient({ job, userId, isOwner, isArtisan, exist
 
       setReviewSuccess("Değerlendirmeniz kaydedildi! Teşekkür ederiz.");
       setExistingReview(true);
-      setReview({ rating: reviewRating, comment: reviewComment });
+      setReview({ rating: reviewRating, comment: reviewComment, photos: reviewPhotos.length > 0 ? reviewPhotos : null });
       router.refresh();
     } catch {
       setReviewError("Bağlantı hatası.");
@@ -670,6 +717,43 @@ export default function JobDetailClient({ job, userId, isOwner, isArtisan, exist
                   rows={3}
                   className="w-full px-3 py-2.5 border border-dark-border rounded-lg text-sm bg-dark-section text-white placeholder-sub-text focus:outline-none focus:ring-2 focus:ring-montaj resize-none"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-muted-text mb-1.5">
+                  Fotoğraflar (isteğe bağlı — iş öncesi/sonrası)
+                </label>
+                {reviewPhotos.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {reviewPhotos.map((url, idx) => (
+                      <div key={idx} className="relative">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={url}
+                          alt={`Fotoğraf ${idx + 1}`}
+                          className="w-20 h-20 object-cover rounded-lg border border-dark-border"
+                        />
+                        <button
+                          onClick={() => handleRemoveReviewPhoto(idx)}
+                          className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center hover:bg-red-600"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {reviewPhotos.length < 5 && (
+                  <label className={`inline-flex items-center gap-2 px-3 py-2 border border-dashed border-dark-border rounded-lg text-sm text-muted-text hover:border-montaj hover:text-montaj cursor-pointer transition ${reviewPhotoUploading ? "opacity-50 pointer-events-none" : ""}`}>
+                    {reviewPhotoUploading ? "Yükleniyor..." : "📷 Fotoğraf Ekle"}
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      multiple
+                      onChange={handleReviewPhotoUpload}
+                      className="hidden"
+                    />
+                  </label>
+                )}
               </div>
               <Button
                 variant="primary"

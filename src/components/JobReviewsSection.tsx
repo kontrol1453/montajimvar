@@ -57,6 +57,23 @@ export default function JobReviewsSection({ artisanId }: { artisanId: number }) 
               </div>
             </div>
             <p className="text-muted-text text-sm mt-1">{r.comment || "Yorum yapılmadı."}</p>
+            {r.photos && (() => {
+              const photos: string[] = JSON.parse(r.photos);
+              if (!photos.length) return null;
+              return (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {photos.map((url, idx) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      key={idx}
+                      src={url}
+                      alt={`Değerlendirme fotoğrafı ${idx + 1}`}
+                      className="w-16 h-16 object-cover rounded-lg border border-dark-border"
+                    />
+                  ))}
+                </div>
+              );
+            })()}
             <p className="text-sub-text text-xs mt-1">
               {r.job.title} · {
                 new Date(r.createdAt).toLocaleDateString("tr-TR", {
