@@ -24,6 +24,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const navigation = [
   { name: "Ana Sayfa", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Takvim", href: "/dashboard/takvim", icon: Calendar },
   { name: "Bugünkü İşler", href: "/dashboard/isler", icon: Calendar },
   { name: "Mesajlar", href: "/dashboard/mesajlar", icon: MessageSquare },
   { name: "Gelirler", href: "/dashboard/gelirler", icon: CreditCard },

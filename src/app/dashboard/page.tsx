@@ -14,7 +14,7 @@ export default async function DashboardPage() {
   const userId = (session.user as any).id;
   const roles: string[] = (session.user as any).roles || [];
 
-  const [messageCount, unreadCount, profile, userRecord] = await Promise.all([
+  const [messageCount, unreadCount, profile, userRecord, customerBudget] = await Promise.all([
     prisma.message.count({ where: { receiverId: userId } }),
     prisma.message.count({ where: { receiverId: userId, isRead: false } }),
     prisma.profile.findUnique({ where: { userId } }),
@@ -22,7 +22,20 @@ export default async function DashboardPage() {
       where: { id: userId },
       select: { premiumUntil: true, name: true },
     }),
+    prisma.job.aggregate({
+      where: { customerId: userId, status: { in: ["completed", "in_progress", "assigned"] } },
+      _sum: { budgetMax: true },
+    }),
   ]);
+  const totalBudget = customerBudget._sum.budgetMax || 0;
+  const monthlySpent = await prisma.job.aggregate({
+    where: {
+      customerId: userId,
+      status: "completed",
+      updatedAt: { gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1) },
+    },
+    _sum: { budgetMax: true },
+  });
 
   const premiumUntil = profile?.premiumUntil || userRecord?.premiumUntil || null;
   const isPremium = premiumUntil != null && new Date(premiumUntil) > new Date();
@@ -235,6 +248,33 @@ export default async function DashboardPage() {
               </div>
             </div>
           </motion.div>
+        )}
+
+        {/* Budget Tracking (for customers) */}
+        {roles.includes("CUSTOMER") && (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
+          >
+            <h2 className="text-xl font-bold text-[var(--color-dark)] mb-5" style={{ fontFamily: "'Manrope', system-ui, sans-serif" }}>
+              Bütçe Durumu
+            </h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="card p-5">
+                <p className="text-sm font-medium text-[var(--color-text-tertiary)] mb-1">Aktif İş Bütçesi</p>
+                <p className="text-2xl font-extrabold text-[var(--color-dark)]" style={{ fontFamily: "'Manrope', system-ui, sans-serif" }}>
+                  {(totalBudget / 100).toLocaleString("tr-TR")} ₺
+                </p>
+              </div>
+              <div className="card p-5">
+                <p className="text-sm font-medium text-[var(--color-text-tertiary)] mb-1">Bu Ay Harcanan</p>
+                <p className="text-2xl font-extrabold text-[var(--color-dark)]" style={{ fontFamily: "'Manrope', system-ui, sans-serif" }}>
+                  {((monthlySpent._sum.budgetMax || 0) / 100).toLocaleString("tr-TR")} ₺
+                </p>
+              </div>
+            </div>
+          </motion.section>
         )}
 
         {/* Quick Actions */}
