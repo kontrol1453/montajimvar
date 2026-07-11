@@ -46,6 +46,9 @@ export default function AdminBlogPage() {
     serviceSlug: "",
   });
   const [preview, setPreview] = useState(false);
+  const [showCatManager, setShowCatManager] = useState(false);
+  const [catForm, setCatForm] = useState({ name: "", slug: "" });
+  const [catEditing, setCatEditing] = useState<number | null>(null);
 
   useEffect(() => {
     loadData();
@@ -171,15 +174,50 @@ export default function AdminBlogPage() {
     }
   }
 
+  async function saveCategory() {
+    if (!catForm.name || !catForm.slug) return;
+    const method = catEditing ? "PUT" : "POST";
+    const body = catEditing ? { ...catForm, id: catEditing } : catForm;
+    const res = await fetch("/api/admin/blog-categories", {
+      method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+    });
+    if (res.ok) {
+      toast.success(catEditing ? "Kategori güncellendi." : "Kategori oluşturuldu.");
+      setCatForm({ name: "", slug: "" });
+      setCatEditing(null);
+      loadData();
+    } else {
+      const err = await res.json();
+      toast.error(err.error || "Hata.");
+    }
+  }
+
+  async function deleteCategory(id: number) {
+    if (!confirm("Kategoriyi silmek istediğinize emin misiniz?")) return;
+    const res = await fetch(`/api/admin/blog-categories?id=${id}`, { method: "DELETE" });
+    if (res.ok) {
+      toast.success("Kategori silindi.");
+      loadData();
+    } else {
+      const err = await res.json();
+      toast.error(err.error || "Hata.");
+    }
+  }
+
   if (loading) return <div className="p-6 text-sub-text">Yükleniyor...</div>;
 
   return (
     <div className="p-4 sm:p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-white">Blog Yönetimi</h1>
-        <button onClick={() => { resetForm(); setShowForm(true); }} className="bg-montaj text-dark-bg px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90">
-          + Yeni Yazı
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => { setShowCatManager(!showCatManager); }} className="border border-dark-border text-sub-text px-4 py-2 rounded-lg text-sm font-medium hover:text-white transition">
+            Kategoriler
+          </button>
+          <button onClick={() => { resetForm(); setShowForm(true); }} className="bg-montaj text-dark-bg px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90">
+            + Yeni Yazı
+          </button>
+        </div>
       </div>
 
       {showForm && (
@@ -275,6 +313,35 @@ export default function AdminBlogPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showCatManager && (
+        <div className="bg-dark-card border border-dark-border rounded-xl p-4 mb-6">
+          <h3 className="text-sm font-semibold text-white mb-3">Kategoriler</h3>
+          <div className="flex flex-wrap gap-2 mb-3">
+            {categories.map(c => (
+              <div key={c.id} className="flex items-center gap-1 bg-dark-bg rounded-lg px-2 py-1 text-xs text-muted-text">
+                <span>{c.name}</span>
+                <button onClick={() => { setCatForm({ name: c.name, slug: c.slug }); setCatEditing(c.id); }} className="text-montaj hover:underline ml-1">✎</button>
+                <button onClick={() => deleteCategory(c.id)} className="text-red-400 hover:text-red-300">✕</button>
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-2 items-end">
+            <div>
+              <label className="block text-xs text-sub-text mb-1">Ad</label>
+              <input value={catForm.name} onChange={e => setCatForm(f => ({ ...f, name: e.target.value }))} className="bg-dark-bg border border-dark-border rounded px-2 py-1 text-white text-sm w-32" />
+            </div>
+            <div>
+              <label className="block text-xs text-sub-text mb-1">Slug</label>
+              <input value={catForm.slug} onChange={e => setCatForm(f => ({ ...f, slug: e.target.value }))} className="bg-dark-bg border border-dark-border rounded px-2 py-1 text-white text-sm w-32" />
+            </div>
+            <button onClick={saveCategory} className="bg-montaj text-dark-bg px-3 py-1.5 rounded text-sm font-medium">
+              {catEditing ? "Güncelle" : "Ekle"}
+            </button>
+            {catEditing && <button onClick={() => { setCatForm({ name: "", slug: "" }); setCatEditing(null); }} className="text-xs text-sub-text hover:text-white">İptal</button>}
           </div>
         </div>
       )}
