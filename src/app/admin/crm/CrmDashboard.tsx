@@ -35,6 +35,8 @@ const STATUS_LABELS: Record<string, string> = {
 
 export default function CrmDashboard({ data }: { data: CrmData }) {
   const [callReminder, setCallReminder] = useState<{ jobId: number; note: string } | null>(null);
+  const [reminderSending, setReminderSending] = useState(false);
+  const [reminderDone, setReminderDone] = useState(false);
 
   const cards = [
     { label: "Toplam İş", value: data.totalJobs, icon: ClipboardList, color: "#0B5FFF" },
@@ -109,12 +111,12 @@ export default function CrmDashboard({ data }: { data: CrmData }) {
         </table>
       </div>
 
-      {callReminder && (
+      {callReminder && !reminderDone && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-dark-card rounded-xl p-6 max-w-sm w-full border border-dark-border">
             <h3 className="text-lg font-semibold text-white mb-3">Arama Hatırlatıcı</h3>
             <p className="text-sm text-sub-text mb-4">
-              Bu müşteriyi aramak için hatırlatıcı oluşturun. Bildirimlerinizden takip edebilirsiniz.
+              Müşteriye e-posta gönderilecek ve hatırlatıcı oluşturulacak.
             </p>
             <textarea
               placeholder="Not (opsiyonel)"
@@ -124,21 +126,42 @@ export default function CrmDashboard({ data }: { data: CrmData }) {
               rows={3}
             />
             <div className="flex gap-2 justify-end">
+              <button onClick={() => setCallReminder(null)} className="px-4 py-2 rounded-lg text-sm text-sub-text hover:text-white transition-colors">İptal</button>
               <button
-                onClick={() => setCallReminder(null)}
-                className="px-4 py-2 rounded-lg text-sm text-sub-text hover:text-white transition-colors"
-              >
-                Kapat
-              </button>
-              <button
-                onClick={() => {
-                  setCallReminder(null);
+                onClick={async () => {
+                  setReminderSending(true);
+                  try {
+                    await fetch("/api/crm/reminder", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ jobId: callReminder!.jobId, note: callReminder!.note }),
+                    });
+                    setReminderDone(true);
+                  } catch {} finally {
+                    setReminderSending(false);
+                  }
                 }}
-                className="px-4 py-2 bg-montaj text-white rounded-lg text-sm font-medium hover:bg-montaj-dark transition-colors"
+                disabled={reminderSending}
+                className="px-4 py-2 bg-montaj text-white rounded-lg text-sm font-medium hover:bg-montaj-dark transition-colors disabled:opacity-40"
               >
-                Hatırlatıcı Oluştur
+                {reminderSending ? "Gönderiliyor..." : "Hatırlatıcı Oluştur"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {reminderDone && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-dark-card rounded-xl p-6 max-w-sm w-full border border-dark-border text-center">
+            <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+              <svg className="w-6 h-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-white mb-1">Hatırlatıcı Oluşturuldu</h3>
+            <p className="text-sm text-sub-text mb-4">Müşteriye e-posta gönderildi.</p>
+            <button onClick={() => { setCallReminder(null); setReminderDone(false); }} className="px-4 py-2 bg-montaj text-white rounded-lg text-sm font-medium">Tamam</button>
           </div>
         </div>
       )}
