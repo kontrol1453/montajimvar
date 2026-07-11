@@ -143,6 +143,28 @@ export async function POST(request: Request) {
       );
     }
 
+    // Premium offer limit check
+    const profile = await prisma.profile.findUnique({
+      where: { userId },
+      select: { premiumUntil: true },
+    });
+    if (profile) {
+      const isPremium = profile.premiumUntil && new Date(profile.premiumUntil) > new Date();
+      const maxOffers = isPremium ? 100 : 20;
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+      startOfMonth.setHours(0, 0, 0, 0);
+      const monthlyOffers = await prisma.offer.count({
+        where: { artisanId: userId, createdAt: { gte: startOfMonth } },
+      });
+      if (monthlyOffers >= maxOffers) {
+        return NextResponse.json(
+          { error: `Aylık teklif kotanız doldu (${maxOffers}). Üyelik planınızı yükseltin.` },
+          { status: 403 }
+        );
+      }
+    }
+
     const offer = await prisma.offer.create({
       data: {
         jobId: Number(jobId),
