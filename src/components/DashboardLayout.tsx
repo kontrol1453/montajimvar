@@ -27,6 +27,7 @@ const navigation = [
   { name: "Bugünkü İşler", href: "/dashboard/isler", icon: Calendar },
   { name: "Mesajlar", href: "/dashboard/mesajlar", icon: MessageSquare },
   { name: "Gelirler", href: "/dashboard/gelirler", icon: CreditCard },
+  { name: "Faturalar", href: "/dashboard/faturalar", icon: CreditCard },
   { name: "Bekleyen Teklifler", href: "/dashboard/teklifler", icon: TrendingUp },
   { name: "Aktif Ekip", href: "/dashboard/ekip", icon: Users },
   { name: "Firma Profilim", href: "/dashboard/firma", icon: Building2 },
