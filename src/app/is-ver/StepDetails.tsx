@@ -112,7 +112,7 @@ export default function StepDetails({ data, updateData, onNext, onBack }: Props)
           city={data.city}
           urgency={data.urgency}
           description={data.description}
-          photoCount={data.photos?.length || 0}
+          photoUrls={data.photos}
         />
       )}
 
