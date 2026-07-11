@@ -11,7 +11,8 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "npx tsx prisma/seed.ts",
-    "seed-city-pages": "npx tsx prisma/seed-city-pages.ts"
+    "seed-city-pages": "npx tsx prisma/seed-city-pages.ts",
+    "seed-blog": "npx tsx prisma/seed-blog.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
