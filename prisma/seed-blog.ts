@@ -103,6 +103,17 @@ async function main() {
   const categories = await prisma.blogCategory.findMany();
   const catMap = new Map(categories.map((c) => [c.slug, c.id]));
 
+  // Auto-create categories if missing
+  const needed = ["genel", "sehir-rehberi", "ipuclari"];
+  for (const slug of needed) {
+    if (!catMap.has(slug)) {
+      const name = slug === "genel" ? "Genel" : slug === "sehir-rehberi" ? "Şehir Rehberi" : "İpuçları";
+      const cat = await prisma.blogCategory.create({ data: { name, slug } });
+      catMap.set(slug, cat.id);
+      console.log(`  kategori oluşturuldu: ${name}`);
+    }
+  }
+
   let created = 0;
   for (const post of POSTS) {
     const exists = await prisma.blogPost.findUnique({ where: { slug: post.slug } });
