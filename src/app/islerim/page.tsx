@@ -27,14 +27,21 @@ const STATUS_LABELS: Record<string, string> = {
   cancelled: "İptal Edildi",
 };
 
-export default async function IslerimPage() {
+const ACTIVE_STATUSES = ["pending", "offers_received", "assigned", "en_route", "in_progress"];
+const PAST_STATUSES = ["completed", "review_pending", "cancelled"];
+
+export default async function IslerimPage(props: { searchParams?: Promise<{ durum?: string }> }) {
+  const searchParams = await props.searchParams;
+  const filterTab = searchParams?.durum === "gecmis" ? "gecmis" : "aktif";
   const session = await auth();
   if (!session?.user) redirect("/auth/giris");
 
   const userId = Number((session.user as any).id);
 
+  const statusFilter = filterTab === "aktif" ? ACTIVE_STATUSES : PAST_STATUSES;
+
   const jobs = await prisma.job.findMany({
-    where: { customerId: userId },
+    where: { customerId: userId, status: { in: statusFilter } },
     orderBy: { createdAt: "desc" },
     include: {
       categories: {
@@ -54,7 +61,7 @@ export default async function IslerimPage() {
   return (
     <div className="min-h-screen py-8 px-4">
       <div className="max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-3xl font-bold text-white">İşlerim</h1>
             <p className="text-muted-text text-sm mt-1">
@@ -66,6 +73,29 @@ export default async function IslerimPage() {
             className="px-5 py-2.5 bg-montaj text-white font-semibold rounded-xl hover:bg-montaj-dark transition-all"
           >
             + Yeni İş Ver
+          </Link>
+        </div>
+
+        <div className="flex gap-2 mb-6">
+          <Link
+            href="/islerim"
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              filterTab === "aktif"
+                ? "bg-montaj text-white"
+                : "bg-dark-card text-sub-text hover:text-white border border-dark-border"
+            }`}
+          >
+            Aktif İşler
+          </Link>
+          <Link
+            href="/islerim?durum=gecmis"
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              filterTab === "gecmis"
+                ? "bg-montaj text-white"
+                : "bg-dark-card text-sub-text hover:text-white border border-dark-border"
+            }`}
+          >
+            Geçmiş İşler
           </Link>
         </div>
 
