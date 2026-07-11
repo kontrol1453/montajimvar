@@ -14,6 +14,7 @@ import HowItWorksV4 from "./HowItWorksV4";
 import AiSection from "./AiSection";
 import BlogSection from "./BlogSection";
 import FaqSection from "./FaqSection";
+import TrustBand from "./TrustBand";
 
 export const dynamic = "force-dynamic";
 
@@ -108,6 +109,9 @@ export default async function HomePage() {
 
       {/* ─── BLOG ─── */}
       <BlogSection />
+
+      {/* ─── GÜVEN UNSURLARI + REFERANS ─── */}
+      <TrustBand />
 
       {/* ─── SSS ─── */}
       <FaqSection />
