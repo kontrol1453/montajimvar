@@ -44,6 +44,16 @@ export default function FirmaForm({ profile, categoryIds: initialCategoryIds, ca
     hasInsurance: (profile as any)?.hasInsurance ?? false,
     hasGuarantee: (profile as any)?.hasGuarantee ?? false,
   });
+  const [workingCities, setWorkingCities] = useState<string[]>(() => {
+    const raw = (profile as any)?.workingCities;
+    if (!raw) return [];
+    try {
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : [];
+    } catch {
+      return [];
+    }
+  });
   const [selectedCategories, setSelectedCategories] = useState<number[]>(
     initialCategoryIds.length > 0
       ? initialCategoryIds
@@ -77,6 +87,7 @@ export default function FirmaForm({ profile, categoryIds: initialCategoryIds, ca
           hasInsurance: form.hasInsurance,
           hasGuarantee: form.hasGuarantee,
           categoryIds: selectedCategories,
+          workingCities: workingCities.length > 0 ? workingCities : undefined,
         }),
       });
 
@@ -252,6 +263,38 @@ export default function FirmaForm({ profile, categoryIds: initialCategoryIds, ca
               <p className="text-xs text-sub-text">Yapılan işe garanti veriliyor</p>
             </div>
           </label>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Çalışma Şehirleri <span className="text-sub-text">(hizmet verdiğiniz diğer şehirler)</span>
+          </label>
+          <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-3 border border-dark-border rounded-lg bg-dark-card">
+            {TURKISH_CITIES.map((c) => {
+              const selected = workingCities.includes(c);
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => {
+                    setWorkingCities((prev) =>
+                      prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]
+                    );
+                  }}
+                  className={`px-3 py-1.5 rounded-lg text-sm transition ${
+                    selected
+                      ? "bg-montaj text-white"
+                      : "bg-dark-section text-muted-text hover:text-white"
+                  }`}
+                >
+                  {c}
+                </button>
+              );
+            })}
+          </div>
+          {workingCities.length > 0 && (
+            <p className="text-xs text-sub-text mt-1">{workingCities.length} şehir seçili</p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

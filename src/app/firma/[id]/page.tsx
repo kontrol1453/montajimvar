@@ -235,6 +235,21 @@ export default async function CompanyProfilePage({ params }: Props) {
                 </svg>
                 {profile.city}
               </span>
+              {(profile as any).workingCities && (() => {
+                const cities: string[] = JSON.parse((profile as any).workingCities);
+                if (!cities.length) return null;
+                return (
+                  <>
+                    <span>·</span>
+                    <span className="flex items-center gap-1">
+                      <svg className="w-4 h-4 text-sub-text" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m6-7.5h-3v3m0 0v3m0-3h-3M4.5 18.75h6.75" />
+                      </svg>
+                      {cities.length} şehirde hizmet
+                    </span>
+                  </>
+                );
+              })()}
               <span>·</span>
               <div className="flex flex-wrap gap-1.5">
                 {profile.categories.map((pc) => (
@@ -254,6 +269,26 @@ export default async function CompanyProfilePage({ params }: Props) {
                 {profile.description}
               </p>
             )}
+
+            {(profile as any).workingCities && (() => {
+              const cities: string[] = JSON.parse((profile as any).workingCities);
+              if (!cities.length) return null;
+              return (
+                <div className="mt-3">
+                  <span className="text-sm font-medium text-gray-300">Hizmet Verilen Şehirler: </span>
+                  <div className="inline-flex flex-wrap gap-1.5 mt-1">
+                    <span className="px-2 py-0.5 rounded-md bg-montaj/20 text-montaj text-xs font-medium">
+                      {profile.city} (merkez)
+                    </span>
+                    {cities.map((c) => (
+                      <span key={c} className="px-2 py-0.5 rounded-md bg-dark-section text-muted-text text-xs">
+                        {c}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </div>
       </div>

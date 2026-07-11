@@ -59,7 +59,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { companyName, description, categoryId, categoryIds, city, address, phone, website, whatsapp, latitude, longitude, hasInsurance, hasGuarantee } = body;
+    const { companyName, description, categoryId, categoryIds, city, address, phone, website, whatsapp, latitude, longitude, hasInsurance, hasGuarantee, workingCities } = body;
 
     if (!companyName || !categoryId || !city) {
       return NextResponse.json(
@@ -87,6 +87,7 @@ export async function POST(request: Request) {
         longitude: longitude || null,
         hasInsurance: hasInsurance ?? false,
         hasGuarantee: hasGuarantee ?? false,
+        workingCities: workingCities ? JSON.stringify(workingCities) : null,
       },
       update: {
         companyName,
@@ -101,6 +102,7 @@ export async function POST(request: Request) {
         longitude: longitude || null,
         hasInsurance: hasInsurance ?? false,
         hasGuarantee: hasGuarantee ?? false,
+        workingCities: workingCities ? JSON.stringify(workingCities) : null,
       },
       include: {
         category: true,
