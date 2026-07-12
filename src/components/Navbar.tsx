@@ -26,6 +26,18 @@ export default function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
+  // Body scroll lock when mobile menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
   useEffect(() => {
     if (!profileOpen) return;
     function handleClickOutside(e: MouseEvent) {
@@ -73,14 +85,14 @@ export default function Navbar() {
             >
               Nasıl Çalışır?
             </Link>
-            <Link
-              href="/ara?tip=kurumsal"
+<Link
+              href="/kurumsal"
               className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-dark)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
             >
               Kurumsal
             </Link>
-            <Link
-              href="/auth/kayit"
+<Link
+              href="/ekip-ol"
               className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--color-dark)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] rounded-lg transition-all"
             >
               Montaj Ekipleri
@@ -233,20 +245,20 @@ export default function Navbar() {
           >
             Nasıl Çalışır?
           </Link>
-          <Link
-            href="/ara?tip=kurumsal"
-            className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
-            onClick={() => setMenuOpen(false)}
-          >
-            Kurumsal
-          </Link>
-          <Link
-            href="/auth/kayit"
-            className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
-            onClick={() => setMenuOpen(false)}
-          >
-            Montaj Ekipleri
-          </Link>
+<Link
+              href="/kurumsal"
+              className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
+              onClick={() => setMenuOpen(false)}
+            >
+              Kurumsal
+            </Link>
+<Link
+              href="/ekip-ol"
+              className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"
+              onClick={() => setMenuOpen(false)}
+            >
+              Montaj Ekipleri
+            </Link>
           <Link
             href="/blog"
             className="flex items-center gap-3 py-2.5 text-sm font-medium text-[var(--color-dark)]"

@@ -71,7 +71,7 @@ export default function ProductWorkflow() {
             sürer.
           </p>
           <Link href="/is-ver" className="btn-primary">
-            Hemen Başla <ArrowRight className="h-4 w-4" />
+            Ücretsiz İş Oluştur <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </div>

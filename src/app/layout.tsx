@@ -110,23 +110,6 @@ export default function RootLayout({
                 logo: "https://montajimvar.xyz/icon-512.png",
                 description:
                   "Türkiye'nin profesyonel montaj platformu. Mobilya, klima, tabela, AVM, fuar standı, elektrik ve endüstriyel montaj.",
-                sameAs: [
-                  "https://www.linkedin.com/company/montajimvar",
-                  "https://twitter.com/montajimvar",
-                  "https://www.instagram.com/montajimvar",
-                ],
-                contactPoint: {
-                  "@type": "ContactPoint",
-                  telephone: "+90-212-000-00-00",
-                  contactType: "customer service",
-                  availableLanguage: "Turkish",
-                },
-                address: {
-                  "@type": "PostalAddress",
-                  addressCountry: "TR",
-                  addressLocality: "İstanbul",
-                  addressRegion: "İstanbul",
-                },
               }),
             }}
           />

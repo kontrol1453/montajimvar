@@ -79,7 +79,18 @@ export default function HeroV5() {
           </div>
 
           <div className="md:col-span-5" aria-hidden="true">
-            <ProductPreviewMockup />
+            <div className="relative mx-auto w-full max-w-md">
+              <div className="rounded-card border border-border bg-surface shadow-elevated aspect-[4/3] flex items-center justify-center">
+                <div className="text-center p-8">
+                  <div className="mx-auto mb-4 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Sparkles className="h-8 w-8 text-primary" />
+                  </div>
+                  <p className="text-text-secondary text-sm">
+                    Ürün ekran görüntüsü<br />buraya eklenecek
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -103,85 +114,5 @@ export default function HeroV5() {
         </div>
       </div>
     </section>
-  );
-}
-
-function ProductPreviewMockup() {
-  return (
-    <div className="relative mx-auto w-full max-w-md">
-      <div className="rounded-card border border-border bg-surface shadow-elevated">
-        <div className="flex items-center gap-1.5 border-b border-border px-4 py-3">
-          <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
-          <span className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
-          <span className="h-2.5 w-2.5 rounded-full bg-accent/80" />
-          <span className="ml-auto text-xs text-text-tertiary">
-            montajimvar.xyz · canlı
-          </span>
-        </div>
-        <div className="p-5">
-          <div className="text-xs font-medium uppercase tracking-wide text-text-tertiary">
-            Aktif İşlerim
-          </div>
-          <div className="mt-1 text-2xl font-bold text-text-primary">
-            3 iş yürüyor
-          </div>
-
-          <div className="mt-4 space-y-2.5">
-            <Row label="Mobilya Montajı · Kadıköy" status="İşlemde" tone="primary" />
-            <Row label="Klima Kurulumu · Beşiktaş" status="Planlama" tone="muted" />
-            <Row label="TV Ünitesi · Üsküdar" status="Ekip atandı" tone="accent" />
-          </div>
-
-          <div className="mt-5 rounded-lg border border-border bg-app/60 p-3">
-            <div className="flex items-center justify-between text-xs text-text-tertiary">
-              <span>Emanet hesap</span>
-              <span className="font-medium text-accent">Koruma aktif</span>
-            </div>
-            <div className="mt-1 text-sm font-semibold text-text-primary">
-              Ödeme teslimat onayına kadar tutulur
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="absolute -right-4 -bottom-4 hidden md:block">
-        <div className="rounded-card border border-border bg-surface px-3 py-2 shadow-elevated">
-          <div className="flex items-center gap-2 text-xs">
-            <span className="h-2 w-2 rounded-full bg-accent" />
-            <span className="font-medium text-text-primary">Yeni teklif</span>
-            <span className="text-text-tertiary">+1</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Row({
-  label,
-  status,
-  tone,
-}: {
-  label: string;
-  status: string;
-  tone: "primary" | "accent" | "muted";
-}) {
-  const toneClass =
-    tone === "primary"
-      ? "bg-primary/10 text-primary"
-      : tone === "accent"
-      ? "bg-accent/10 text-accent"
-      : "bg-surface border border-border text-text-tertiary";
-  return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-app/40 px-3 py-2">
-      <span className="truncate text-xs font-medium text-text-primary">
-        {label}
-      </span>
-      <span
-        className={`shrink-0 rounded-md px-2 py-0.5 text-[10px] font-semibold ${toneClass}`}
-      >
-        {status}
-      </span>
-    </div>
   );
 }

@@ -118,7 +118,7 @@ export const AUDIENCE_ITEMS: AudienceItem[] = [
     description:
       "Kendi şehrinizdeki iş ilanlarını görün, portföy oluşturun, ödemelerinizi güvence altına alın. Yeni müşterilere hızlı ulaşın.",
     ctaLabel: "Ekip Olarak Katıl",
-    ctaHref: "/dashboard/profile",
+    ctaHref: "/auth/kayit",
     Icon: Hammer,
     accent: "accent",
   },
@@ -140,7 +140,7 @@ export const AUDIENCE_ITEMS: AudienceItem[] = [
     description:
       "Yetkili bayi ve montaj ağınızı yönetin, ürün montaj standartlarınızı koruyun, sahada sesiniz olun.",
     ctaLabel: "Marka Portalı",
-    ctaHref: "/dashboard/profile",
+    ctaHref: "/kurumsal",
     Icon: Factory,
     accent: "violet",
   },
@@ -456,14 +456,14 @@ export const HERO_PRIMARY_CTA = {
 };
 
 export const HERO_SECONDARY_CTA = {
-  label: "Platformu İncele",
+  label: "Platformu Keşfet",
   href: "#platform",
 };
 
 export const FINAL_CTA = {
-  title: "İlk İşinizi Ücretsiz Açın",
+  title: "Montaj İşinizi Başlatmaya Hazır mısınız?",
   description:
     "3 dakikada iş ilanı oluştur, doğrulanmış ekiplerden teklif al, güvenle tamamla.",
-  primary: { label: "Ücretsiz İş Aç", href: "/is-ver" },
-  secondary: { label: "Platformu İncele", href: "#platform" },
+  primary: { label: "Ücretsiz İş Oluştur", href: "/is-ver" },
+  secondary: { label: "Platformu Keşfet", href: "#platform" },
 };
