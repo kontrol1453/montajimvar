@@ -1,20 +1,18 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import HomeHero from "./HomeHero";
-import HomeBrands from "./HomeBrands";
-import HomeServices from "./HomeServices";
-import HomeStats from "./HomeStats";
-import AudienceSection from "./AudienceSection";
-import PlatformFeatures from "./PlatformFeatures";
-import CorporateSection from "./CorporateSection";
-import WhySection from "./WhySection";
-import FinalCta from "./FinalCta";
-import ProductShowcase from "./ProductShowcase";
-import HowItWorksV4 from "./HowItWorksV4";
-import AiSection from "./AiSection";
+import HeroV5 from "./v5/HeroV5";
+import TrustBar from "./v5/TrustBar";
+import AudienceGateway from "./v5/AudienceGateway";
+import ServiceDiscovery from "./v5/ServiceDiscovery";
+import ProductWorkflow from "./v5/ProductWorkflow";
+import PlatformCapabilities from "./v5/PlatformCapabilities";
+import CorporateOperations from "./v5/CorporateOperations";
+import VerifiedMetrics from "./v5/VerifiedMetrics";
+import AITeaser from "./v5/AITeaser";
+import WhyMontajimVar from "./v5/WhyMontajimVar";
+import FAQv5 from "./v5/FAQv5";
+import FinalConversionCTA from "./v5/FinalConversionCTA";
 import BlogSection from "./BlogSection";
-import FaqSection from "./FaqSection";
-import TrustBand from "./TrustBand";
 
 export const dynamic = "force-dynamic";
 
@@ -69,55 +67,49 @@ export default async function HomePage() {
 
   return (
     <div className="overflow-hidden">
-      {/* ─── HERO ─── */}
-      <HomeHero />
+      {/* ─── HERO (v5) ─── */}
+      <HeroV5 />
 
-      {/* ─── SEKTÖRLER ─── */}
-      <HomeBrands />
+      {/* ─── TRUST BAR (v5) ─── */}
+      <TrustBar />
 
-      {/* ─── HEDEF KİTLE ─── */}
-      <AudienceSection />
+      {/* ─── HEDEF KİTLE (v5) ─── */}
+      <AudienceGateway />
 
-      {/* ─── HİZMET KATEGORİLERİ ─── */}
-      <HomeServices categories={data.parentCategories} />
+      {/* ─── HİZMET KEŞFİ (v5) ─── */}
+      <ServiceDiscovery categories={data.parentCategories} />
 
-      {/* ─── NASIL ÇALIŞIR ─── */}
-      <HowItWorksV4 />
+      {/* ─── NASIL ÇALIŞIR (v5) ─── */}
+      <ProductWorkflow />
 
-      {/* ─── ÜRÜN TANITIMI ─── */}
-      <ProductShowcase />
+      {/* ─── PLATFORM ÖZELLİKLERİ (v5) ─── */}
+      <PlatformCapabilities />
 
-      {/* ─── PLATFORM ÖZELLİKLERİ ─── */}
-      <PlatformFeatures />
+      {/* ─── KURUMSAL (v5) ─── */}
+      <CorporateOperations />
 
-      {/* ─── KURUMSAL ─── */}
-      <CorporateSection />
-
-      {/* ─── İSTATİSTİKLER ─── */}
-      <HomeStats
+      {/* ─── İSTATİSTİKLER (v5) ─── */}
+      <VerifiedMetrics
         profileCount={data.profileCount}
         cityCount={data.cityCount}
         avgRating={data.avgRating}
         categoryCount={data.categoryCount}
       />
 
-      {/* ─── AI TEKLİF ─── */}
-      <AiSection />
+      {/* ─── AI TEASER (v5) ─── */}
+      <AITeaser />
 
-      {/* ─── NEDEN BİZ ─── */}
-      <WhySection />
+      {/* ─── NEDEN BİZ (v5) ─── */}
+      <WhyMontajimVar />
 
       {/* ─── BLOG ─── */}
       <BlogSection />
 
-      {/* ─── GÜVEN UNSURLARI + REFERANS ─── */}
-      <TrustBand />
+      {/* ─── SSS (v5) ─── */}
+      <FAQv5 />
 
-      {/* ─── SSS ─── */}
-      <FaqSection />
-
-      {/* ─── FİNAL CTA ─── */}
-      <FinalCta />
+      {/* ─── FİNAL CTA (v5) ─── */}
+      <FinalConversionCTA />
     </div>
   );
 }
