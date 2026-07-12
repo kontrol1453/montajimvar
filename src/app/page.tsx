@@ -8,13 +8,11 @@ import ProductWorkflow from "./v5/ProductWorkflow";
 import PlatformCapabilities from "./v5/PlatformCapabilities";
 import CorporateOperations from "./v5/CorporateOperations";
 import VerifiedMetrics from "./v5/VerifiedMetrics";
-import WhySection from "./WhySection";
-import FinalCta from "./FinalCta";
-import ProductShowcase from "./ProductShowcase";
-import AiSection from "./AiSection";
+import AITeaser from "./v5/AITeaser";
+import WhyMontajimVar from "./v5/WhyMontajimVar";
+import FAQv5 from "./v5/FAQv5";
+import FinalConversionCTA from "./v5/FinalConversionCTA";
 import BlogSection from "./BlogSection";
-import FaqSection from "./FaqSection";
-import TrustBand from "./TrustBand";
 
 export const dynamic = "force-dynamic";
 
@@ -84,9 +82,6 @@ export default async function HomePage() {
       {/* ─── NASIL ÇALIŞIR (v5) ─── */}
       <ProductWorkflow />
 
-      {/* ─── ÜRÜN TANITIMI (legacy — FAZ 5'te ProductProof ile değişecek) ─── */}
-      <ProductShowcase />
-
       {/* ─── PLATFORM ÖZELLİKLERİ (v5) ─── */}
       <PlatformCapabilities />
 
@@ -101,23 +96,20 @@ export default async function HomePage() {
         categoryCount={data.categoryCount}
       />
 
-      {/* ─── AI TEKLİF ─── */}
-      <AiSection />
+      {/* ─── AI TEASER (v5) ─── */}
+      <AITeaser />
 
-      {/* ─── NEDEN BİZ ─── */}
-      <WhySection />
+      {/* ─── NEDEN BİZ (v5) ─── */}
+      <WhyMontajimVar />
 
       {/* ─── BLOG ─── */}
       <BlogSection />
 
-      {/* ─── GÜVEN UNSURLARI + REFERANS ─── */}
-      <TrustBand />
+      {/* ─── SSS (v5) ─── */}
+      <FAQv5 />
 
-      {/* ─── SSS ─── */}
-      <FaqSection />
-
-      {/* ─── FİNAL CTA ─── */}
-      <FinalCta />
+      {/* ─── FİNAL CTA (v5) ─── */}
+      <FinalConversionCTA />
     </div>
   );
 }
