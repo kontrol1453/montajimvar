@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Phone, TrendingUp, Users, ClipboardList, CheckCircle, Clock } from "lucide-react";
 import { SectionTitle } from "@/components/ui/Typography";
+import Dialog from "@/components/admin/Dialog";
 import AdminTable, { type TableColumn } from "@/components/admin/DataTable/AdminTable";
 
 interface CrmData {
@@ -41,14 +42,19 @@ export default function CrmDashboard({ data }: { data: CrmData }) {
   const [reminderDone, setReminderDone] = useState(false);
 
   const cards = [
-    { label: "Toplam İş", value: data.totalJobs, icon: ClipboardList, color: "#0B5FFF", variant: "blue" as const },
-    { label: "Bekleyen İş", value: data.pendingJobs, icon: Clock, color: "#F59E0B", variant: "amber" as const },
-    { label: "Toplam Teklif", value: data.totalOffers, icon: TrendingUp, color: "#00C853", variant: "emerald" as const },
-    { label: "Onaylanan Teklif", value: data.acceptedOffers, icon: CheckCircle, color: "#8B5CF6", variant: "purple" as const },
-    { label: "Tamamlanan", value: data.completedJobs, icon: CheckCircle, color: "#00C853", variant: "emerald" as const },
-    { label: "Dönüşüm Oranı", value: `%${data.conversionRate}`, icon: TrendingUp, color: "#0B5FFF", variant: "blue" as const },
-    { label: "Toplam Kullanıcı", value: data.users, icon: Users, color: "#EF4444", variant: "pink" as const },
+    { label: "Toplam İş", value: data.totalJobs, icon: ClipboardList, variant: "blue" as const },
+    { label: "Bekleyen İş", value: data.pendingJobs, icon: Clock, variant: "amber" as const },
+    { label: "Toplam Teklif", value: data.totalOffers, icon: TrendingUp, variant: "emerald" as const },
+    { label: "Onaylanan Teklif", value: data.acceptedOffers, icon: CheckCircle, variant: "purple" as const },
+    { label: "Tamamlanan", value: data.completedJobs, icon: CheckCircle, variant: "emerald" as const },
+    { label: "Dönüşüm Oranı", value: `%${data.conversionRate}`, icon: TrendingUp, variant: "blue" as const },
+    { label: "Toplam Kullanıcı", value: data.users, icon: Users, variant: "pink" as const },
   ];
+
+  const colorMap: Record<string, string> = {
+    blue: "var(--admin-primary)", amber: "var(--admin-warning)",
+    emerald: "var(--admin-success)", purple: "#8B5CF6", pink: "var(--admin-danger)",
+  };
 
   const columns: TableColumn<CrmData["recentJobs"][number]>[] = [
     {
@@ -87,25 +93,15 @@ export default function CrmDashboard({ data }: { data: CrmData }) {
   return (
     <>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-        {cards.map((c) => {
-          const colorMap: Record<string, string> = {
-            blue: "var(--admin-primary)", amber: "var(--admin-warning)",
-            emerald: "var(--admin-success)", purple: "#8B5CF6", pink: "var(--admin-danger)",
-          };
-          const bgMap: Record<string, string> = {
-            blue: "bg-blue-50", amber: "bg-amber-50",
-            emerald: "bg-emerald-50", purple: "bg-purple-50", pink: "bg-pink-50",
-          };
-          return (
-            <div key={c.label} className="bg-[var(--admin-surface)] border border-[var(--admin-border)] rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <c.icon size={16} style={{ color: colorMap[c.variant] }} />
-                <span className="text-xs text-[var(--admin-text-secondary)]">{c.label}</span>
-              </div>
-              <p className="text-2xl font-bold text-[var(--admin-text-primary)]">{c.value}</p>
+        {cards.map((c) => (
+          <div key={c.label} className="bg-[var(--admin-surface)] border border-[var(--admin-border)] rounded-lg p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <c.icon size={16} style={{ color: colorMap[c.variant] }} />
+              <span className="text-xs text-[var(--admin-text-secondary)]">{c.label}</span>
             </div>
-          );
-        })}
+            <p className="text-2xl font-bold text-[var(--admin-text-primary)]">{c.value}</p>
+          </div>
+        ))}
       </div>
 
       <SectionTitle className="mb-4">Son İşler</SectionTitle>
@@ -125,60 +121,56 @@ export default function CrmDashboard({ data }: { data: CrmData }) {
         )}
       />
 
-      {callReminder && !reminderDone && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-[var(--admin-surface)] rounded-lg p-6 max-w-sm w-full border border-[var(--admin-border)]">
-            <h3 className="text-lg font-semibold text-[var(--admin-text-primary)] mb-3">Arama Hatırlatıcı</h3>
-            <p className="text-sm text-[var(--admin-text-secondary)] mb-4">
-              Müşteriye e-posta gönderilecek ve hatırlatıcı oluşturulacak.
-            </p>
-            <textarea
-              placeholder="Not (opsiyonel)"
-              value={callReminder.note}
-              onChange={(e) => setCallReminder({ ...callReminder, note: e.target.value })}
-              className="w-full px-3 py-2 border border-[var(--admin-border)] rounded-md text-sm bg-[var(--admin-surface)] text-[var(--admin-text-primary)] placeholder:text-[var(--admin-text-muted)] mb-4"
-              rows={3}
-            />
-            <div className="flex gap-2 justify-end">
-              <button onClick={() => setCallReminder(null)}
-                className="px-4 py-2 rounded-md text-sm text-[var(--admin-text-secondary)] hover:text-[var(--admin-text-primary)] transition-colors">İptal</button>
-              <button
-                onClick={async () => {
-                  setReminderSending(true);
-                  try {
-                    await fetch("/api/crm/reminder", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ jobId: callReminder!.jobId, note: callReminder!.note }),
-                    });
-                    setReminderDone(true);
-                  } catch {} finally { setReminderSending(false); }
-                }}
-                disabled={reminderSending}
-                className="px-4 py-2 bg-[var(--admin-primary)] text-white rounded-md text-sm font-medium hover:bg-[var(--admin-primary-strong)] transition-colors disabled:opacity-40"
-              >
-                {reminderSending ? "Gönderiliyor..." : "Hatırlatıcı Oluştur"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <Dialog
+        open={!!callReminder && !reminderDone}
+        onClose={() => { setCallReminder(null); setReminderDone(false); }}
+        title="Arama Hatırlatıcı"
+        description="Müşteriye e-posta gönderilecek ve hatırlatıcı oluşturulacak."
+        size="sm"
+        actions={[
+          { label: "İptal", onClick: () => { setCallReminder(null); setReminderDone(false); }, variant: "ghost" },
+          { label: reminderSending ? "Gönderiliyor..." : "Hatırlatıcı Oluştur", onClick: async () => {
+            if (!callReminder) return;
+            setReminderSending(true);
+            try {
+              await fetch("/api/crm/reminder", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ jobId: callReminder.jobId, note: callReminder.note }),
+              });
+              setReminderDone(true);
+            } catch {} finally { setReminderSending(false); }
+          }, disabled: reminderSending },
+        ]}
+      >
+        <textarea
+          placeholder="Not (opsiyonel)"
+          value={callReminder?.note || ""}
+          onChange={(e) => setCallReminder((prev) => prev ? { ...prev, note: e.target.value } : null)}
+          className="w-full px-3 py-2 border border-[var(--admin-border)] rounded-md text-sm bg-[var(--admin-surface)] text-[var(--admin-text-primary)] placeholder:text-[var(--admin-text-muted)]"
+          rows={3}
+        />
+      </Dialog>
 
-      {reminderDone && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-[var(--admin-surface)] rounded-lg p-6 max-w-sm w-full border border-[var(--admin-border)] text-center">
-            <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <svg className="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-              </svg>
-            </div>
-            <h3 className="text-lg font-semibold text-[var(--admin-text-primary)] mb-1">Hatırlatıcı Oluşturuldu</h3>
-            <p className="text-sm text-[var(--admin-text-secondary)] mb-4">Müşteriye e-posta gönderildi.</p>
-            <button onClick={() => { setCallReminder(null); setReminderDone(false); }}
-              className="px-4 py-2 bg-[var(--admin-primary)] text-white rounded-md text-sm font-medium">Tamam</button>
+      <Dialog
+        open={reminderDone}
+        onClose={() => { setCallReminder(null); setReminderDone(false); }}
+        title=""
+        size="sm"
+        actions={[
+          { label: "Tamam", onClick: () => { setCallReminder(null); setReminderDone(false); } },
+        ]}
+      >
+        <div className="text-center">
+          <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg className="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
           </div>
+          <h3 className="text-lg font-semibold text-[var(--admin-text-primary)] mb-1">Hatırlatıcı Oluşturuldu</h3>
+          <p className="text-sm text-[var(--admin-text-secondary)]">Müşteriye e-posta gönderildi.</p>
         </div>
-      )}
+      </Dialog>
     </>
   );
 }
