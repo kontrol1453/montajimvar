@@ -515,3 +515,18 @@ model PremiumPlan {
   createdAt     DateTime @default(now())
 }
 
+model AdminAuditLog {
+  id        Int      @id @default(autoincrement())
+  adminId   Int
+  action    String   // create, update, delete, approve, suspend, etc.
+  entity    String   // user, profile, job, offer, payment, dispute, certificate
+  entityId  Int
+  details   String?  // JSON — previous values, new values, reason
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([adminId])
+  @@index([entity, entityId])
+  @@index([createdAt])
+}
+

@@ -13,6 +13,10 @@ import {
   MapPin,
   CreditCard,
   BarChart3,
+  Gauge,
+  UserCircle,
+  Building,
+  Wrench,
 } from "lucide-react";
 import type { ComponentType } from "react";
 
@@ -43,6 +47,12 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
         icon: LayoutDashboard,
         description: "Genel istatistikler ve hızlı işlemler",
       },
+      {
+        href: "/admin/komuta-merkezi",
+        label: "Komuta Merkezi",
+        icon: Gauge,
+        description: "Platform operasyonları ve durum yönetimi",
+      },
     ],
   },
   {
@@ -72,6 +82,30 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
         label: "Yorumlar",
         icon: Star,
         description: "Firma ve iş yorumları denetimi",
+      },
+    ],
+  },
+  {
+    id: "entity-360",
+    label: "360° Yönetim",
+    items: [
+      {
+        href: "/admin/kullanicilar",
+        label: "Kullanıcı 360",
+        icon: UserCircle,
+        description: "Kullanıcı merkezli yönetim",
+      },
+      {
+        href: "/admin/firmalar",
+        label: "Firma 360",
+        icon: Building,
+        description: "Firma merkezli yönetim",
+      },
+      {
+        href: "/admin/isler",
+        label: "İş 360",
+        icon: Wrench,
+        description: "İş merkezli yönetim",
       },
     ],
   },
