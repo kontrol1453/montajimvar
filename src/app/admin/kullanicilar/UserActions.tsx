@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Shield, Crown, Trash2 } from "lucide-react";
 import RowActionsDropdown from "@/components/admin/DataTable/RowActionsDropdown";
 import Dialog from "@/components/admin/Dialog";
@@ -21,15 +23,19 @@ interface Props {
 }
 
 export default function UserActions({ userId, userName, userRoles, premiumUntil }: Props) {
+  const router = useRouter();
   const [roleEditorOpen, setRoleEditorOpen] = useState(false);
   const [selectedRoles, setSelectedRoles] = useState<string[]>(userRoles);
   const [saving, setSaving] = useState(false);
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [premiumDays, setPremiumDays] = useState(30);
   const [premiumSaving, setPremiumSaving] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   const isPremium = premiumUntil ? new Date(premiumUntil) > new Date() : false;
+
+  function refresh() { router.refresh(); }
 
   async function handlePremium() {
     setPremiumSaving(true);
@@ -39,52 +45,50 @@ export default function UserActions({ userId, userName, userRoles, premiumUntil 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ days: premiumDays }),
       });
-      if (res.ok) { setPremiumOpen(false); window.location.reload(); } else {
-        const data = await res.json(); alert(data.error || "Premium güncellenemedi.");
-      }
-    } catch { alert("Bir hata oluştu."); }
+      if (res.ok) { setPremiumOpen(false); refresh(); toast.success("Premium güncellendi."); }
+      else { const data = await res.json(); toast.error(data.error || "Premium güncellenemedi."); }
+    } catch { toast.error("Bir hata oluştu."); }
     finally { setPremiumSaving(false); }
   }
 
   async function handleRevokePremium() {
-    if (!confirm(`${userName} kullanıcısının premium üyeliğini iptal etmek istediğinize emin misiniz?`)) return;
     setPremiumSaving(true);
     try {
       const res = await fetch(`/api/admin/users/${userId}/premium`, {
         method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ days: 0 }),
       });
-      if (res.ok) { setPremiumOpen(false); window.location.reload(); } else {
-        const data = await res.json(); alert(data.error || "Premium iptal edilemedi.");
-      }
-    } catch { alert("Bir hata oluştu."); }
+      if (res.ok) { setPremiumOpen(false); refresh(); toast.success("Premium iptal edildi."); }
+      else { const data = await res.json(); toast.error(data.error || "Premium iptal edilemedi."); }
+    } catch { toast.error("Bir hata oluştu."); }
     finally { setPremiumSaving(false); }
   }
 
   function toggleRole(role: string) { setSelectedRoles((prev) => prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]); }
   async function handleSaveRoles() {
-    if (selectedRoles.length === 0) { alert("En az bir rol seçilmelidir."); return; }
+    if (selectedRoles.length === 0) { toast.error("En az bir rol seçilmelidir."); return; }
     setSaving(true);
     try {
       const res = await fetch(`/api/admin/users/${userId}/roles`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ roles: selectedRoles }) });
-      if (res.ok) { setRoleEditorOpen(false); window.location.reload(); } else { const data = await res.json(); alert(data.error || "Roller güncellenemedi."); }
-    } catch { alert("Bir hata oluştu."); }
+      if (res.ok) { setRoleEditorOpen(false); refresh(); toast.success("Roller güncellendi."); }
+      else { const data = await res.json(); toast.error(data.error || "Roller güncellenemedi."); }
+    } catch { toast.error("Bir hata oluştu."); }
     finally { setSaving(false); }
   }
 
   async function handleDelete() {
-    if (!confirm(`${userName} kullanıcısını silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`)) return;
     setDeleting(true);
     try {
       const res = await fetch("/api/admin/users", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: userId }) });
-      if (res.ok) { window.location.reload(); } else { const data = await res.json(); alert(data.error || "Silme başarısız."); }
-    } catch { alert("Bir hata oluştu."); }
+      if (res.ok) { setDeleteOpen(false); refresh(); toast.success("Kullanıcı silindi."); }
+      else { const data = await res.json(); toast.error(data.error || "Silme başarısız."); }
+    } catch { toast.error("Bir hata oluştu."); }
     finally { setDeleting(false); }
   }
 
   const actions = [
     { label: "Rolleri Yönet", onClick: () => { setSelectedRoles(userRoles); setRoleEditorOpen(true); }, icon: Shield },
     { label: isPremium ? "Premium Yönet" : "Premium Ver", onClick: () => { setPremiumDays(30); setPremiumOpen(true); }, variant: "premium" as const, icon: Crown },
-    { label: deleting ? "Siliniyor..." : "Kullanıcıyı Sil", onClick: handleDelete, variant: "danger" as const, icon: Trash2 },
+    { label: "Kullanıcıyı Sil", onClick: () => setDeleteOpen(true), variant: "danger" as const, icon: Trash2 },
   ];
 
   return (
@@ -144,6 +148,18 @@ export default function UserActions({ userId, userName, userRoles, premiumUntil 
           ))}
         </div>
       </Dialog>
+
+      <Dialog
+        open={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        title="Kullanıcıyı Sil"
+        description={`${userName} kullanıcısını silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`}
+        size="sm"
+        actions={[
+          { label: "İptal", onClick: () => setDeleteOpen(false), variant: "ghost" },
+          { label: deleting ? "Siliniyor..." : "Sil", onClick: handleDelete, variant: "danger", disabled: deleting },
+        ]}
+      />
     </>
   );
 }

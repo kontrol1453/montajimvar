@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
+import Dialog from "@/components/admin/Dialog";
 
 interface Category {
   id: number;
@@ -27,6 +29,7 @@ export default function CategoryManager({
   const [slug, setSlug] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<Category | null>(null);
 
   function resetForm() { setName(""); setSlug(""); setEditing(null); setMessage(""); }
 
@@ -57,25 +60,33 @@ export default function CategoryManager({
     finally { setLoading(false); }
   }
 
-  async function handleDelete(cat: Category) {
-    if (cat._count.profiles > 0) {
-      alert(`"${cat.name}" kategorisinde ${cat._count.profiles} firma bulunuyor. Önce firmaları taşıyın.`);
-      return;
-    }
-    if (!confirm(`"${cat.name}" kategorisini silmek istediğinize emin misiniz?`)) return;
+  async function confirmDelete() {
+    if (!deleteTarget) return;
     try {
       const res = await fetch("/api/admin/categories", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: cat.id }),
+        body: JSON.stringify({ id: deleteTarget.id }),
       });
-      if (res.ok) { setCategories((prev) => prev.filter((c) => c.id !== cat.id)); router.refresh(); }
-      else { const data = await res.json(); alert(data.error || "Silme başarısız."); }
-    } catch { alert("Bir hata oluştu."); }
+      if (res.ok) { setCategories((prev) => prev.filter((c) => c.id !== deleteTarget.id)); router.refresh(); toast.success("Kategori silindi."); }
+      else { const data = await res.json(); toast.error(data.error || "Silme başarısız."); }
+    } catch { toast.error("Bir hata oluştu."); }
+    finally { setDeleteTarget(null); }
   }
 
   return (
     <div className="space-y-6">
+      <Dialog
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        title="Kategoriyi Sil"
+        description={deleteTarget ? `"${deleteTarget.name}" kategorisini silmek istediğinize emin misiniz?` : ""}
+        size="sm"
+        actions={[
+          { label: "İptal", onClick: () => setDeleteTarget(null), variant: "ghost" },
+          { label: "Sil", onClick: confirmDelete, variant: "danger" },
+        ]}
+      />
       <Card>
         <h2 className="text-lg font-semibold text-[var(--admin-text-primary)] mb-4">
           {editing ? "Kategori Düzenle" : "Yeni Kategori"}
@@ -117,7 +128,7 @@ export default function CategoryManager({
             </div>
             <div className="flex gap-2">
               <button onClick={() => startEdit(cat)} className="text-xs text-[var(--admin-primary)] hover:underline">Düzenle</button>
-              <button onClick={() => handleDelete(cat)} className="text-xs text-[var(--admin-danger)] hover:underline">Sil</button>
+              <button onClick={() => setDeleteTarget(cat)} className="text-xs text-[var(--admin-danger)] hover:underline">Sil</button>
             </div>
           </div>
         ))}

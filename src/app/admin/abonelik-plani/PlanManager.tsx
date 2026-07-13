@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import Dialog from "@/components/admin/Dialog";
 
 interface Plan {
   id: number;
@@ -43,6 +45,7 @@ export default function PlanManager({ plans }: PlanManagerProps) {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<Record<string, any>>(emptyPlan);
   const [saving, setSaving] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
 
   function resetForm() { setForm(emptyPlan); setEditingId(null); }
 
@@ -70,12 +73,13 @@ export default function PlanManager({ plans }: PlanManagerProps) {
     finally { setSaving(false); }
   }
 
-  async function handleDelete(id: number) {
-    if (!confirm("Bu planı silmek istediğinize emin misiniz?")) return;
+  async function confirmDelete() {
+    if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/admin/subscription-plans?id=${id}`, { method: "DELETE" });
-      if (res.ok) router.refresh();
-    } catch { /* silent */ }
+      const res = await fetch(`/api/admin/subscription-plans?id=${deleteTarget}`, { method: "DELETE" });
+      if (res.ok) { toast.success("Plan silindi."); resetForm(); router.refresh(); }
+    } catch { toast.error("Silme başarısız."); }
+    finally { setDeleteTarget(null); }
   }
 
   function parseFeatures(features: string): string[] {
@@ -220,7 +224,7 @@ export default function PlanManager({ plans }: PlanManagerProps) {
                 className="px-4 py-2 border border-[var(--admin-border)] rounded-md text-sm text-[var(--admin-text-secondary)] hover:text-[var(--admin-text-primary)] transition">
                 İptal
               </button>
-              <button type="button" onClick={() => handleDelete(editingId)}
+              <button type="button" onClick={() => setDeleteTarget(editingId)}
                 className="px-4 py-2 bg-[var(--admin-danger-soft)] text-[var(--admin-danger)] rounded-md text-sm hover:bg-[var(--admin-danger-soft)]/80 transition ml-auto">
                 Sil
               </button>
@@ -228,6 +232,17 @@ export default function PlanManager({ plans }: PlanManagerProps) {
           )}
         </div>
       </form>
+      <Dialog
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        title="Planı Sil"
+        description="Bu planı silmek istediğinize emin misiniz?"
+        size="sm"
+        actions={[
+          { label: "İptal", onClick: () => setDeleteTarget(null), variant: "ghost" },
+          { label: "Sil", onClick: confirmDelete, variant: "danger" },
+        ]}
+      />
     </div>
   );
 }

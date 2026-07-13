@@ -6,6 +6,7 @@ import { PageTitle, PageContainer } from "@/components/ui/Typography";
 import AdminTable, { type TableColumn } from "@/components/admin/DataTable/AdminTable";
 import Badge from "@/components/ui/Badge";
 import RowActionsDropdown from "@/components/admin/DataTable/RowActionsDropdown";
+import Dialog from "@/components/admin/Dialog";
 import { Trash2 } from "lucide-react";
 
 interface FirmReview {
@@ -34,6 +35,7 @@ export default function AdminReviewsPage() {
   const [loading, setLoading] = useState(true);
   const [typeFilter, setTypeFilter] = useState("all");
   const [ratingFilter, setRatingFilter] = useState("all");
+  const [deleteTarget, setDeleteTarget] = useState<Review | null>(null);
 
   useEffect(() => {
     loadReviews();
@@ -61,18 +63,17 @@ export default function AdminReviewsPage() {
     }
   }
 
-  async function deleteReview(review: Review) {
-    if (!confirm("Bu yorumu silmek istediğinize emin misiniz?")) return;
+  async function confirmDelete() {
+    if (!deleteTarget) return;
     try {
-      const endpoint = review.type === "firma"
-        ? `/api/reviews?id=${review.id}`
-        : `/api/jobs/${(review as JobReview).job.id}/review`;
+      const endpoint = deleteTarget.type === "firma"
+        ? `/api/reviews?id=${deleteTarget.id}`
+        : `/api/jobs/${(deleteTarget as JobReview).job.id}/review`;
       const res = await fetch(endpoint, { method: "DELETE" });
-      if (res.ok) {
-        toast.success("Yorum silindi.");
-        loadReviews();
-      } else toast.error("Silinemedi.");
+      if (res.ok) { toast.success("Yorum silindi."); loadReviews(); }
+      else toast.error("Silinemedi.");
     } catch { toast.error("Bir hata oluştu."); }
+    finally { setDeleteTarget(null); }
   }
 
   const filtered = reviews.filter(r => {
@@ -171,10 +172,21 @@ export default function AdminReviewsPage() {
         actions={(r) => (
           <RowActionsDropdown
             items={[
-              { label: "Yorumu Sil", onClick: () => deleteReview(r), variant: "danger", icon: Trash2 },
+              { label: "Yorumu Sil", onClick: () => setDeleteTarget(r), variant: "danger", icon: Trash2 },
             ]}
           />
         )}
+      />
+      <Dialog
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        title="Yorumu Sil"
+        description="Bu yorumu silmek istediğinize emin misiniz?"
+        size="sm"
+        actions={[
+          { label: "İptal", onClick: () => setDeleteTarget(null), variant: "ghost" },
+          { label: "Sil", onClick: confirmDelete, variant: "danger" },
+        ]}
       />
     </PageContainer>
   );

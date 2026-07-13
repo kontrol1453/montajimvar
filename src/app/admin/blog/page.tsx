@@ -8,6 +8,7 @@ import AdminTable, { type TableColumn } from "@/components/admin/DataTable/Admin
 import Badge from "@/components/ui/Badge";
 import RowActionsDropdown from "@/components/admin/DataTable/RowActionsDropdown";
 import LoadingSkeleton from "@/components/admin/LoadingSkeleton";
+import Dialog from "@/components/admin/Dialog";
 import { Edit, Trash2, Eye, EyeOff } from "lucide-react";
 
 interface BlogCategory {
@@ -49,6 +50,8 @@ export default function AdminBlogPage() {
   const [showCatManager, setShowCatManager] = useState(false);
   const [catForm, setCatForm] = useState({ name: "", slug: "" });
   const [catEditing, setCatEditing] = useState<number | null>(null);
+  const [deletePostId, setDeletePostId] = useState<number | null>(null);
+  const [deleteCatId, setDeleteCatId] = useState<number | null>(null);
 
   useEffect(() => { loadData(); }, []);
 
@@ -104,11 +107,12 @@ export default function AdminBlogPage() {
     else toast.error("Güncellenemedi.");
   }
 
-  async function deletePost(id: number) {
-    if (!confirm("Bu yazıyı silmek istediğinize emin misiniz?")) return;
-    const res = await fetch(`/api/blog/${id}`, { method: "DELETE" });
+  async function confirmDeletePost() {
+    if (!deletePostId) return;
+    const res = await fetch(`/api/blog/${deletePostId}`, { method: "DELETE" });
     if (res.ok) { toast.success("Yazı silindi."); loadData(); }
     else toast.error("Silinemedi.");
+    setDeletePostId(null);
   }
 
   async function saveCategory() {
@@ -122,11 +126,12 @@ export default function AdminBlogPage() {
     } else { const err = await res.json(); toast.error(err.error || "Hata."); }
   }
 
-  async function deleteCategory(id: number) {
-    if (!confirm("Kategoriyi silmek istediğinize emin misiniz?")) return;
-    const res = await fetch(`/api/admin/blog-categories?id=${id}`, { method: "DELETE" });
+  async function confirmDeleteCategory() {
+    if (!deleteCatId) return;
+    const res = await fetch(`/api/admin/blog-categories?id=${deleteCatId}`, { method: "DELETE" });
     if (res.ok) { toast.success("Kategori silindi."); loadData(); }
     else { const err = await res.json(); toast.error(err.error || "Hata."); }
+    setDeleteCatId(null);
   }
 
   const columns: TableColumn<BlogPost>[] = [
@@ -293,7 +298,7 @@ export default function AdminBlogPage() {
                 <span>{c.name}</span>
                 <button onClick={() => { setCatForm({ name: c.name, slug: c.slug }); setCatEditing(c.id); }}
                   className="text-[var(--admin-primary)] hover:underline ml-1">✎</button>
-                <button onClick={() => deleteCategory(c.id)} className="text-[var(--admin-danger)] hover:underline">✕</button>
+                <button onClick={() => setDeleteCatId(c.id)} className="text-[var(--admin-danger)] hover:underline">✕</button>
               </div>
             ))}
           </div>
@@ -319,6 +324,28 @@ export default function AdminBlogPage() {
       )}
 
       {/* Posts Table */}
+      <Dialog
+        open={!!deletePostId}
+        onClose={() => setDeletePostId(null)}
+        title="Yazıyı Sil"
+        description="Bu yazıyı silmek istediğinize emin misiniz?"
+        size="sm"
+        actions={[
+          { label: "İptal", onClick: () => setDeletePostId(null), variant: "ghost" },
+          { label: "Sil", onClick: confirmDeletePost, variant: "danger" },
+        ]}
+      />
+      <Dialog
+        open={!!deleteCatId}
+        onClose={() => setDeleteCatId(null)}
+        title="Kategoriyi Sil"
+        description="Kategoriyi silmek istediğinize emin misiniz?"
+        size="sm"
+        actions={[
+          { label: "İptal", onClick: () => setDeleteCatId(null), variant: "ghost" },
+          { label: "Sil", onClick: confirmDeleteCategory, variant: "danger" },
+        ]}
+      />
       <AdminTable<BlogPost>
         rows={posts}
         columns={columns}
@@ -329,7 +356,7 @@ export default function AdminBlogPage() {
             items={[
               { label: "Düzenle", onClick: () => editPost(r), icon: Edit },
               { label: r.isPublished ? "Yayından Kaldır" : "Yayınla", onClick: () => togglePublish(r), icon: r.isPublished ? EyeOff : Eye },
-              { label: "Sil", onClick: () => deletePost(r.id), variant: "danger", icon: Trash2 },
+              { label: "Sil", onClick: () => setDeletePostId(r.id), variant: "danger", icon: Trash2 },
             ]}
           />
         )}

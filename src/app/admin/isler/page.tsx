@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { PageTitle, PageContainer } from "@/components/ui/Typography";
 import Badge from "@/components/ui/Badge";
 import LoadingSkeleton from "@/components/admin/LoadingSkeleton";
+import Dialog from "@/components/admin/Dialog";
 import { Search, Filter } from "lucide-react";
 
 interface JobUser {
@@ -63,6 +64,8 @@ export default function AdminJobsPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [cancelTarget, setCancelTarget] = useState<number | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
 
   useEffect(() => { loadJobs(); }, []);
 
@@ -75,10 +78,10 @@ export default function AdminJobsPage() {
     finally { setLoading(false); }
   }
 
-  async function cancelJob(jobId: number) {
-    if (!confirm("Bu işi iptal etmek istediğinize emin misiniz?")) return;
+  async function confirmCancel() {
+    if (!cancelTarget) return;
     try {
-      const res = await fetch(`/api/jobs/${jobId}`, {
+      const res = await fetch(`/api/jobs/${cancelTarget}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "cancelled" }),
@@ -86,15 +89,17 @@ export default function AdminJobsPage() {
       if (res.ok) { toast.success("İş iptal edildi."); loadJobs(); }
       else { const err = await res.json(); toast.error(err.error || "İptal edilemedi."); }
     } catch { toast.error("Bir hata oluştu."); }
+    finally { setCancelTarget(null); }
   }
 
-  async function deleteJob(jobId: number) {
-    if (!confirm("Bu işi KALICI olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz.")) return;
+  async function confirmDelete() {
+    if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/jobs/${jobId}`, { method: "DELETE" });
+      const res = await fetch(`/api/jobs/${deleteTarget}`, { method: "DELETE" });
       if (res.ok) { toast.success("İş silindi."); loadJobs(); }
       else toast.error("Silinemedi.");
     } catch { toast.error("Bir hata oluştu."); }
+    finally { setDeleteTarget(null); }
   }
 
   const filtered = jobs.filter(j => {
@@ -175,10 +180,10 @@ export default function AdminJobsPage() {
                   {selectedJob?.id === job.id ? "Gizle" : "Detay"}
                 </button>
                 {job.status !== "cancelled" && (
-                  <button onClick={() => cancelJob(job.id)}
+                  <button onClick={() => setCancelTarget(job.id)}
                     className="text-xs text-[var(--admin-warning)] hover:underline">İptal</button>
                 )}
-                <button onClick={() => deleteJob(job.id)}
+                <button onClick={() => setDeleteTarget(job.id)}
                   className="text-xs text-[var(--admin-danger)] hover:underline">Sil</button>
               </div>
             </div>
@@ -223,6 +228,28 @@ export default function AdminJobsPage() {
           </div>
         ))}
       </div>
+      <Dialog
+        open={!!cancelTarget}
+        onClose={() => setCancelTarget(null)}
+        title="İşi İptal Et"
+        description="Bu işi iptal etmek istediğinize emin misiniz?"
+        size="sm"
+        actions={[
+          { label: "Vazgeç", onClick: () => setCancelTarget(null), variant: "ghost" },
+          { label: "İptal Et", onClick: confirmCancel, variant: "danger" },
+        ]}
+      />
+      <Dialog
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        title="İşi Kalıcı Olarak Sil"
+        description="Bu işlem geri alınamaz. İşi silmek istediğinize emin misiniz?"
+        size="sm"
+        actions={[
+          { label: "Vazgeç", onClick: () => setDeleteTarget(null), variant: "ghost" },
+          { label: "Sil", onClick: confirmDelete, variant: "danger" },
+        ]}
+      />
     </PageContainer>
   );
 }

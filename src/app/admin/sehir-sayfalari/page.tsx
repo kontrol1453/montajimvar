@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { TURKISH_CITIES } from "@/lib/utils";
 import { PageTitle, PageContainer } from "@/components/ui/Typography";
 import Badge from "@/components/ui/Badge";
+import Dialog from "@/components/admin/Dialog";
 
 interface CityPage {
   id: number;
@@ -27,6 +28,7 @@ export default function AdminCityPagesPage() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState({ city: "", service: "", title: "", content: "", metaTitle: "", metaDesc: "" });
+  const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
 
   useEffect(() => { loadPages(); }, []);
 
@@ -54,14 +56,15 @@ export default function AdminCityPagesPage() {
     } catch (err: any) { toast.error(err.message); }
   }
 
-  async function handleDelete(id: number) {
-    if (!confirm("Silmek istediğinize emin misiniz?")) return;
+  async function confirmDelete() {
+    if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/admin/city-pages/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/admin/city-pages/${deleteTarget}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Silinemedi");
       toast.success("Silindi");
       loadPages();
     } catch { toast.error("Silinemedi"); }
+    finally { setDeleteTarget(null); }
   }
 
   function startEdit(page: CityPage) {
@@ -152,7 +155,7 @@ export default function AdminCityPagesPage() {
                 <div className="flex gap-2 shrink-0">
                   <button onClick={() => startEdit(page)}
                     className="px-3 py-1.5 bg-[var(--admin-surface-muted)] text-[var(--admin-text-secondary)] rounded-md text-xs hover:text-[var(--admin-text-primary)] transition">Düzenle</button>
-                  <button onClick={() => handleDelete(page.id)}
+                  <button onClick={() => setDeleteTarget(page.id)}
                     className="px-3 py-1.5 bg-[var(--admin-danger-soft)] text-[var(--admin-danger)] rounded-md text-xs hover:bg-[var(--admin-danger-soft)]/80 transition">Sil</button>
                 </div>
               </div>
@@ -160,6 +163,17 @@ export default function AdminCityPagesPage() {
           ))}
         </div>
       )}
+      <Dialog
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        title="Sayfayı Sil"
+        description="Silmek istediğinize emin misiniz?"
+        size="sm"
+        actions={[
+          { label: "İptal", onClick: () => setDeleteTarget(null), variant: "ghost" },
+          { label: "Sil", onClick: confirmDelete, variant: "danger" },
+        ]}
+      />
     </PageContainer>
   );
 }
