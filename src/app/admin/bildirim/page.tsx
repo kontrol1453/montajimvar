@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PageTitle, PageContainer } from "@/components/ui/Typography";
+import LoadingSkeleton from "@/components/admin/LoadingSkeleton";
 import Badge from "@/components/ui/Badge";
 
 interface AdminNotification {
@@ -73,7 +74,7 @@ export default function AdminNotificationsPage() {
     finally { setSending(false); }
   }
 
-  if (loading) return <div className="p-6 text-[var(--admin-text-muted)]">Yükleniyor...</div>;
+  if (loading) return <LoadingSkeleton variant="page" />;
 
   const inputClass = "w-full bg-[var(--admin-surface)] border border-[var(--admin-border)] rounded-md px-3 py-2 text-[var(--admin-text-primary)] placeholder:text-[var(--admin-text-muted)] focus:outline-none";
 

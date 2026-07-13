@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PageTitle, PageContainer } from "@/components/ui/Typography";
 import Badge from "@/components/ui/Badge";
+import LoadingSkeleton from "@/components/admin/LoadingSkeleton";
 import { Search, Filter } from "lucide-react";
 
 interface JobUser {
@@ -103,7 +104,7 @@ export default function AdminJobsPage() {
     return true;
   });
 
-  if (loading) return <div className="p-6 text-[var(--admin-text-muted)]">Yükleniyor...</div>;
+  if (loading) return <LoadingSkeleton variant="page" />;
 
   return (
     <PageContainer>

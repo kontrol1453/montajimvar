@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Dialog from "@/components/admin/Dialog";
+import Button from "@/components/ui/Button";
 
 interface Props {
   profileId: number;
@@ -30,34 +32,29 @@ export default function DeleteProfileButton({ profileId, companyName }: Props) {
 
   return (
     <>
-      <button onClick={() => setOpen(true)}
-        className="px-3 py-1.5 text-xs font-medium text-[var(--admin-danger)] hover:text-white hover:bg-[var(--admin-danger)] rounded-md transition">
+      <Button variant="ghost" size="sm" onClick={() => setOpen(true)} className="text-[var(--admin-danger)] hover:text-white hover:bg-[var(--admin-danger)]">
         Sil
-      </button>
+      </Button>
 
-      {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="bg-[var(--admin-surface)] rounded-lg border border-[var(--admin-border)] p-6 w-full max-w-sm mx-4">
-            <h3 className="text-lg font-semibold text-[var(--admin-text-primary)] mb-2">Firmayı Sil</h3>
-            <p className="text-sm text-[var(--admin-text-secondary)] mb-1">
-              <strong className="text-[var(--admin-text-primary)]">{companyName}</strong> firmasını silmek üzeresiniz.
-            </p>
-            <p className="text-sm text-[var(--admin-danger)] mb-5">
-              Bu işlem geri alınamaz. Firmanın tüm yorumları, fotoğrafları ve mesajları silinecek.
-            </p>
-            <div className="flex items-center justify-end gap-3">
-              <button onClick={() => setOpen(false)} disabled={loading}
-                className="px-4 py-2 text-sm text-[var(--admin-text-secondary)] hover:text-[var(--admin-text-primary)] transition">
-                İptal
-              </button>
-              <button onClick={handleDelete} disabled={loading}
-                className="px-4 py-2 text-sm font-medium text-white bg-[var(--admin-danger)] rounded-md hover:bg-[var(--admin-danger)]/90 transition disabled:opacity-50">
-                {loading ? "Siliniyor..." : "Evet, Sil"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        title="Firmayı Sil"
+        description={
+          <>
+            <strong className="text-[var(--admin-text-primary)]">{companyName}</strong> firmasını silmek üzeresiniz.
+          </>
+        }
+        size="sm"
+        actions={[
+          { label: "İptal", onClick: () => setOpen(false), variant: "ghost", disabled: loading },
+          { label: loading ? "Siliniyor..." : "Evet, Sil", onClick: handleDelete, variant: "danger", disabled: loading },
+        ]}
+      >
+        <p className="text-sm text-[var(--admin-danger)]">
+          Bu işlem geri alınamaz. Firmanın tüm yorumları, fotoğrafları ve mesajları silinecek.
+        </p>
+      </Dialog>
     </>
   );
 }

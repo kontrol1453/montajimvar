@@ -94,6 +94,16 @@
 
   /* Admin content horizontal padding (page container) */
   --admin-content-padding-x: 1.5rem;     /* 24px desktop default */
+
+  /* Admin z-index layers */
+  --admin-z-base: 0;
+  --admin-z-sticky: 10;
+  --admin-z-sidebar: 40;
+  --admin-z-header: 30;
+  --admin-z-dropdown: 50;
+  --admin-z-overlay: 60;
+  --admin-z-modal: 70;
+  --admin-z-toast: 80;
 }
 
 /* ─── Base ────────────────────────────────────────────────────── */

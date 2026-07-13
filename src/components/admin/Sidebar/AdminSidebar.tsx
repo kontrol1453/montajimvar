@@ -67,13 +67,15 @@ function NavLink({
     <Link
       href={item.href}
       onClick={onNavigate}
-      title={collapsed ? label : undefined}
+      title={collapsed ? (item.description || label) : undefined}
       aria-label={label}
       aria-current={active ? "page" : undefined}
       className={cn(
         "group relative flex items-center gap-3 rounded-md text-sm font-medium transition-colors",
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-montaj focus-visible:ring-offset-2 focus-visible:ring-offset-black",
-        collapsed ? "h-10 w-10 justify-center" : "h-10 px-3",
+        collapsed
+          ? "h-10 w-10 justify-center [&:hover_.tooltip-label]:opacity-100 [&:hover_.tooltip-label]:translate-x-0"
+          : "h-10 px-3",
         active
           ? "bg-montaj/15 text-montaj"
           : "text-zinc-300 hover:text-white hover:bg-white/5"
@@ -83,6 +85,16 @@ function NavLink({
         size={18}
         className={cn("shrink-0", active ? "text-montaj" : "text-zinc-400 group-hover:text-white")}
       />
+      {collapsed && (
+        <span
+          className="tooltip-label pointer-events-none absolute left-full ml-2 top-1/2 -translate-y-1/2 -translate-x-1
+                     whitespace-nowrap rounded-md bg-zinc-800 px-2 py-1 text-xs text-white shadow-lg
+                     opacity-0 transition-all duration-150 z-50"
+          role="tooltip"
+        >
+          {label}
+        </span>
+      )}
       {!collapsed && (
         <>
           <span className="truncate flex-1">{label}</span>

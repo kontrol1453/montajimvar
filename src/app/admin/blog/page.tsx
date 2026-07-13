@@ -7,6 +7,7 @@ import { PageTitle, PageContainer } from "@/components/ui/Typography";
 import AdminTable, { type TableColumn } from "@/components/admin/DataTable/AdminTable";
 import Badge from "@/components/ui/Badge";
 import RowActionsDropdown from "@/components/admin/DataTable/RowActionsDropdown";
+import LoadingSkeleton from "@/components/admin/LoadingSkeleton";
 import { Edit, Trash2, Eye, EyeOff } from "lucide-react";
 
 interface BlogCategory {
@@ -159,7 +160,7 @@ export default function AdminBlogPage() {
     },
   ];
 
-  if (loading) return <div className="p-6 text-[var(--admin-text-muted)]">Yükleniyor...</div>;
+  if (loading) return <LoadingSkeleton variant="page" />;
 
   return (
     <PageContainer>

@@ -52,7 +52,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="h-dvh bg-[var(--color-surface-secondary)] text-zinc-900 overflow-hidden">
-      <div className="hidden lg:block fixed inset-y-0 left-0 z-40">
+      <div className="hidden lg:block fixed inset-y-0 left-0" style={{ zIndex: "var(--admin-z-sidebar)" }}>
         <AdminSidebar variant={collapsed ? "collapsed" : "expanded"} />
       </div>
 
