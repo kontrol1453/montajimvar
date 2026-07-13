@@ -1,10 +1,84 @@
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
+import { PageTitle, PageContainer } from "@/components/ui/Typography";
+import AdminTable, { type TableColumn } from "@/components/admin/DataTable/AdminTable";
 import VerifyButton from "./VerifyButton";
 import FeaturedButton from "./FeaturedButton";
 import CategoryEditor from "./CategoryEditor";
 import DeleteProfileButton from "./DeleteProfileButton";
+
+interface ProfileRow {
+  id: number;
+  companyName: string;
+  ownerName: string;
+  categoryName: string;
+  extraCategories: string[];
+  extraCount: number;
+  city: string;
+  isVerified: boolean;
+  isFeatured: boolean;
+  categoryIds: number[];
+  createdAt: Date;
+}
+
+const columns: TableColumn<ProfileRow>[] = [
+  {
+    header: "Firma",
+    accessor: (r) => <span className="font-medium">{r.companyName}</span>,
+  },
+  {
+    header: "Sahip",
+    hidden: "md",
+    accessor: (r) => <span className="text-[var(--admin-text-secondary)]">{r.ownerName}</span>,
+    className: "text-[var(--admin-text-secondary)]",
+  },
+  {
+    header: "Kategori",
+    accessor: (r) => (
+      <div className="flex flex-wrap gap-1">
+        <Badge variant="neutral">{r.categoryName}</Badge>
+        {r.extraCategories.map((name, i) => (
+          i < 2 ? <Badge key={name} variant="neutral">{name}</Badge> : null
+        ))}
+        {r.extraCount > 0 && (
+          <span className="text-xs text-[var(--admin-text-muted)] self-center">+{r.extraCount}</span>
+        )}
+      </div>
+    ),
+  },
+  {
+    header: "Şehir",
+    hidden: "lg",
+    accessor: (r) => <span className="text-[var(--admin-text-secondary)]">{r.city}</span>,
+    className: "text-[var(--admin-text-secondary)]",
+  },
+  {
+    header: "Durum",
+    accessor: (r) =>
+      r.isVerified ? (
+        <Badge variant="success">Onaylı</Badge>
+      ) : (
+        <Badge variant="neutral">Bekliyor</Badge>
+      ),
+  },
+  {
+    header: "Vitrin",
+    hidden: "xl",
+    accessor: (r) =>
+      r.isFeatured ? (
+        <Badge variant="warning">Vitrin</Badge>
+      ) : (
+        <span className="text-xs text-[var(--admin-text-muted)]">—</span>
+      ),
+  },
+  {
+    header: "Kayıt",
+    hidden: "lg",
+    accessor: (r) => <span className="text-[var(--admin-text-secondary)]">{formatDate(r.createdAt)}</span>,
+    className: "text-[var(--admin-text-secondary)]",
+  },
+];
 
 export default async function AdminFirmsPage() {
   const profiles = await prisma.profile.findMany({
@@ -18,103 +92,51 @@ export default async function AdminFirmsPage() {
     },
   });
 
+  const rows: ProfileRow[] = profiles.map((p) => {
+    const allCatNames = p.categories.map((pc) => pc.category.name);
+    const mainName = p.category?.name ?? (allCatNames[0] ?? "—");
+    const extras = allCatNames.filter((n) => n !== mainName);
+    return {
+      id: p.id,
+      companyName: p.companyName,
+      ownerName: p.user.name,
+      categoryName: mainName,
+      extraCategories: extras,
+      extraCount: extras.length > 3 ? extras.length - 2 : extras.length,
+      city: p.city,
+      isVerified: p.isVerified,
+      isFeatured: p.isFeatured,
+      categoryIds: p.categories.map((pc) => pc.categoryId),
+      createdAt: p.createdAt,
+    };
+  });
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-white">Firmalar</h1>
+    <PageContainer>
+      <div className="flex items-center justify-between mb-4">
+        <PageTitle>Firmalar</PageTitle>
         <a
           href="/api/admin/export?type=profiles"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-montaj text-white rounded-lg hover:bg-montaj-dark transition text-sm font-medium"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--admin-primary)] text-white rounded-md hover:bg-[var(--admin-primary-strong)] transition text-sm font-medium"
+          aria-label="Firmaları CSV olarak dışa aktar"
         >
           ⬇ CSV Export
         </a>
       </div>
 
-      <div className="bg-dark-card rounded-xl border border-dark-border overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-dark-border bg-dark-section">
-                <th className="text-left p-4 text-sub-text font-medium">Firma</th>
-                <th className="text-left p-4 text-sub-text font-medium hidden md:table-cell">Sahip</th>
-                <th className="text-left p-4 text-sub-text font-medium">Kategori</th>
-                <th className="text-left p-4 text-sub-text font-medium hidden lg:table-cell">Şehir</th>
-                <th className="text-left p-4 text-sub-text font-medium">Durum</th>
-                <th className="text-left p-4 text-sub-text font-medium hidden xl:table-cell">Vitrin</th>
-                <th className="text-left p-4 text-sub-text font-medium hidden lg:table-cell">Kayıt</th>
-                <th className="text-right p-4 text-sub-text font-medium">İşlem</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-dark-border">
-              {profiles.map((profile) => (
-                <tr key={profile.id} className="hover:bg-dark-section transition">
-                  <td className="p-4">
-                    <span className="font-medium text-white">{profile.companyName}</span>
-                  </td>
-                  <td className="p-4 text-sub-text hidden md:table-cell">
-                    {profile.user.name}
-                  </td>
-                  <td className="p-4">
-                    <div className="flex flex-wrap gap-1">
-                      <Badge variant="default">{profile.category.name}</Badge>
-                      {profile.categories
-                        .filter((pc) => pc.category.name !== profile.category.name)
-                        .slice(0, 2)
-                        .map((pc) => (
-                          <Badge key={pc.category.name} variant="default">{pc.category.name}</Badge>
-                        ))}
-                      {profile.categories.length > 3 && (
-                        <span className="text-xs text-sub-text self-center">
-                          +{profile.categories.length - 1}
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="p-4 text-sub-text hidden lg:table-cell">
-                    {profile.city}
-                  </td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-2">
-                      {profile.isVerified ? (
-                        <Badge variant="success">Onaylı</Badge>
-                      ) : (
-                        <Badge variant="default">Bekliyor</Badge>
-                      )}
-                    </div>
-                  </td>
-                  <td className="p-4 hidden xl:table-cell">
-                    {profile.isFeatured ? (
-                      <Badge variant="warning">Vitrin</Badge>
-                    ) : (
-                      <span className="text-xs text-sub-text">-</span>
-                    )}
-                  </td>
-                  <td className="p-4 text-sub-text hidden lg:table-cell">
-                    {formatDate(profile.createdAt)}
-                  </td>
-                  <td className="p-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <CategoryEditor
-                        profileId={profile.id}
-                        selectedCategoryIds={profile.categories.map((pc) => pc.categoryId)}
-                      />
-                      <FeaturedButton profileId={profile.id} isFeatured={profile.isFeatured} />
-                      <VerifyButton
-                        profileId={profile.id}
-                        isVerified={profile.isVerified}
-                      />
-                      <DeleteProfileButton
-                        profileId={profile.id}
-                        companyName={profile.companyName}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+      <AdminTable<ProfileRow>
+        rows={rows}
+        columns={columns}
+        keyField={(r) => r.id}
+        actions={(r) => (
+          <div className="flex items-center justify-end gap-2">
+            <CategoryEditor profileId={r.id} selectedCategoryIds={r.categoryIds} />
+            <FeaturedButton profileId={r.id} isFeatured={r.isFeatured} />
+            <VerifyButton profileId={r.id} isVerified={r.isVerified} />
+            <DeleteProfileButton profileId={r.id} companyName={r.companyName} />
+          </div>
+        )}
+      />
+    </PageContainer>
   );
 }

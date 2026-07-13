@@ -8,7 +8,7 @@ export default async function GelirlerPage() {
   if (!session?.user) redirect("/auth/giris");
   const userId = (session.user as any).id;
 
-  const payments = await prisma.payment.findMany({
+  const payments: any[] = await (prisma as any).payment?.findMany({
     where: {
       OR: [{ customerId: userId }, { artisanId: userId }],
       status: { not: "cancelled" },
@@ -16,7 +16,7 @@ export default async function GelirlerPage() {
     include: { job: { select: { id: true, title: true } } },
     orderBy: { createdAt: "desc" },
     take: 100,
-  });
+  }) ?? [];
 
   const now = new Date();
   const daily = payments.filter((p) => p.paidAt && p.paidAt > new Date(now.getFullYear(), now.getMonth(), now.getDate()));

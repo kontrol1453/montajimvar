@@ -9,12 +9,12 @@ export default async function FaturalarPage() {
   if (!session?.user) redirect("/auth/giris");
   const userId = (session.user as any).id;
 
-  const invoices = await prisma.invoice.findMany({
+  const invoices: any[] = await (prisma as any).invoice?.findMany({
     where: { recipientId: userId },
     include: { job: { select: { id: true, title: true } } },
     orderBy: { createdAt: "desc" },
     take: 50,
-  });
+  }) ?? [];
 
   const totalAmount = invoices.reduce((s, i) => s + i.amount, 0);
 

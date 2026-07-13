@@ -19,32 +19,20 @@ export default function FeaturedButton({
       const res = await fetch("/api/admin/profiles", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: profileId,
-          isFeatured: !isFeatured,
-        }),
+        body: JSON.stringify({ id: profileId, isFeatured: !isFeatured }),
       });
-
-      if (res.ok) {
-        router.refresh();
-      }
-    } catch {
-      // silently fail
-    } finally {
-      setLoading(false);
-    }
+      if (res.ok) router.refresh();
+    } catch { /* silent */ }
+    finally { setLoading(false); }
   }
 
   return (
-    <button
-      onClick={handleToggle}
-      disabled={loading}
-      className={`text-xs px-3 py-1.5 rounded-lg transition font-medium ${
+    <button onClick={handleToggle} disabled={loading}
+      className={`text-xs px-3 py-1.5 rounded-md transition font-medium ${
         isFeatured
-          ? "bg-montaj/20 text-montaj hover:bg-montaj/30"
-          : "bg-dark-bg text-sub-text hover:text-white hover:bg-dark-section border border-dark-border"
-      } disabled:opacity-50`}
-    >
+          ? "bg-[var(--admin-primary)]/10 text-[var(--admin-primary)] hover:bg-[var(--admin-primary)]/20"
+          : "bg-[var(--admin-surface-muted)] text-[var(--admin-text-secondary)] hover:text-[var(--admin-text-primary)] border border-[var(--admin-border)]"
+      } disabled:opacity-50`}>
       {loading ? "..." : isFeatured ? "Vitrinde" : "Vitrine Ekle"}
     </button>
   );

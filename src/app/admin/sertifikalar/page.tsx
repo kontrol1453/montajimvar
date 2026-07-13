@@ -1,6 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { PageTitle, PageContainer } from "@/components/ui/Typography";
+import AdminTable, { type TableColumn } from "@/components/admin/DataTable/AdminTable";
+import Badge from "@/components/ui/Badge";
+import { Filter } from "lucide-react";
 
 interface Skill {
   id: number;
@@ -35,70 +39,88 @@ export default function AdminCertificatesPage() {
 
   const filtered = filter === "unverified" ? skills.filter((s) => !s.verified) : skills;
 
-  if (loading) return <div className="p-8 text-sub-text">Yükleniyor...</div>;
+  const columns: TableColumn<Skill>[] = [
+    {
+      header: "Uzmanlık",
+      accessor: (r) => (
+        <span className="font-medium">
+          {r.category.name}{r.title ? ` - ${r.title}` : ""}
+        </span>
+      ),
+    },
+    {
+      header: "Kullanıcı",
+      hidden: "md",
+      accessor: (r) => (
+        <div>
+          <span className="text-[var(--admin-text-primary)]">{r.user.name}</span>
+          <br />
+          <span className="text-xs text-[var(--admin-text-muted)]">{r.user.email}</span>
+        </div>
+      ),
+    },
+    {
+      header: "Sertifika",
+      hidden: "lg",
+      accessor: (r) =>
+        r.certificate ? (
+          <a
+            href={r.certificate}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[var(--admin-primary)] hover:underline"
+          >
+            Sertifika ↗
+          </a>
+        ) : (
+          <span className="text-[var(--admin-text-muted)]">—</span>
+        ),
+    },
+    {
+      header: "Durum",
+      accessor: (r) =>
+        r.verified ? (
+          <Badge variant="success">Onaylı</Badge>
+        ) : (
+          <Badge variant="warning">Beklemede</Badge>
+        ),
+    },
+  ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-white">Sertifikalar</h1>
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value as any)}
-          className="px-3 py-2 border border-dark-border rounded-lg text-sm bg-dark-card text-white"
-        >
-          <option value="all">Tümü</option>
-          <option value="unverified">Onay bekleyen</option>
-        </select>
+    <PageContainer>
+      <div className="flex items-center justify-between mb-4">
+        <PageTitle>Sertifikalar</PageTitle>
+        <div className="flex items-center gap-2">
+          <Filter size={16} className="text-[var(--admin-text-muted)]" />
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value as any)}
+            className="bg-[var(--admin-surface)] border border-[var(--admin-border)] rounded-md px-3 py-1.5 text-sm text-[var(--admin-text-primary)] focus:outline-none"
+          >
+            <option value="all">Tümü</option>
+            <option value="unverified">Onay bekleyen</option>
+          </select>
+        </div>
       </div>
 
-      <div className="bg-dark-card rounded-xl border border-dark-border overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-dark-border bg-dark-section">
-              <th className="text-left p-4 text-sub-text font-medium">Uzmanlık</th>
-              <th className="text-left p-4 text-sub-text font-medium">Kullanıcı</th>
-              <th className="text-left p-4 text-sub-text font-medium">Sertifika</th>
-              <th className="text-left p-4 text-sub-text font-medium">Durum</th>
-              <th className="text-right p-4 text-sub-text font-medium">İşlem</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-dark-border">
-            {filtered.map((skill) => (
-              <tr key={skill.id} className="hover:bg-dark-section transition">
-                <td className="p-4 text-white">{skill.category.name}{skill.title ? ` - ${skill.title}` : ""}</td>
-                <td className="p-4 text-sub-text">{skill.user.name}<br /><span className="text-xs">{skill.user.email}</span></td>
-                <td className="p-4">
-                  {skill.certificate ? (
-                    <a href={skill.certificate} target="_blank" rel="noopener noreferrer" className="text-montaj hover:underline">Sertifika ↗</a>
-                  ) : (
-                    <span className="text-sub-text">—</span>
-                  )}
-                </td>
-                <td className="p-4">
-                  <span className={`px-2 py-0.5 rounded text-xs font-medium ${skill.verified ? "bg-green-900/30 text-green-400" : "bg-amber-900/30 text-amber-400"}`}>
-                    {skill.verified ? "Onaylı" : "Beklemede"}
-                  </span>
-                </td>
-                <td className="p-4 text-right">
-                  <button
-                    onClick={() => toggleVerify(skill.id)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                      skill.verified
-                        ? "bg-amber-600/20 text-amber-400 hover:bg-amber-600/30"
-                        : "bg-green-600/20 text-green-400 hover:bg-green-600/30"
-                    }`}
-                  >
-                    {skill.verified ? "Onayı Kaldır" : "Onayla"}
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {filtered.length === 0 && (
-          <p className="p-8 text-sub-text text-center">Sertifika bulunamadı.</p>
+      <AdminTable<Skill>
+        rows={filtered}
+        columns={columns}
+        keyField={(r) => r.id}
+        actions={(r) => (
+          <button
+            onClick={() => toggleVerify(r.id)}
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+              r.verified
+                ? "bg-amber-100 text-amber-700 hover:bg-amber-200"
+                : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+            }`}
+          >
+            {r.verified ? "Onayı Kaldır" : "Onayla"}
+          </button>
         )}
-      </div>
-    </div>
+      />
+    </PageContainer>
   );
 }

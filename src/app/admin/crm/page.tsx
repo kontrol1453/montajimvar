@@ -1,6 +1,5 @@
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
+import { PageTitle, PageContainer } from "@/components/ui/Typography";
 import CrmDashboard from "./CrmDashboard";
 
 export const dynamic = "force-dynamic";
@@ -38,10 +37,11 @@ async function getCrmData() {
 }
 
 export default async function CrmPage() {
-  const session = await auth();
-  if (!session?.user || !(session.user as any).roles?.includes("ADMIN")) redirect("/");
-
   const data = await getCrmData();
-
-  return <CrmDashboard data={data as any} />;
+  return (
+    <PageContainer>
+      <PageTitle className="mb-6">CRM Paneli</PageTitle>
+      <CrmDashboard data={data as any} />
+    </PageContainer>
+  );
 }

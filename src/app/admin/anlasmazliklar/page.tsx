@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { formatDate } from "@/lib/utils";
+import { PageTitle, PageContainer } from "@/components/ui/Typography";
+import AdminTable, { type TableColumn } from "@/components/admin/DataTable/AdminTable";
+import Badge from "@/components/ui/Badge";
 
 interface Dispute {
   id: number;
@@ -20,6 +23,8 @@ const RESOLUTIONS = [
   { value: "release_artisan", label: "Ustaya Ödeme" },
   { value: "split_50", label: "%50-%50 Bölüşüm" },
 ];
+
+const RESOLUTION_LABEL = Object.fromEntries(RESOLUTIONS.map((r) => [r.value, r.label]));
 
 export default function AdminDisputesPage() {
   const [disputes, setDisputes] = useState<Dispute[]>([]);
@@ -46,59 +51,76 @@ export default function AdminDisputesPage() {
     }
   }
 
-  if (loading) return <div className="p-8 text-sub-text">Yükleniyor...</div>;
+  const columns: TableColumn<Dispute>[] = [
+    {
+      header: "İş",
+      accessor: (r) => <span className="font-medium text-sm">{r.job.title}</span>,
+    },
+    {
+      header: "Açan",
+      hidden: "sm",
+      accessor: (r) => <span className="text-[var(--admin-text-secondary)]">{r.openedBy.name}</span>,
+    },
+    {
+      header: "Sebep",
+      accessor: (r) => (
+        <span className="text-[var(--admin-text-primary)] text-xs max-w-[200px] truncate block">{r.reason}</span>
+      ),
+    },
+    {
+      header: "Ödeme",
+      hidden: "md",
+      accessor: (r) => (
+        <span className="text-[var(--admin-text-secondary)]">
+          {r.payment ? `${r.payment.amount} TL` : "—"}
+        </span>
+      ),
+    },
+    {
+      header: "Durum",
+      accessor: (r) =>
+        r.status === "open" ? (
+          <Badge variant="warning">Açık</Badge>
+        ) : (
+          <Badge variant="success">Çözüldü</Badge>
+        ),
+    },
+    {
+      header: "Tarih",
+      hidden: "lg",
+      accessor: (r) => (
+        <span className="text-[var(--admin-text-secondary)] text-xs">{formatDate(new Date(r.createdAt))}</span>
+      ),
+    },
+  ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl font-bold text-white mb-6">Anlaşmazlıklar</h1>
+    <PageContainer>
+      <PageTitle className="mb-4">Anlaşmazlıklar</PageTitle>
 
-      <div className="bg-dark-card rounded-xl border border-dark-border overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-dark-border bg-dark-section">
-              <th className="text-left p-4 text-sub-text font-medium">İş</th>
-              <th className="text-left p-4 text-sub-text font-medium hidden sm:table-cell">Açan</th>
-              <th className="text-left p-4 text-sub-text font-medium">Sebep</th>
-              <th className="text-left p-4 text-sub-text font-medium hidden md:table-cell">Ödeme</th>
-              <th className="text-left p-4 text-sub-text font-medium">Durum</th>
-              <th className="text-left p-4 text-sub-text font-medium hidden lg:table-cell">Tarih</th>
-              <th className="text-right p-4 text-sub-text font-medium">İşlem</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-dark-border">
-            {disputes.length === 0 ? (
-              <tr><td colSpan={7} className="p-8 text-center text-sub-text">Anlaşmazlık bulunmuyor.</td></tr>
-            ) : disputes.map((d) => (
-              <tr key={d.id} className="hover:bg-dark-section/50">
-                <td className="p-4 text-montaj text-xs">{d.job.title}</td>
-                <td className="p-4 text-sub-text hidden sm:table-cell">{d.openedBy.name}</td>
-                <td className="p-4 text-white text-xs max-w-[200px] truncate">{d.reason}</td>
-                <td className="p-4 text-sub-text hidden md:table-cell">{d.payment ? `${d.payment.amount} TL` : "—"}</td>
-                <td className="p-4">
-                  <span className={`px-2 py-0.5 rounded text-xs font-medium ${d.status === "open" ? "bg-red-900/30 text-red-400" : "bg-green-900/30 text-green-400"}`}>
-                    {d.status === "open" ? "Açık" : "Çözüldü"}
-                  </span>
-                </td>
-                <td className="p-4 text-sub-text text-xs hidden lg:table-cell">{formatDate(new Date(d.createdAt))}</td>
-                <td className="p-4 text-right">
-                  {d.status === "open" ? (
-                    <select
-                      onChange={(e) => { if (e.target.value) resolve(d.id, e.target.value); }}
-                      defaultValue=""
-                      className="bg-dark-bg border border-dark-border rounded px-2 py-1 text-xs text-white"
-                    >
-                      <option value="">Çözüm Seç</option>
-                      {RESOLUTIONS.map((r) => <option key={r.value} value={r.value}>{r.label}</option>)}
-                    </select>
-                  ) : (
-                    <span className="text-xs text-sub-text">{RESOLUTIONS.find((r) => r.value === d.resolution)?.label || d.resolution}</span>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+      <AdminTable<Dispute>
+        rows={disputes}
+        columns={columns}
+        keyField={(r) => r.id}
+        actions={(r) =>
+          r.status === "open" ? (
+            <select
+              onChange={(e) => { if (e.target.value) resolve(r.id, e.target.value); }}
+              defaultValue=""
+              className="bg-[var(--admin-surface)] border border-[var(--admin-border)] rounded-md px-2 py-1 text-xs text-[var(--admin-text-primary)] focus:outline-none"
+            >
+              <option value="">Çözüm Seç</option>
+              {RESOLUTIONS.map((res) => (
+                <option key={res.value} value={res.value}>{res.label}</option>
+              ))}
+            </select>
+          ) : (
+            <span className="text-xs text-[var(--admin-text-muted)]">
+              {RESOLUTION_LABEL[r.resolution ?? ""] || r.resolution}
+            </span>
+          )
+        }
+      />
+    </PageContainer>
   );
 }

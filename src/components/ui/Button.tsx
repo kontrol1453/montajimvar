@@ -1,49 +1,107 @@
-import { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes, forwardRef } from "react";
 import { cn } from "@/lib/utils";
 
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "outline"
+  | "ghost"
+  | "danger"
+  | "premium";
+
+export type ButtonSize = "sm" | "md" | "lg" | "icon";
+
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "danger" | "ghost";
-  size?: "sm" | "md" | "lg";
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   loading?: boolean;
+  /** Render as inline-flex link button if href/anchor is needed — wrap child component instead */
+  /** Optional icon node on the leading side */
+  leadingIcon?: React.ReactNode;
+  trailingIcon?: React.ReactNode;
 }
 
-export default function Button({
-  children,
-  variant = "primary",
-  size = "md",
-  loading,
-  className,
-  disabled,
-  ...props
-}: ButtonProps) {
-  const base = "inline-flex items-center justify-center font-medium rounded-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+const variants: Record<ButtonVariant, string> = {
+  primary:
+    "bg-[var(--admin-primary)] text-white hover:bg-[var(--admin-primary-strong)] focus-visible:ring-[var(--admin-primary)]",
+  secondary:
+    "bg-white text-[var(--admin-text-primary)] border border-[var(--admin-border)] hover:bg-[var(--admin-surface-muted)] focus-visible:ring-[var(--admin-primary)]",
+  outline:
+    "bg-transparent text-[var(--admin-primary)] border border-[var(--admin-primary)] hover:bg-[var(--admin-primary-soft)] focus-visible:ring-[var(--admin-primary)]",
+  ghost:
+    "bg-transparent text-[var(--admin-text-secondary)] hover:bg-[var(--admin-surface-muted)] hover:text-[var(--admin-text-primary)] focus-visible:ring-[var(--admin-primary)]",
+  danger:
+    "bg-[var(--admin-danger)] text-white hover:opacity-90 focus-visible:ring-[var(--admin-danger)]",
+  premium:
+    "bg-[var(--admin-premium-soft)] text-[var(--admin-premium)] border border-[var(--admin-premium)]/20 hover:bg-[var(--admin-premium-soft)]/80 focus-visible:ring-[var(--admin-premium)]",
+};
 
-  const variants = {
-    primary: "bg-montaj text-white hover:bg-montaj-dark focus:ring-montaj",
-    secondary: "bg-dark-card text-white hover:bg-dark-section focus:ring-montaj border border-dark-border",
-    danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
-    ghost: "text-muted-text hover:text-white hover:bg-dark-card focus:ring-montaj",
-  };
+const sizes: Record<ButtonSize, string> = {
+  sm: "h-8 px-3 text-xs gap-1.5",
+  md: "h-10 px-4 text-sm gap-2",
+  lg: "h-11 px-5 text-base gap-2",
+  icon: "h-9 w-9 p-0",
+};
 
-  const sizes = {
-    sm: "px-3 py-1.5 text-sm",
-    md: "px-4 py-2 text-sm",
-    lg: "px-6 py-3 text-base",
-  };
+const base =
+  "inline-flex items-center justify-center font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:opacity-50 disabled:cursor-not-allowed";
 
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  {
+    children,
+    variant = "primary",
+    size = "md",
+    loading,
+    className,
+    disabled,
+    leadingIcon,
+    trailingIcon,
+    type,
+    ...props
+  },
+  ref
+) {
   return (
     <button
+      ref={ref}
+      type={type ?? "button"}
       className={cn(base, variants[variant], sizes[size], className)}
       disabled={disabled || loading}
+      aria-busy={loading || undefined}
       {...props}
     >
-      {loading && (
-        <svg className="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+      {loading ? (
+        <svg
+          className="animate-spin h-4 w-4 shrink-0"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth={4}
+            className="opacity-25"
+          />
+          <path
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+            fill="currentColor"
+            className="opacity-75"
+          />
         </svg>
+      ) : (
+        leadingIcon
       )}
-      {children}
+      {size !== "icon" && children}
+      {trailingIcon && !loading && size !== "icon" && (
+        <span className="shrink-0" aria-hidden>
+          {trailingIcon}
+        </span>
+      )}
     </button>
   );
-}
+});
+
+export default Button;

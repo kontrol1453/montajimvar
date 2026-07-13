@@ -1,322 +1,283 @@
 import { prisma } from "@/lib/prisma";
-import Card from "@/components/ui/Card";
 import Link from "next/link";
+import {
+  Users,
+  Building2,
+  Briefcase,
+  AlertCircle,
+  Star,
+  FileText,
+  Shield,
+  DollarSign,
+  CreditCard,
+  Bell,
+} from "lucide-react";
+import { PageTitle, PageContainer, SectionTitle, Stack } from "@/components/ui/Typography";
+import StatCard from "@/components/admin/StatCard";
 
 export default async function AdminDashboardPage() {
-  const [userCount, profileCount, messageCount, unverifiedCount, reviewCount, permCount, jobCount, blogCount, jobReviewCount, paymentStats] =
-    await Promise.all([
-      prisma.user.count(),
-      prisma.profile.count(),
-      prisma.message.count(),
-      prisma.profile.count({ where: { isVerified: false } }),
-      prisma.review.count(),
-      prisma.rolePermission.count(),
-      prisma.job.count(),
-      prisma.blogPost.count(),
-      prisma.jobReview.count(),
-      prisma.payment.aggregate({
-        _sum: { amount: true, commission: true },
-        _count: true,
-      }),
-    ]);
+  const [
+    userCount,
+    profileCount,
+    unverifiedCount,
+    reviewCount,
+    permCount,
+    jobCount,
+    blogCount,
+    jobReviewCount,
+    paymentStats,
+  ] = await Promise.all([
+    prisma.user.count(),
+    prisma.profile.count(),
+    prisma.profile.count({ where: { isVerified: false } }),
+    prisma.review.count(),
+    prisma.rolePermission.count(),
+    prisma.job.count(),
+    prisma.blogPost.count(),
+    prisma.jobReview.count(),
+    prisma.payment.aggregate({
+      _sum: { amount: true, commission: true },
+      _count: true,
+    }) ?? { _sum: { amount: 0, commission: 0 }, _count: 0 },
+  ]);
 
-  function StatIcon({ icon, label }: { icon: string; label: string }) {
-    return (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        {icon === "users" && (
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-        )}
-        {icon === "company" && (
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
-        )}
-        {icon === "pending" && (
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-        )}
-        {icon === "message" && (
-          <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-        )}
-        {icon === "star" && (
-          <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
-        )}
-        {icon === "lock" && (
-          <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-        )}
-      </svg>
-    );
-  }
+  const totalAmount = Number(paymentStats._sum?.amount ?? 0);
+  const totalCommission = Number(paymentStats._sum?.commission ?? 0);
+  const totalCount = Number(paymentStats._count ?? 0);
 
   const stats = [
     {
       label: "Toplam Kullanıcı",
       value: userCount,
-      icon: "users",
+      icon: <Users size={24} />,
       href: "/admin/kullanicilar",
-      color: "bg-blue-900/30",
+      variant: "blue" as const,
     },
     {
       label: "Firma Profili",
       value: profileCount,
-      icon: "company",
+      icon: <Building2 size={24} />,
       href: "/admin/firmalar",
-      color: "bg-montaj/20",
+      variant: "amber" as const,
     },
     {
       label: "Toplam İş",
       value: jobCount,
-      icon: "message",
+      icon: <Briefcase size={24} />,
       href: "/admin/isler",
-      color: "bg-cyan-900/30",
+      variant: "cyan" as const,
     },
     {
       label: "Onay Bekleyen",
       value: unverifiedCount,
-      icon: "pending",
+      icon: <AlertCircle size={24} />,
       href: "/admin/firmalar",
-      color: "bg-yellow-900/30",
+      variant: "yellow" as const,
     },
     {
       label: "Firma Yorumu",
       value: reviewCount,
-      icon: "star",
+      icon: <Star size={24} />,
       href: "/admin/yorumlar",
-      color: "bg-purple-900/30",
+      variant: "purple" as const,
     },
     {
       label: "İş Yorumu",
       value: jobReviewCount,
-      icon: "star",
+      icon: <Star size={24} />,
       href: "/admin/yorumlar",
-      color: "bg-pink-900/30",
+      variant: "pink" as const,
     },
     {
       label: "Blog Yazısı",
       value: blogCount,
-      icon: "message",
+      icon: <FileText size={24} />,
       href: "/admin/blog",
-      color: "bg-emerald-900/30",
+      variant: "emerald" as const,
     },
     {
       label: "Rol İzinleri",
       value: permCount,
-      icon: "lock",
+      icon: <Shield size={24} />,
       href: "/admin/izinler",
-      color: "bg-amber-900/30",
+      variant: "orange" as const,
+    },
+  ];
+
+  const quickActions = [
+    {
+      href: "/admin/kullanicilar",
+      title: "Kullanıcıları Yönet",
+      desc: `${userCount} kullanıcıyı görüntüle ve yönet`,
+      icon: <Users size={20} />,
+      variant: "blue" as const,
+    },
+    {
+      href: "/admin/firmalar",
+      title: "Firmaları Onayla",
+      desc:
+        unverifiedCount > 0
+          ? `${unverifiedCount} firma onay bekliyor`
+          : "Tüm firmalar onaylanmış",
+      icon: <AlertCircle size={20} />,
+      variant: "emerald" as const,
+    },
+    {
+      href: "/admin/kategoriler",
+      title: "Kategorileri Yönet",
+      desc: "Kategori ekle, düzenle, sil",
+      icon: <Building2 size={20} />,
+      variant: "purple" as const,
+    },
+    {
+      href: "/admin/izinler",
+      title: "Rol İzinleri",
+      desc: "Rollerin görebileceği özellikleri belirleyin",
+      icon: <Shield size={20} />,
+      variant: "pink" as const,
+    },
+    {
+      href: "/admin/isler",
+      title: "İşleri Yönet",
+      desc: `${jobCount} iş kaydı, durum takibi ve teklifler`,
+      icon: <Briefcase size={20} />,
+      variant: "cyan" as const,
+    },
+    {
+      href: "/admin/yorumlar",
+      title: "Yorumları Yönet",
+      desc: `${reviewCount + jobReviewCount} yorum, denetleme ve silme`,
+      icon: <Star size={20} />,
+      variant: "amber" as const,
+    },
+    {
+      href: "/admin/bildirim",
+      title: "Bildirim Merkezi",
+      desc: "Push notification gönder, admin bildirimlerini gör",
+      icon: <Bell size={20} />,
+      variant: "orange" as const,
+    },
+    {
+      href: "/admin/abonelik-plani",
+      title: "Abonelik Planları",
+      desc: "Premium planları yönetin",
+      icon: <CreditCard size={20} />,
+      variant: "yellow" as const,
+    },
+    {
+      href: "/admin/blog",
+      title: "Blog Yazıları",
+      desc: `${blogCount} yayında olan yazı`,
+      icon: <FileText size={20} />,
+      variant: "emerald" as const,
     },
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl font-bold text-white mb-6">Admin Paneli</h1>
+    <PageContainer>
+      <Stack>
+        <PageTitle
+          actions={
+            <div className="flex items-center gap-2">
+              <Link
+                href="/admin/kullanicilar"
+                className="text-sm text-[var(--admin-text-secondary)] hover:text-[var(--admin-text-primary)]"
+              >
+                Kullanıcılar
+              </Link>
+              <span className="text-[var(--admin-border)]">|</span>
+              <Link
+                href="/admin/firmalar"
+                className="text-sm text-[var(--admin-text-secondary)] hover:text-[var(--admin-text-primary)]"
+              >
+                Firmalar
+              </Link>
+            </div>
+          }
+        >
+          Admin Paneli
+        </PageTitle>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-        {stats.map((stat) => (
-          <Link key={stat.label} href={stat.href}>
-            <Card>
-              <div className="flex items-center gap-4">
-                  <div
-                    className={`w-12 h-12 ${stat.color} rounded-lg flex items-center justify-center text-white`}
-                  >
-                    <StatIcon icon={stat.icon} label={stat.label} />
-      </div>
+        {/* Stats grid */}
+        <SectionTitle>İstatistikler</SectionTitle>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {stats.map((stat) => (
+            <StatCard
+              key={stat.label}
+              label={stat.label}
+              value={stat.value}
+              icon={stat.icon}
+              href={stat.href}
+              variant={stat.variant}
+            />
+          ))}
+        </div>
 
-      {/* Gelir Özeti */}
-      <h2 className="text-lg font-semibold text-white mb-4">Gelir Özeti</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <Card>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-green-900/30 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-sm text-sub-text">Toplam Gelir</p>
-              <p className="text-2xl font-bold text-white">{((paymentStats._sum.amount || 0) / 100).toLocaleString("tr-TR")} TL</p>
-            </div>
-          </div>
-        </Card>
-        <Card>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-amber-900/30 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-sm text-sub-text">Toplam Komisyon</p>
-              <p className="text-2xl font-bold text-white">{((paymentStats._sum.commission || 0) / 100).toLocaleString("tr-TR")} TL</p>
-            </div>
-          </div>
-        </Card>
-        <Card>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-blue-900/30 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-sm text-sub-text">Toplam Ödeme</p>
-              <p className="text-2xl font-bold text-white">{paymentStats._count}</p>
-            </div>
-          </div>
-        </Card>
-      </div>
-                <div>
-                  <p className="text-sm text-sub-text">{stat.label}</p>
-                  <p className="text-2xl font-bold text-white">{stat.value}</p>
-                </div>
+        {/* Revenue */}
+        <SectionTitle>Gelir Özeti</SectionTitle>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <StatCard
+            label="Toplam Gelir"
+            value={`${(totalAmount / 100).toLocaleString("tr-TR")} TL`}
+            icon={<DollarSign size={24} />}
+            variant="emerald"
+          />
+          <StatCard
+            label="Toplam Komisyon"
+            value={`${(totalCommission / 100).toLocaleString("tr-TR")} TL`}
+            icon={<CreditCard size={24} />}
+            variant="amber"
+          />
+          <StatCard
+            label="Toplam Ödeme"
+            value={totalCount}
+            icon={<DollarSign size={24} />}
+            variant="blue"
+          />
+        </div>
+
+        {/* Quick actions */}
+        <SectionTitle>Hızlı İşlemler</SectionTitle>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {quickActions.map((action) => (
+            <Link
+              key={action.href}
+              href={action.href}
+              className="flex items-center gap-3 p-4 rounded-lg border border-[var(--admin-border)] bg-[var(--admin-surface)] hover:border-[var(--admin-primary)] transition-colors"
+            >
+              <div
+                className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                  action.variant === "blue"
+                    ? "bg-[var(--admin-primary-soft)] text-[var(--admin-primary)]"
+                    : action.variant === "amber"
+                      ? "bg-amber-100 text-amber-600"
+                      : action.variant === "cyan"
+                        ? "bg-cyan-100 text-cyan-600"
+                        : action.variant === "yellow"
+                          ? "bg-yellow-100 text-yellow-600"
+                          : action.variant === "purple"
+                            ? "bg-purple-100 text-purple-600"
+                            : action.variant === "pink"
+                              ? "bg-pink-100 text-pink-600"
+                              : action.variant === "emerald"
+                                ? "bg-emerald-100 text-emerald-600"
+                                : "bg-orange-100 text-orange-600"
+                }`}
+              >
+                {action.icon}
               </div>
-            </Card>
-          </Link>
-        ))}
-      </div>
-
-      {/* Quick actions */}
-      <h2 className="text-lg font-semibold text-white mb-4">Hızlı İşlemler</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Link
-          href="/admin/kullanicilar"
-          className="bg-dark-card rounded-xl border border-dark-border p-5 hover:border-montaj/50 transition"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-900/30 rounded-lg flex items-center justify-center text-white">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-              </svg>
-            </div>
-            <div>
-              <p className="font-medium text-white">Kullanıcıları Yönet</p>
-              <p className="text-sm text-sub-text">Tüm kullanıcıları görüntüle ve yönet</p>
-            </div>
-          </div>
-        </Link>
-
-        <Link
-          href="/admin/firmalar"
-          className="bg-dark-card rounded-xl border border-dark-border p-5 hover:border-montaj/50 transition"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-900/30 rounded-lg flex items-center justify-center text-white">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div>
-              <p className="font-medium text-white">Firmaları Onayla</p>
-              <p className="text-sm text-sub-text">
-                {unverifiedCount > 0
-                  ? `${unverifiedCount} firma onay bekliyor`
-                  : "Tüm firmalar onaylanmış"}
-              </p>
-            </div>
-          </div>
-        </Link>
-
-        <Link
-          href="/admin/kategoriler"
-          className="bg-dark-card rounded-xl border border-dark-border p-5 hover:border-montaj/50 transition"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-900/30 rounded-lg flex items-center justify-center text-white">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
-              </svg>
-            </div>
-            <div>
-              <p className="font-medium text-white">Kategorileri Yönet</p>
-              <p className="text-sm text-sub-text">Kategori ekle, düzenle, sil</p>
-            </div>
-          </div>
-        </Link>
-
-        <Link
-          href="/admin/izinler"
-          className="bg-dark-card rounded-xl border border-dark-border p-5 hover:border-montaj/50 transition"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-pink-900/30 rounded-lg flex items-center justify-center text-white">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-              </svg>
-            </div>
-            <div>
-              <p className="font-medium text-white">Rol İzinleri</p>
-              <p className="text-sm text-sub-text">
-                Rollerin görebileceği özellikleri belirleyin
-              </p>
-            </div>
-          </div>
-        </Link>
-
-        <Link
-          href="/admin/isler"
-          className="bg-dark-card rounded-xl border border-dark-border p-5 hover:border-montaj/50 transition"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-cyan-900/30 rounded-lg flex items-center justify-center text-white">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-              </svg>
-            </div>
-            <div>
-              <p className="font-medium text-white">İşleri Yönet</p>
-              <p className="text-sm text-sub-text">{jobCount} iş kaydı, durum takibi ve teklifler</p>
-            </div>
-          </div>
-        </Link>
-
-        <Link
-          href="/admin/yorumlar"
-          className="bg-dark-card rounded-xl border border-dark-border p-5 hover:border-montaj/50 transition"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-900/30 rounded-lg flex items-center justify-center text-white">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
-              </svg>
-            </div>
-            <div>
-              <p className="font-medium text-white">Yorumları Yönet</p>
-              <p className="text-sm text-sub-text">{reviewCount + jobReviewCount} yorum, denetleme ve silme</p>
-            </div>
-          </div>
-        </Link>
-
-        <Link
-          href="/admin/bildirim"
-          className="bg-dark-card rounded-xl border border-dark-border p-5 hover:border-montaj/50 transition"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-900/30 rounded-lg flex items-center justify-center text-white">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-              </svg>
-            </div>
-            <div>
-              <p className="font-medium text-white">Bildirim Merkezi</p>
-              <p className="text-sm text-sub-text">Push notification gönder, admin bildirimlerini gör</p>
-            </div>
-          </div>
-        </Link>
-
-        <Link
-          href="/admin/abonelik-plani"
-          className="bg-dark-card rounded-xl border border-dark-border p-5 hover:border-montaj/50 transition"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-amber-900/30 rounded-lg flex items-center justify-center text-white">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
-              </svg>
-            </div>
-            <div>
-              <p className="font-medium text-white">Abonelik Planları</p>
-              <p className="text-sm text-sub-text">Premium planları yönetin</p>
-            </div>
-          </div>
-        </Link>
-      </div>
-    </div>
+              <div className="min-w-0">
+                <p className="font-medium text-[var(--admin-text-primary)]">
+                  {action.title}
+                </p>
+                <p className="text-sm text-[var(--admin-text-secondary)]">
+                  {action.desc}
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </Stack>
+    </PageContainer>
   );
 }

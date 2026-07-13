@@ -34,6 +34,66 @@
   --color-montaj: #ff7a00;
   --color-montaj-dark: #e06e00;
   --color-montaj-light: #ff9433;
+
+  /* Admin shell layout tokens — FAZ 1 */
+  --admin-sidebar-width: 14rem;        /* 224px — desktop sidebar */
+  --admin-sidebar-width-mobile: 16rem; /* 256px — mobile drawer */
+  --admin-sidebar-width-collapsed: 4.5rem; /* 72px — collapsed/compact */
+  --admin-header-height: 3.5rem;       /* 56px  — pt-14 mobile header offset */
+
+  /* Admin semantic tokens — FAZ 3
+   * Admin shell stays light; cards on light zinc-50/100 surface.
+   * Sidebar is dark (black). These tokens cover both regions semantically.
+   */
+  --admin-surface: #ffffff;
+  --admin-surface-muted: #f5f7fa;        /* page-level background */
+  --admin-surface-subtle: #fafbfc;       /* card inside table rows hover */
+  --admin-border: #e4e7ec;               /* primary border */
+  --admin-border-muted: #eaecf0;         /* lighter divider */
+  --admin-text-primary: #101828;          /* WCAG AA on white = 16.5:1 */
+  --admin-text-secondary: #475467;        /* 8.6:1 on white */
+  --admin-text-muted: #667085;            /* 5.74:1 on white — AA threshold large */
+  --admin-text-disabled: #98a2b3;         /* non-actionable text */
+  --admin-primary: #0b5fff;
+  --admin-primary-strong: #0948cc;
+  --admin-primary-soft: #e0ebff;
+  --admin-success: #027a48;
+  --admin-success-soft: #ecfdf3;
+  --admin-warning: #b54708;
+  --admin-warning-soft: #fffaeb;
+  --admin-danger: #b42318;
+  --admin-danger-soft: #fef3f2;
+  --admin-info: #1849a9;
+  --admin-info-soft: #eff8ff;
+  --admin-premium: #b54708;               /* premium uses a warm amber */
+  --admin-premium-soft: #fffaeb;
+  --admin-neutral-soft: #f2f4f7;
+
+  /* Admin dark sidebar tokens (used by AdminSidebar.tsx) */
+  --admin-sidebar-bg: #000000;
+  --admin-sidebar-border: rgba(255, 255, 255, 0.08);
+  --admin-sidebar-text: #d4d4d8;
+  --admin-sidebar-text-muted: #71717a;
+  --admin-sidebar-hover: rgba(255, 255, 255, 0.06);
+  --admin-sidebar-active-bg: rgba(255, 122, 0, 0.15);
+  --admin-sidebar-active-text: #ff9433;
+
+  /* Radius */
+  --admin-radius-sm: 6px;
+  --admin-radius-md: 8px;
+  --admin-radius-lg: 12px;
+
+  /* Spacing scale for admin content */
+  --admin-space-1: 4px;
+  --admin-space-2: 8px;
+  --admin-space-3: 12px;
+  --admin-space-4: 16px;
+  --admin-space-5: 20px;
+  --admin-space-6: 24px;
+  --admin-space-8: 32px;
+
+  /* Admin content horizontal padding (page container) */
+  --admin-content-padding-x: 1.5rem;     /* 24px desktop default */
 }
 
 /* ─── Base ────────────────────────────────────────────────────── */
@@ -53,6 +113,18 @@
   ::selection {
     background: rgba(11, 95, 255, 0.12);
     color: var(--color-text-primary);
+  }
+
+  /* Reduced motion — accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
@@ -231,7 +303,38 @@
 .bg-dark-card { background: var(--color-surface) !important; }
 .border-dark-border { border-color: var(--color-border-light); }
 .text-muted-text { color: var(--color-text-secondary); }
-.text-sub-text { color: var(--color-text-tertiary); }
+/* Sub-text needs WCAG-AA contrast on white surfaces (admin tables etc.) */
+.text-sub-text { color: var(--color-text-secondary); }
+
+/* ─── Admin Design System — FAZ 3 ─────────────────────────────────────
+   * Admin regions use these utility-class aliases so individual pages
+   * can be re-skinned later via tokens without rewriting classNames.
+   */
+.admin-surface { background: var(--admin-surface); }
+.admin-surface-muted { background: var(--admin-surface-muted); }
+.admin-surface-subtle { background: var(--admin-surface-subtle); }
+.admin-border { border-color: var(--admin-border); }
+.admin-border-muted { border-color: var(--admin-border-muted); }
+.admin-text-primary { color: var(--admin-text-primary); }
+.admin-text-secondary { color: var(--admin-text-secondary); }
+.admin-text-muted { color: var(--admin-text-muted); }
+.admin-text-disabled { color: var(--admin-text-disabled); }
+.admin-ring { box-shadow: 0 0 0 2px var(--admin-primary); }
+
+/* Focus visible — keyboard only */
+.focus-visible:focus-visible {
+  outline: 2px solid var(--admin-primary);
+  outline-offset: 2px;
+}
+
+/* Admin page container horizontal padding for content area */
+.admin-content {
+  padding-left: var(--admin-content-padding-x);
+  padding-right: var(--admin-content-padding-x);
+}
+@media (max-width: 640px) {
+  .admin-content { padding-left: 1rem; padding-right: 1rem; }
+}
 
 /* Animations */
 @keyframes fade-in-up {

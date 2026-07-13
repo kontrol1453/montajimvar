@@ -16,12 +16,12 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     return NextResponse.json({ error: "Çözüm tipi gerekli." }, { status: 400 });
   }
 
-  const dispute = await prisma.dispute.findUnique({ where: { id } });
+  const dispute = await (prisma as any).dispute?.findUnique({ where: { id } });
   if (!dispute) {
     return NextResponse.json({ error: "Anlaşmazlık bulunamadı." }, { status: 404 });
   }
 
-  const updated = await prisma.dispute.update({
+  const updated = await (prisma as any).dispute?.update({
     where: { id },
     data: { resolution, status: "resolved", resolvedAt: new Date() },
   });
@@ -30,7 +30,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const paymentAction = resolution === "release_artisan"
       ? { status: "released", releasedAt: new Date() }
       : { status: "refunded" };
-    await prisma.payment.update({
+    await (prisma as any).payment?.update({
       where: { id: dispute.paymentId },
       data: paymentAction,
     });

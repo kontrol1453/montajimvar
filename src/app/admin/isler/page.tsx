@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { PageTitle, PageContainer } from "@/components/ui/Typography";
+import Badge from "@/components/ui/Badge";
+import { Search, Filter } from "lucide-react";
 
 interface JobUser {
   id: number;
@@ -42,15 +45,15 @@ const STATUS_LABELS: Record<string, string> = {
   cancelled: "İptal Edildi",
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  pending: "bg-yellow-900/40 text-yellow-400",
-  offers_received: "bg-blue-900/40 text-blue-400",
-  assigned: "bg-green-900/40 text-green-400",
-  en_route: "bg-cyan-900/40 text-cyan-400",
-  in_progress: "bg-indigo-900/40 text-indigo-400",
-  completed: "bg-emerald-900/40 text-emerald-400",
-  review_pending: "bg-purple-900/40 text-purple-400",
-  cancelled: "bg-red-900/40 text-red-400",
+const STATUS_BADGE: Record<string, "warning" | "info" | "success" | "neutral" | "danger"> = {
+  pending: "warning",
+  offers_received: "info",
+  assigned: "success",
+  en_route: "neutral",
+  in_progress: "info",
+  completed: "success",
+  review_pending: "warning",
+  cancelled: "danger",
 };
 
 export default function AdminJobsPage() {
@@ -60,9 +63,7 @@ export default function AdminJobsPage() {
   const [search, setSearch] = useState("");
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
-  useEffect(() => {
-    loadJobs();
-  }, []);
+  useEffect(() => { loadJobs(); }, []);
 
   async function loadJobs() {
     try {
@@ -81,13 +82,8 @@ export default function AdminJobsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "cancelled" }),
       });
-      if (res.ok) {
-        toast.success("İş iptal edildi.");
-        loadJobs();
-      } else {
-        const err = await res.json();
-        toast.error(err.error || "İptal edilemedi.");
-      }
+      if (res.ok) { toast.success("İş iptal edildi."); loadJobs(); }
+      else { const err = await res.json(); toast.error(err.error || "İptal edilemedi."); }
     } catch { toast.error("Bir hata oluştu."); }
   }
 
@@ -95,10 +91,8 @@ export default function AdminJobsPage() {
     if (!confirm("Bu işi KALICI olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz.")) return;
     try {
       const res = await fetch(`/api/jobs/${jobId}`, { method: "DELETE" });
-      if (res.ok) {
-        toast.success("İş silindi.");
-        loadJobs();
-      } else toast.error("Silinemedi.");
+      if (res.ok) { toast.success("İş silindi."); loadJobs(); }
+      else toast.error("Silinemedi.");
     } catch { toast.error("Bir hata oluştu."); }
   }
 
@@ -109,57 +103,64 @@ export default function AdminJobsPage() {
     return true;
   });
 
-  if (loading) return <div className="p-6 text-sub-text">Yükleniyor...</div>;
+  if (loading) return <div className="p-6 text-[var(--admin-text-muted)]">Yükleniyor...</div>;
 
   return (
-    <div className="p-4 sm:p-6">
+    <PageContainer>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-white">İş Yönetimi</h1>
-        <span className="text-sm text-sub-text">Toplam: {jobs.length} iş</span>
+        <PageTitle>İş Yönetimi</PageTitle>
+        <span className="text-sm text-[var(--admin-text-secondary)]">Toplam: {jobs.length} iş</span>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-wrap gap-3 mb-6">
-        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
-          className="bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-sm text-white">
-          <option value="all">Tüm Durumlar</option>
-          {Object.entries(STATUS_LABELS).map(([k, v]) => (
-            <option key={k} value={k}>{v}</option>
-          ))}
-        </select>
-        <input value={search} onChange={e => setSearch(e.target.value)}
-          placeholder="İş veya müşteri ara..."
-          className="bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-sm text-white flex-1 min-w-[200px]" />
+        <div className="flex items-center gap-2 bg-[var(--admin-surface)] border border-[var(--admin-border)] rounded-md px-3 py-2">
+          <Filter size={16} className="text-[var(--admin-text-muted)]" />
+          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
+            className="bg-transparent text-sm text-[var(--admin-text-primary)] focus:outline-none">
+            <option value="all">Tüm Durumlar</option>
+            {Object.entries(STATUS_LABELS).map(([k, v]) => (
+              <option key={k} value={k}>{v}</option>
+            ))}
+          </select>
+        </div>
+        <div className="flex items-center gap-2 bg-[var(--admin-surface)] border border-[var(--admin-border)] rounded-md px-3 py-2 flex-1 min-w-[200px]">
+          <Search size={16} className="text-[var(--admin-text-muted)]" />
+          <input value={search} onChange={(e) => setSearch(e.target.value)}
+            placeholder="İş veya müşteri ara..."
+            className="bg-transparent text-sm text-[var(--admin-text-primary)] focus:outline-none flex-1 placeholder:text-[var(--admin-text-muted)]" />
+        </div>
       </div>
 
-      {/* Job List */}
       <div className="space-y-3">
         {filtered.length === 0 ? (
-          <p className="text-sub-text text-center py-8">İş bulunamadı.</p>
+          <p className="text-[var(--admin-text-muted)] text-center py-8">İş bulunamadı.</p>
         ) : filtered.map(job => (
-          <div key={job.id} className="bg-dark-card rounded-xl border border-dark-border p-4">
+          <div key={job.id} className="bg-[var(--admin-surface)] rounded-lg border border-[var(--admin-border)] p-4">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-medium text-white truncate">{job.title}</h3>
-                  <span className={`text-xs px-2 py-0.5 rounded-full shrink-0 ${STATUS_COLORS[job.status] || "bg-gray-900/40 text-gray-400"}`}>
+                  <h3 className="font-medium text-[var(--admin-text-primary)] truncate">{job.title}</h3>
+                  <Badge variant={STATUS_BADGE[job.status] || "neutral"}>
                     {STATUS_LABELS[job.status] || job.status}
-                  </span>
+                  </Badge>
                 </div>
-                <p className="text-xs text-sub-text">
-                  <span className="text-montaj">{job.customer.name}</span>
+                <p className="text-xs text-[var(--admin-text-secondary)]">
+                  <span className="text-[var(--admin-primary)]">{job.customer.name}</span>
                   {job.city && <span> · {job.city}</span>}
                   {job.budgetMin && <span> · ₺{job.budgetMin}{job.budgetMax ? `-${job.budgetMax}` : "+"}</span>}
                   <span> · {new Date(job.createdAt).toLocaleDateString("tr-TR")}</span>
                 </p>
-                <p className="text-sm text-gray-400 mt-1 line-clamp-2">{job.description}</p>
+                <p className="text-sm text-[var(--admin-text-muted)] mt-1 line-clamp-2">{job.description}</p>
                 {job.offers.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-2">
                     {job.offers.map(offer => (
-                      <span key={offer.id} className="text-xs bg-dark-bg px-2 py-1 rounded-full text-sub-text border border-dark-border">
+                      <span key={offer.id} className="text-xs bg-[var(--admin-surface-muted)] px-2 py-1 rounded-full text-[var(--admin-text-secondary)] border border-[var(--admin-border)]">
                         {offer.artisan.name}: ₺{offer.amount}
                         {offer.duration && ` (${offer.duration})`}
-                        <span className={`ml-1 ${offer.status === "accepted" ? "text-green-400" : offer.status === "rejected" ? "text-red-400" : "text-yellow-400"}`}>
+                        <span className={`ml-1 ${
+                          offer.status === "accepted" ? "text-[var(--admin-success)]" :
+                          offer.status === "rejected" ? "text-[var(--admin-danger)]" : "text-[var(--admin-warning)]"
+                        }`}>
                           · {offer.status === "accepted" ? "Kabul" : offer.status === "rejected" ? "Red" : "Bekliyor"}
                         </span>
                       </span>
@@ -169,38 +170,44 @@ export default function AdminJobsPage() {
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <button onClick={() => setSelectedJob(selectedJob?.id === job.id ? null : job)}
-                  className="text-xs text-montaj hover:underline">
+                  className="text-xs text-[var(--admin-primary)] hover:underline">
                   {selectedJob?.id === job.id ? "Gizle" : "Detay"}
                 </button>
                 {job.status !== "cancelled" && (
-                  <button onClick={() => cancelJob(job.id)} className="text-xs text-yellow-400 hover:underline">İptal</button>
+                  <button onClick={() => cancelJob(job.id)}
+                    className="text-xs text-[var(--admin-warning)] hover:underline">İptal</button>
                 )}
-                <button onClick={() => deleteJob(job.id)} className="text-xs text-red-400 hover:underline">Sil</button>
+                <button onClick={() => deleteJob(job.id)}
+                  className="text-xs text-[var(--admin-danger)] hover:underline">Sil</button>
               </div>
             </div>
 
-            {/* Expanded details */}
             {selectedJob?.id === job.id && (
-              <div className="mt-4 pt-4 border-t border-dark-border">
-                <p className="text-sm text-gray-300 mb-2 whitespace-pre-wrap">{job.description}</p>
+              <div className="mt-4 pt-4 border-t border-[var(--admin-border)]">
+                <p className="text-sm text-[var(--admin-text-secondary)] mb-2 whitespace-pre-wrap">{job.description}</p>
                 {job.offers.length > 0 && (
                   <div className="mt-3">
-                    <p className="text-xs text-sub-text font-medium mb-2">Teklifler:</p>
+                    <p className="text-xs text-[var(--admin-text-secondary)] font-medium mb-2">Teklifler:</p>
                     <table className="w-full text-xs">
-                      <thead><tr className="text-sub-text border-b border-dark-border">
-                        <th className="text-left py-1">Usta</th>
-                        <th className="text-left py-1">Tutar</th>
-                        <th className="text-left py-1">Süre</th>
-                        <th className="text-left py-1">Durum</th>
-                      </tr></thead>
+                      <thead>
+                        <tr className="text-[var(--admin-text-muted)] border-b border-[var(--admin-border)]">
+                          <th className="text-left py-1">Usta</th>
+                          <th className="text-left py-1">Tutar</th>
+                          <th className="text-left py-1">Süre</th>
+                          <th className="text-left py-1">Durum</th>
+                        </tr>
+                      </thead>
                       <tbody>
                         {job.offers.map(o => (
-                          <tr key={o.id} className="border-b border-dark-border/50">
-                            <td className="py-1 text-white">{o.artisan.name}</td>
+                          <tr key={o.id} className="border-b border-[var(--admin-border)]/50">
+                            <td className="py-1 text-[var(--admin-text-primary)]">{o.artisan.name}</td>
                             <td className="py-1">₺{o.amount}</td>
-                            <td className="py-1 text-sub-text">{o.duration || "—"}</td>
+                            <td className="py-1 text-[var(--admin-text-secondary)]">{o.duration || "—"}</td>
                             <td className="py-1">
-                              <span className={o.status === "accepted" ? "text-green-400" : o.status === "rejected" ? "text-red-400" : "text-yellow-400"}>
+                              <span className={
+                                o.status === "accepted" ? "text-[var(--admin-success)]" :
+                                o.status === "rejected" ? "text-[var(--admin-danger)]" : "text-[var(--admin-warning)]"
+                              }>
                                 {o.status === "accepted" ? "Kabul Edildi" : o.status === "rejected" ? "Reddedildi" : "Bekliyor"}
                               </span>
                             </td>
@@ -215,6 +222,6 @@ export default function AdminJobsPage() {
           </div>
         ))}
       </div>
-    </div>
+    </PageContainer>
   );
 }

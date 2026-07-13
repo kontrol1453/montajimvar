@@ -2,6 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { PageTitle, PageContainer } from "@/components/ui/Typography";
+import AdminTable, { type TableColumn } from "@/components/admin/DataTable/AdminTable";
+import Badge from "@/components/ui/Badge";
+import RowActionsDropdown from "@/components/admin/DataTable/RowActionsDropdown";
+import { Trash2 } from "lucide-react";
 
 interface FirmReview {
   id: number;
@@ -76,24 +81,82 @@ export default function AdminReviewsPage() {
     return true;
   });
 
-  if (loading) return <div className="p-6 text-sub-text">Yükleniyor...</div>;
+  const columns: TableColumn<Review>[] = [
+    {
+      header: "Yorum",
+      accessor: (r) => (
+        <div>
+          <div className="flex items-center gap-1 mb-0.5">
+            <span className="text-amber-500 text-sm">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
+          </div>
+          {r.comment && <p className="text-xs text-[var(--admin-text-secondary)] line-clamp-2">{r.comment}</p>}
+        </div>
+      ),
+    },
+    {
+      header: "Kaynak",
+      accessor: (r) =>
+        r.type === "firma" ? (
+          <span className="text-[var(--admin-primary)] text-xs font-medium">
+            {(r as FirmReview).profile.companyName}
+          </span>
+        ) : (
+          <span className="text-xs text-[var(--admin-text-secondary)]">
+            {(r as JobReview).job.title}
+          </span>
+        ),
+    },
+    {
+      header: "Tür",
+      accessor: (r) =>
+        r.type === "firma" ? (
+          <Badge variant="info">Firma</Badge>
+        ) : (
+          <Badge variant="neutral">İş</Badge>
+        ),
+    },
+    {
+      header: "Yazan",
+      hidden: "md",
+      accessor: (r) => (
+        <span className="text-[var(--admin-text-secondary)] text-xs">
+          {r.type === "firma" ? (r as FirmReview).user.name : (r as JobReview).job.customer.name}
+        </span>
+      ),
+    },
+    {
+      header: "Tarih",
+      hidden: "lg",
+      accessor: (r) => (
+        <span className="text-[var(--admin-text-muted)] text-xs">
+          {new Date(r.createdAt).toLocaleDateString("tr-TR")}
+        </span>
+      ),
+    },
+  ];
 
   return (
-    <div className="p-4 sm:p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-white">Yorum Yönetimi</h1>
-        <span className="text-sm text-sub-text">Toplam: {reviews.length} yorum</span>
+    <PageContainer>
+      <div className="flex items-center justify-between mb-4">
+        <PageTitle>Yorum Yönetimi</PageTitle>
+        <span className="text-sm text-[var(--admin-text-secondary)]">Toplam: {reviews.length} yorum</span>
       </div>
 
-      <div className="flex flex-wrap gap-3 mb-6">
-        <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}
-          className="bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-sm text-white">
+      <div className="flex flex-wrap gap-3 mb-4">
+        <select
+          value={typeFilter}
+          onChange={e => setTypeFilter(e.target.value)}
+          className="bg-[var(--admin-surface)] border border-[var(--admin-border)] rounded-md px-3 py-1.5 text-sm text-[var(--admin-text-primary)] focus:outline-none"
+        >
           <option value="all">Tüm Türler</option>
           <option value="firma">Firma Yorumları</option>
           <option value="is">İş Yorumları</option>
         </select>
-        <select value={ratingFilter} onChange={e => setRatingFilter(e.target.value)}
-          className="bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-sm text-white">
+        <select
+          value={ratingFilter}
+          onChange={e => setRatingFilter(e.target.value)}
+          className="bg-[var(--admin-surface)] border border-[var(--admin-border)] rounded-md px-3 py-1.5 text-sm text-[var(--admin-text-primary)] focus:outline-none"
+        >
           <option value="all">Tüm Puanlar</option>
           {[5, 4, 3, 2, 1].map(n => (
             <option key={n} value={n}>{n} Yıldız</option>
@@ -101,34 +164,18 @@ export default function AdminReviewsPage() {
         </select>
       </div>
 
-      <div className="space-y-3">
-        {filtered.length === 0 ? (
-          <p className="text-sub-text text-center py-8">Yorum bulunamadı.</p>
-        ) : filtered.map((review, idx) => (
-          <div key={`${review.type}-${review.id}-${idx}`} className="bg-dark-card rounded-xl border border-dark-border p-4">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-amber-400 text-sm">{'⭐'.repeat(review.rating)}</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${review.type === 'firma' ? 'bg-blue-900/40 text-blue-400' : 'bg-purple-900/40 text-purple-400'}`}>
-                    {review.type === 'firma' ? 'Firma' : 'İş'}
-                  </span>
-                </div>
-                <p className="text-xs text-sub-text mb-1">
-                  {review.type === 'firma' ? (
-                    <>Firma: <span className="text-white">{(review as FirmReview).profile.companyName}</span> · Yazan: {(review as FirmReview).user.name}</>
-                  ) : (
-                    <>İş: <span className="text-white">{(review as JobReview).job.title}</span></>
-                  )}
-                  <span> · {new Date(review.createdAt).toLocaleDateString("tr-TR")}</span>
-                </p>
-                {review.comment && <p className="text-sm text-gray-300">{review.comment}</p>}
-              </div>
-              <button onClick={() => deleteReview(review)} className="text-xs text-red-400 hover:underline shrink-0">Sil</button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+      <AdminTable<Review>
+        rows={filtered}
+        columns={columns}
+        keyField={(r) => `${r.type}-${r.id}`}
+        actions={(r) => (
+          <RowActionsDropdown
+            items={[
+              { label: "Yorumu Sil", onClick: () => deleteReview(r), variant: "danger", icon: Trash2 },
+            ]}
+          />
+        )}
+      />
+    </PageContainer>
   );
 }

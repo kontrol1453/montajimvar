@@ -79,7 +79,7 @@ export default function NotificationBell() {
     <div ref={dropdownRef} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="relative p-2 text-sub-text hover:text-white transition rounded-lg hover:bg-dark-section"
+        className="relative p-2 text-[var(--admin-text-secondary)] hover:text-[var(--admin-text-primary)] transition rounded-lg hover:bg-[var(--admin-surface-muted)]"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
@@ -92,9 +92,9 @@ export default function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-80 bg-dark-card border border-dark-border rounded-xl shadow-2xl z-50">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-dark-border">
-            <h3 className="text-sm font-semibold text-white">Bildirimler</h3>
+        <div className="absolute right-0 mt-2 w-80 bg-[var(--admin-surface)] border border-[var(--admin-border)] rounded-xl shadow-2xl z-50">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--admin-border)]">
+            <h3 className="text-sm font-semibold text-[var(--admin-text-primary)]">Bildirimler</h3>
             {unreadCount > 0 && (
               <button
                 onClick={markAllRead}
@@ -107,15 +107,15 @@ export default function NotificationBell() {
 
           <div className="max-h-80 overflow-y-auto">
             {notifications.length === 0 ? (
-              <p className="text-sm text-sub-text text-center py-8">
+              <p className="text-sm text-[var(--admin-text-secondary)] text-center py-8">
                 Henüz bildirim yok.
               </p>
             ) : (
               notifications.map((n) => (
                 <div
                   key={n.id}
-                  className={`px-4 py-3 border-b border-dark-border last:border-0 hover:bg-dark-section/50 transition ${
-                    !n.isRead ? "bg-montaj/5" : ""
+                  className={`px-4 py-3 border-b border-[var(--admin-border)] last:border-0 hover:bg-[var(--admin-surface-muted)]/50 transition ${
+                    !n.isRead ? "bg-[var(--admin-primary)]/5" : ""
                   }`}
                 >
                   <Link
@@ -127,17 +127,17 @@ export default function NotificationBell() {
                       <div className="flex-1 min-w-0">
                         <p
                           className={`text-sm ${
-                            !n.isRead ? "text-white font-medium" : "text-sub-text"
+                            !n.isRead ? "text-[var(--admin-text-primary)] font-medium" : "text-[var(--admin-text-secondary)]"
                           }`}
                         >
                           {n.title}
                         </p>
                         {n.message && (
-                          <p className="text-xs text-sub-text mt-0.5 line-clamp-2">
+                          <p className="text-xs text-[var(--admin-text-secondary)] mt-0.5 line-clamp-2">
                             {n.message}
                           </p>
                         )}
-                        <p className="text-[10px] text-sub-text/50 mt-1">
+                        <p className="text-[10px] text-[var(--admin-text-muted)] mt-1">
                           {timeAgo(n.createdAt)}
                         </p>
                       </div>

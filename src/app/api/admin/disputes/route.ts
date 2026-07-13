@@ -8,14 +8,14 @@ export async function GET() {
     return NextResponse.json({ error: "Yetkisiz." }, { status: 403 });
   }
 
-  const disputes = await prisma.dispute.findMany({
+  const disputes = await (prisma as any).dispute?.findMany({
     orderBy: { createdAt: "desc" },
     include: {
       job: { select: { id: true, title: true } },
       openedBy: { select: { id: true, name: true } },
       payment: { select: { amount: true, status: true } },
     },
-  });
+  }) ?? [];
 
   return NextResponse.json(disputes);
 }

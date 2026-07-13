@@ -66,12 +66,12 @@ export default async function BlogPostPage({ params }: Props) {
         <span>{post.viewCount} görüntülenme</span>
       </div>
 
-      <h1 className="text-3xl font-bold text-white mb-4">{post.title}</h1>
+      <h1 className="text-3xl font-bold text-[var(--color-text-primary)] mb-4">{post.title}</h1>
 
       {post.author && <p className="text-sm text-sub-text mb-6">Yazar: {post.author}</p>}
 
       <div
-        className="prose prose-invert max-w-none [&_h2]:text-white [&_h3]:text-white [&_p]:text-gray-200 [&_li]:text-gray-200 [&_a]:text-montaj [&_img]:rounded-lg"
+        className="prose prose-slate max-w-none [&_h2]:text-[var(--color-text-primary)] [&_h3]:text-[var(--color-text-primary)] [&_p]:text-[var(--color-text-secondary)] [&_li]:text-[var(--color-text-secondary)] [&_a]:text-montaj [&_img]:rounded-lg"
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
     </article>

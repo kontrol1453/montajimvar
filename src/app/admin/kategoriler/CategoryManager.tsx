@@ -28,66 +28,33 @@ export default function CategoryManager({
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  function resetForm() {
-    setName("");
-    setSlug("");
-    setEditing(null);
-    setMessage("");
-  }
+  function resetForm() { setName(""); setSlug(""); setEditing(null); setMessage(""); }
 
-  function startEdit(cat: Category) {
-    setEditing(cat);
-    setName(cat.name);
-    setSlug(cat.slug);
-    setMessage("");
-  }
+  function startEdit(cat: Category) { setEditing(cat); setName(cat.name); setSlug(cat.slug); setMessage(""); }
 
   function generateSlug(name: string) {
-    return name
-      .toLowerCase()
-      .replace(/[^a-z0-9çşğüöı]/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "");
+    return name.toLowerCase().replace(/[^a-z0-9çşğüöı]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setMessage("");
-
     try {
       const res = await fetch("/api/admin/categories", {
         method: editing ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-          editing
-            ? { id: editing.id, name, slug }
-            : { name, slug }
-        ),
+        body: JSON.stringify(editing ? { id: editing.id, name, slug } : { name, slug }),
       });
-
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "İşlem başarısız.");
-      }
-
+      if (!res.ok) throw new Error(data.error || "İşlem başarısız.");
       setMessage(editing ? "Kategori güncellendi." : "Kategori oluşturuldu.");
       router.refresh();
-
-      // Refresh categories
       const refreshed = await fetch("/api/admin/categories");
-      if (refreshed.ok) {
-        const cats = await refreshed.json();
-        setCategories(cats);
-      }
-
+      if (refreshed.ok) setCategories(await refreshed.json());
       resetForm();
-    } catch (err: any) {
-      setMessage(err.message);
-    } finally {
-      setLoading(false);
-    }
+    } catch (err: any) { setMessage(err.message); }
+    finally { setLoading(false); }
   }
 
   async function handleDelete(cat: Category) {
@@ -95,76 +62,42 @@ export default function CategoryManager({
       alert(`"${cat.name}" kategorisinde ${cat._count.profiles} firma bulunuyor. Önce firmaları taşıyın.`);
       return;
     }
-
     if (!confirm(`"${cat.name}" kategorisini silmek istediğinize emin misiniz?`)) return;
-
     try {
       const res = await fetch("/api/admin/categories", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: cat.id }),
       });
-
-      if (res.ok) {
-        setCategories((prev) => prev.filter((c) => c.id !== cat.id));
-        router.refresh();
-      } else {
-        const data = await res.json();
-        alert(data.error || "Silme başarısız.");
-      }
-    } catch {
-      alert("Bir hata oluştu.");
-    }
+      if (res.ok) { setCategories((prev) => prev.filter((c) => c.id !== cat.id)); router.refresh(); }
+      else { const data = await res.json(); alert(data.error || "Silme başarısız."); }
+    } catch { alert("Bir hata oluştu."); }
   }
 
   return (
     <div className="space-y-6">
-      {/* Form */}
       <Card>
-        <h2 className="text-lg font-semibold text-white mb-4">
+        <h2 className="text-lg font-semibold text-[var(--admin-text-primary)] mb-4">
           {editing ? "Kategori Düzenle" : "Yeni Kategori"}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Input
-                label="Kategori Adı"
-                value={name}
-                onChange={(e) => {
-                  setName(e.target.value);
-                  if (!editing) setSlug(generateSlug(e.target.value));
-                }}
-                placeholder="Örn: Elektrik Montajı"
-                required
-              />
-              <Input
-                label="Slug"
-                value={slug}
-                onChange={(e) => setSlug(e.target.value)}
-                placeholder="elektrik-montaji"
-                required
-              />
-            </div>
-
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Input label="Kategori Adı" value={name}
+              onChange={(e) => { setName(e.target.value); if (!editing) setSlug(generateSlug(e.target.value)); }}
+              placeholder="Örn: Elektrik Montajı" required />
+            <Input label="Slug" value={slug} onChange={(e) => setSlug(e.target.value)}
+              placeholder="elektrik-montaji" required />
+          </div>
           {message && (
-            <p
-              className={`text-sm ${
-                message.includes("başarısız") ? "text-red-400" : "text-green-400"
-              }`}
-            >
+            <p className={`text-sm ${message.includes("başarısız") ? "text-[var(--admin-danger)]" : "text-[var(--admin-success)]"}`}>
               {message}
             </p>
           )}
-
           <div className="flex gap-3">
-            <Button type="submit" loading={loading}>
-              {editing ? "Güncelle" : "Oluştur"}
-            </Button>
+            <Button type="submit" loading={loading}>{editing ? "Güncelle" : "Oluştur"}</Button>
             {editing && (
-              <button
-                type="button"
-                onClick={resetForm}
-                className="px-4 py-2 text-sm text-sub-text hover:text-white transition"
-              >
+              <button type="button" onClick={resetForm}
+                className="px-4 py-2 text-sm text-[var(--admin-text-secondary)] hover:text-[var(--admin-text-primary)] transition">
                 İptal
               </button>
             )}
@@ -172,33 +105,19 @@ export default function CategoryManager({
         </form>
       </Card>
 
-      {/* List */}
-      <div className="bg-dark-card rounded-xl border border-dark-border divide-y divide-dark-border">
+      <div className="bg-[var(--admin-surface)] rounded-lg border border-[var(--admin-border)] divide-y divide-[var(--admin-border)]">
         {categories.map((cat) => (
-          <div
-            key={cat.id}
-            className="flex items-center justify-between p-4 hover:bg-dark-section transition"
-          >
+          <div key={cat.id} className="flex items-center justify-between p-4 hover:bg-[var(--admin-surface-muted)] transition">
             <div className="flex items-center gap-3">
               <div>
-                <span className="font-medium text-white">{cat.name}</span>
-                <span className="text-xs text-sub-text ml-2">/{cat.slug}</span>
+                <span className="font-medium text-[var(--admin-text-primary)]">{cat.name}</span>
+                <span className="text-xs text-[var(--admin-text-muted)] ml-2">/{cat.slug}</span>
               </div>
-              <Badge variant="default">{cat._count.profiles} firma</Badge>
+              <Badge variant="neutral">{cat._count.profiles} firma</Badge>
             </div>
             <div className="flex gap-2">
-              <button
-                onClick={() => startEdit(cat)}
-                className="text-xs text-montaj hover:underline"
-              >
-                Düzenle
-              </button>
-              <button
-                onClick={() => handleDelete(cat)}
-                className="text-xs text-red-400 hover:underline"
-              >
-                Sil
-              </button>
+              <button onClick={() => startEdit(cat)} className="text-xs text-[var(--admin-primary)] hover:underline">Düzenle</button>
+              <button onClick={() => handleDelete(cat)} className="text-xs text-[var(--admin-danger)] hover:underline">Sil</button>
             </div>
           </div>
         ))}

@@ -1,13 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import Provider from "@/components/Provider";
-import CookieBanner from "@/components/CookieBanner";
-import PushNotificationSetup from "@/components/PushNotificationSetup";
-import PwaInstallPrompt from "@/components/PwaInstallPrompt";
-import MobileBottomNav from "@/components/MobileBottomNav";
-import AIAssistant from "@/components/AIAssistant";
+import { TopChrome, BottomChrome } from "@/components/ChromeGate";
 
 export const metadata: Metadata = {
   title: "Montajım Var - Profesyonel Montaj Platformu",
@@ -124,14 +118,9 @@ export default function RootLayout({
               `,
             }}
           />
-          <Navbar />
+          <TopChrome />
           <main className="flex-1">{children}</main>
-          <Footer />
-          <CookieBanner />
-          <PushNotificationSetup />
-          <PwaInstallPrompt />
-          <MobileBottomNav />
-          <AIAssistant />
+          <BottomChrome />
         </Provider>
       </body>
     </html>

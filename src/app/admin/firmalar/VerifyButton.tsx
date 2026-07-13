@@ -41,8 +41,8 @@ export default function VerifyButton({
       disabled={loading}
       className={`text-xs px-3 py-1.5 rounded-lg transition font-medium ${
         isVerified
-          ? "bg-yellow-900/20 text-yellow-400 hover:bg-yellow-900/30"
-          : "bg-green-900/20 text-green-400 hover:bg-green-900/30"
+          ? "bg-[var(--admin-warning-soft)] text-[var(--admin-warning)] hover:bg-amber-100"
+          : "bg-[var(--admin-success-soft)] text-[var(--admin-success)] hover:bg-emerald-100"
       } disabled:opacity-50`}
     >
       {loading ? "..." : isVerified ? "Onayı Kaldır" : "Onayla"}
