@@ -7,11 +7,10 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // TODO: Test amacı ile askıya alındı — producción'da geri aç
-  // const session = await auth();
-  // if (!session?.user || !(session.user as any).roles?.includes("ADMIN")) {
-  //   redirect("/auth/giris");
-  // }
+  const session = await auth();
+  if (!session?.user || !(session.user as any).roles?.includes("ADMIN")) {
+    redirect("/auth/giris");
+  }
 
   return <AdminShell>{children}</AdminShell>;
 }

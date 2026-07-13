@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Provider from "@/components/Provider";
-import { TopChrome, BottomChrome } from "@/components/ChromeGate";
 
 export const metadata: Metadata = {
   title: "Montajım Var - Profesyonel Montaj Platformu",
@@ -118,9 +117,7 @@ export default function RootLayout({
               `,
             }}
           />
-          <TopChrome />
-          <main className="flex-1">{children}</main>
-          <BottomChrome />
+          {children}
         </Provider>
       </body>
     </html>
