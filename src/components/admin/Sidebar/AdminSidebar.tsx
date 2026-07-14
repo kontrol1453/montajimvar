@@ -24,7 +24,6 @@ interface AdminSidebarProps {
 
 function isItemActive(pathname: string | null, item: AdminNavItem): boolean {
   if (!pathname) return false;
-  if (item.href === "/admin") return pathname === "/admin";
   return pathname === item.href || pathname.startsWith(`${item.href}/`);
 }
 

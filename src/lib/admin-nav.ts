@@ -42,16 +42,10 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
     label: "Genel",
     items: [
       {
-        href: "/admin",
-        label: "Panel",
-        icon: LayoutDashboard,
-        description: "Genel istatistikler ve hızlı işlemler",
-      },
-      {
         href: "/admin/komuta-merkezi",
         label: "Komuta Merkezi",
         icon: Gauge,
-        description: "Platform operasyonları ve durum yönetimi",
+        description: "Platform operasyonları, dikkat gerektirenler ve durum yönetimi",
       },
     ],
   },
@@ -193,10 +187,6 @@ export function findItemByPath(pathname: string | null): AdminNavItem | undefine
   if (!pathname) return undefined;
   for (const group of ADMIN_NAV_GROUPS) {
     for (const item of group.items) {
-      if (item.href === "/admin") {
-        if (pathname === "/admin") return item;
-        continue;
-      }
       if (pathname === item.href || pathname.startsWith(`${item.href}/`)) {
         return item;
       }
