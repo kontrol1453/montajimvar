@@ -10,6 +10,7 @@ import JobParticipants from "./JobParticipants";
 import JobTimeline from "./JobTimeline";
 import JobMessages from "./JobMessages";
 import JobReviewsDisputes from "./JobReviewsDisputes";
+import JobPayment from "./JobPayment";
 import LoadingSkeleton from "@/components/admin/LoadingSkeleton";
 
 const TAB_COMPONENTS: Record<string, any> = {
@@ -19,6 +20,7 @@ const TAB_COMPONENTS: Record<string, any> = {
   timeline: JobTimeline,
   messages: JobMessages,
   reviews_disputes: JobReviewsDisputes,
+  payment: JobPayment,
 };
 
 export default function JobWorkspace({ job, activeTab }: any) {
@@ -29,6 +31,7 @@ export default function JobWorkspace({ job, activeTab }: any) {
     { id: "timeline", label: "Zaman Çizgisi" },
     { id: "messages", label: "Mesajlar", count: job._count.messages },
     { id: "reviews_disputes", label: "Yorum & Anlaşmazlık" },
+    { id: "payment", label: "Ödeme" },
   ];
 
   const [currentTab, setCurrentTab] = useState(activeTab || "overview");
