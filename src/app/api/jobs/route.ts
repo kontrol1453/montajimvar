@@ -64,15 +64,23 @@ export async function GET(request: Request) {
       prisma.job.findMany({
         where,
         orderBy: { createdAt: "desc" },
-        skip: adminAll ? 0 : skip,
-        take: adminAll ? undefined : limit,
+        skip,
+        take: limit,
         include: includeOpts,
       }),
       prisma.job.count({ where }),
     ]);
 
     if (adminAll) {
-      return NextResponse.json(jobs);
+      return NextResponse.json({
+        jobs,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
+      });
     }
 
     return NextResponse.json({
