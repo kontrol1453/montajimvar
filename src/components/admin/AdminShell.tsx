@@ -5,6 +5,7 @@ import AdminSidebar from "./Sidebar/AdminSidebar";
 import MobileSidebarDrawer from "./Sidebar/MobileSidebarDrawer";
 import AdminHeader from "./Header/AdminHeader";
 import AdminSearchModal from "./AdminSearchModal";
+import ShortcutsModal from "./ShortcutsModal";
 import { Toaster } from "sonner";
 
 const COLLAPSED_KEY = "admin-sidebar-collapsed";
@@ -13,6 +14,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
 
   useEffect(() => {
     try {
@@ -54,6 +56,10 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         e.preventDefault();
         setSearchOpen((v) => !v);
       }
+      if (e.shiftKey && e.key === "?") {
+        e.preventDefault();
+        setShortcutsOpen(true);
+      }
     }
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -83,6 +89,11 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         <AdminSearchModal
           open={searchOpen}
           onClose={() => setSearchOpen(false)}
+        />
+
+        <ShortcutsModal
+          open={shortcutsOpen}
+          onClose={() => setShortcutsOpen(false)}
         />
 
         <Toaster position="top-right" richColors closeButton />
