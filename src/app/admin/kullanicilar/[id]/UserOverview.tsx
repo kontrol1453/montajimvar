@@ -1,6 +1,6 @@
-import { formatDate } from "@/lib/utils";
-
 import Link from "next/link";
+import { formatDate } from "@/lib/utils";
+import { AlertTriangle, ShieldAlert, CheckCircle, XCircle } from "lucide-react";
 interface UserOverviewProps {
   user: {
     name: string;
@@ -119,6 +119,35 @@ export default function UserOverview({ user, summary }: UserOverviewProps) {
             <p className={`text-sm font-medium ${isPremium ? "text-[var(--admin-premium)]" : "text-[var(--admin-text-secondary)]"}`}>
               {isPremium ? `Aktif — Bitiş: ${formatDate(new Date(user.premiumUntil!))}` : "Premium değil"}
             </p>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold text-[var(--admin-text-primary)] mb-3">Risk Göstergeleri</h3>
+          <div className="space-y-2">
+            {[
+              [!user.emailVerified, "E-posta doğrulanmamış"],
+              [!user.identityVerified, "Kimlik doğrulanmamış"],
+              [!user.isPhoneVerified, "Telefon doğrulanmamış"],
+              [summary.totalDisputes > 0, `${summary.totalDisputes} açık anlaşmazlık`],
+              [!!(user.premiumUntil && new Date(user.premiumUntil) < new Date()), "Premium süresi dolmuş"],
+            ].filter(([cond]) => cond).map(([, label]) => (
+              <div key={String(label)} className="flex items-center gap-2 p-3 rounded-lg border border-[var(--admin-danger)]/20 bg-[var(--admin-danger-soft)]">
+                <AlertTriangle size={14} className="text-[var(--admin-danger)] shrink-0" />
+                <span className="text-sm text-[var(--admin-danger)]">{label}</span>
+              </div>
+            ))}
+            {[
+              [user.emailVerified, "E-posta doğrulanmış"],
+              [user.identityVerified, "Kimlik doğrulanmış"],
+              [user.isPhoneVerified, "Telefon doğrulanmış"],
+              [summary.totalDisputes === 0, "Anlaşmazlık yok"],
+            ].filter(([cond]) => cond).length > 0 && (
+              <div className="flex items-center gap-2 p-3 rounded-lg border border-[var(--admin-success)]/20 bg-[var(--admin-success-soft)]">
+                <CheckCircle size={14} className="text-[var(--admin-success)] shrink-0" />
+                <span className="text-sm text-[var(--admin-success)]">Tüm kontroller temiz</span>
+              </div>
+            )}
           </div>
         </div>
 
