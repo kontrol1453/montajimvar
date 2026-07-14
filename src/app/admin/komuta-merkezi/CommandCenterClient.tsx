@@ -52,6 +52,8 @@ interface SummaryData {
   recentUsers?: { id: number; name: string; email: string; createdAt: Date | string }[];
   recentProfiles?: { id: number; companyName: string; city: string | null; createdAt: Date | string; user: { name: string } }[];
   recentJobs?: { id: number; title: string; status: string; city: string; createdAt: Date | string; customer: { name: string } }[];
+  recentDisputes?: { id: number; reason: string; status: string; createdAt: Date | string; openedBy: { name: string } }[];
+  recentAuditLogs?: { id: number; action: string; entity: string; entityId: number; details: any; createdAt: Date | string }[];
 }
 
 async function fetchSummary(): Promise<SummaryData | null> {
@@ -106,18 +108,28 @@ async function fetchSummary(): Promise<SummaryData | null> {
       }),
       prisma.user.findMany({
         orderBy: { createdAt: "desc" },
-        take: 5,
+        take: 8,
         select: { id: true, name: true, email: true, createdAt: true },
       }),
       prisma.profile.findMany({
         orderBy: { createdAt: "desc" },
-        take: 5,
+        take: 8,
         select: { id: true, companyName: true, city: true, createdAt: true, user: { select: { name: true } } },
       }),
       prisma.job.findMany({
         orderBy: { createdAt: "desc" },
-        take: 5,
+        take: 8,
         select: { id: true, title: true, status: true, city: true, createdAt: true, customer: { select: { name: true } } },
+      }),
+      prisma.dispute.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 5,
+        select: { id: true, reason: true, status: true, createdAt: true, openedBy: { select: { name: true } } },
+      }),
+      prisma.adminAuditLog.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 8,
+        select: { id: true, action: true, entity: true, entityId: true, details: true, createdAt: true },
       }),
     ]);
 
@@ -197,6 +209,8 @@ async function fetchSummary(): Promise<SummaryData | null> {
       recentUsers,
       recentProfiles,
       recentJobs,
+      recentDisputes,
+      recentAuditLogs,
     } as any;
   } catch (error) {
     console.error("Command Center data fetch error:", error);

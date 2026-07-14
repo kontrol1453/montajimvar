@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { UserPlus, Building2, Briefcase, ChevronRight } from "lucide-react";
+import { UserPlus, Building2, Briefcase, Shield, FileEdit, ChevronRight } from "lucide-react";
 
 interface RecentActivityProps {
   data: {
@@ -23,6 +23,21 @@ interface RecentActivityProps {
       city: string;
       createdAt: Date | string;
       customer: { name: string };
+    }[];
+    recentDisputes?: {
+      id: number;
+      reason: string;
+      status: string;
+      createdAt: Date | string;
+      openedBy: { name: string };
+    }[];
+    recentAuditLogs?: {
+      id: number;
+      action: string;
+      entity: string;
+      entityId: number;
+      details: any;
+      createdAt: Date | string;
     }[];
   };
 }
@@ -50,10 +65,23 @@ const STATUS_LABELS: Record<string, string> = {
   cancelled: "İptal",
 };
 
-export default function RecentActivity({ data }: RecentActivityProps) {
-  const { recentUsers = [], recentProfiles = [], recentJobs = [] } = data;
+const AUDIT_ACTION_LABELS: Record<string, string> = {
+  role_change: "rol değişikliği",
+  premium_change: "premium değişikliği",
+  delete: "silme",
+  approve: "onaylama",
+  unverify: "doğrulama kaldırma",
+  feature: "vitrin ekleme",
+  unfeature: "vitrin kaldırma",
+  resolve: "çözümleme",
+  update: "güncelleme",
+  create: "oluşturma",
+};
 
-  const items: { type: "user" | "profile" | "job"; item: any; href: string; label: string; icon: typeof UserPlus }[] = [];
+export default function RecentActivity({ data }: RecentActivityProps) {
+  const { recentUsers = [], recentProfiles = [], recentJobs = [], recentDisputes = [], recentAuditLogs = [] } = data;
+
+  const items: { type: string; item: any; href: string; label: string; subtitle: string; icon: any }[] = [];
 
   recentUsers.forEach((u) => {
     items.push({
@@ -61,6 +89,7 @@ export default function RecentActivity({ data }: RecentActivityProps) {
       item: u,
       href: `/admin/kullanicilar/${u.id}`,
       label: `${u.name} katıldı`,
+      subtitle: u.email,
       icon: UserPlus,
     });
   });
@@ -71,6 +100,7 @@ export default function RecentActivity({ data }: RecentActivityProps) {
       item: p,
       href: `/admin/firmalar/${p.id}`,
       label: `${p.companyName} kuruldu`,
+      subtitle: `${p.city ?? ""} · ${p.user.name}`,
       icon: Building2,
     });
   });
@@ -81,7 +111,36 @@ export default function RecentActivity({ data }: RecentActivityProps) {
       item: j,
       href: `/admin/isler/${j.id}`,
       label: `${j.title}`,
+      subtitle: `${j.customer.name} · ${j.city} · ${STATUS_LABELS[j.status] || j.status}`,
       icon: Briefcase,
+    });
+  });
+
+  recentDisputes.forEach((d) => {
+    items.push({
+      type: "dispute",
+      item: d,
+      href: `/admin/isler?dispute=${d.id}`,
+      label: `Anlaşmazlık: ${d.reason.slice(0, 60)}${d.reason.length > 60 ? "..." : ""}`,
+      subtitle: `${d.openedBy.name} · ${d.status === "open" ? "Açık" : "Çözüldü"}`,
+      icon: Shield,
+    });
+  });
+
+  recentAuditLogs.forEach((l) => {
+    const entityUrl =
+      l.entity === "user"
+        ? `/admin/kullanicilar/${l.entityId}`
+        : l.entity === "profile"
+          ? `/admin/firmalar/${l.entityId}`
+          : `/admin/isler/${l.entityId}`;
+    items.push({
+      type: "audit",
+      item: l,
+      href: entityUrl,
+      label: `${AUDIT_ACTION_LABELS[l.action] || l.action}`,
+      subtitle: `#${l.entityId} (${l.entity})`,
+      icon: FileEdit,
     });
   });
 
@@ -91,7 +150,7 @@ export default function RecentActivity({ data }: RecentActivityProps) {
     return bDate - aDate;
   });
 
-  const top = items.slice(0, 10);
+  const top = items.slice(0, 20);
 
   if (top.length === 0) {
     return (
@@ -112,17 +171,10 @@ export default function RecentActivity({ data }: RecentActivityProps) {
       <div className="rounded-lg border border-[var(--admin-border)] divide-y divide-[var(--admin-border)] bg-[var(--admin-surface)]">
         {top.map((entry) => {
           const Icon = entry.icon;
-          const item = entry.item;
-          const subtitle =
-            entry.type === "user"
-              ? item.email
-              : entry.type === "profile"
-                ? `${item.city ?? ""} · ${item.user.name}`
-                : `${item.customer.name} · ${item.city} · ${STATUS_LABELS[item.status] || item.status}`;
 
           return (
             <Link
-              key={`${entry.type}-${item.id}`}
+              key={`${entry.type}-${entry.item.id}`}
               href={entry.href}
               className="flex items-center gap-3 px-4 py-3 hover:bg-[var(--admin-surface-muted)] transition-colors group"
             >
@@ -131,9 +183,9 @@ export default function RecentActivity({ data }: RecentActivityProps) {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-[var(--admin-text-primary)] truncate">{entry.label}</p>
-                <p className="text-xs text-[var(--admin-text-muted)] truncate">{subtitle}</p>
+                <p className="text-xs text-[var(--admin-text-muted)] truncate">{entry.subtitle}</p>
               </div>
-              <span className="text-[10px] text-[var(--admin-text-muted)] shrink-0">{timeAgo(item.createdAt)}</span>
+              <span className="text-[10px] text-[var(--admin-text-muted)] shrink-0">{timeAgo(entry.item.createdAt)}</span>
               <ChevronRight size={14} className="text-[var(--admin-text-muted)] group-hover:text-[var(--admin-primary)] transition-colors shrink-0" aria-hidden />
             </Link>
           );
