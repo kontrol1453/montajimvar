@@ -1,5 +1,8 @@
 import { formatDate } from "@/lib/utils";
 
+import Link from "next/link";
+import { formatDate } from "@/lib/utils";
+
 interface UserOverviewProps {
   user: {
     name: string;
@@ -14,6 +17,7 @@ interface UserOverviewProps {
     premiumUntil: Date | string | null;
     createdAt: Date | string;
     profile: {
+      id: number;
       companyName: string;
       isVerified: boolean;
       isFeatured: boolean;
@@ -82,6 +86,12 @@ export default function UserOverview({ user, summary }: UserOverviewProps) {
                 </div>
               ))}
             </div>
+            <Link
+              href={`/admin/firmalar/${user.profile.id}`}
+              className="mt-2 inline-flex items-center gap-1 text-xs text-[var(--admin-primary)] hover:underline"
+            >
+              Firma Profiline Git →
+            </Link>
           </div>
         )}
       </div>

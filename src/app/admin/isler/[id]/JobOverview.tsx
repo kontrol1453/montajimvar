@@ -10,6 +10,7 @@ const STATUS_LABELS: Record<string, string> = {
 
 export default function JobOverview({ job }: any) {
   const customerProfile = job.customer?.profile;
+  const artisanProfile = job.assignedArtisan?.profile;
 
   return (
     <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -68,6 +69,26 @@ export default function JobOverview({ job }: any) {
                   </div>
                 </div>
                 <span className="text-xs bg-[var(--admin-warning-soft)] text-[var(--admin-warning)] px-2 py-0.5 rounded-full font-medium">Bağlı Firma</span>
+              </div>
+            )}
+            {job.assignedArtisan && (
+              <div className="flex items-center justify-between p-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-[var(--admin-success-soft)] text-[var(--admin-success)] flex items-center justify-center text-sm font-bold">
+                    {job.assignedArtisan.name?.[0]?.toUpperCase() || "U"}
+                  </div>
+                  <div>
+                    <Link href={`/admin/kullanicilar/${job.assignedArtisan.id}`} className="text-sm font-medium text-[var(--admin-primary)] hover:underline">
+                      {job.assignedArtisan.name}
+                    </Link>
+                    {artisanProfile && (
+                      <Link href={`/admin/firmalar/${artisanProfile.id}`} className="text-xs text-[var(--admin-text-muted)] hover:text-[var(--admin-primary)] ml-1">
+                        ({artisanProfile.companyName} →)
+                      </Link>
+                    )}
+                  </div>
+                </div>
+                <span className="text-xs bg-[var(--admin-success-soft)] text-[var(--admin-success)] px-2 py-0.5 rounded-full font-medium">Atanan Usta</span>
               </div>
             )}
           </div>

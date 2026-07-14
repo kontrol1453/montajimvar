@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
+import { ArrowRight } from "lucide-react";
 
 export default function CompanyOverview({ profile, summary }: any) {
   return (
@@ -100,6 +101,12 @@ export default function CompanyOverview({ profile, summary }: any) {
               </div>
             ))}
           </div>
+          <Link
+            href={`/admin/firmalar/${profile.id}?tab=jobs`}
+            className="mt-3 inline-flex items-center gap-1 text-xs text-[var(--admin-primary)] hover:underline"
+          >
+            Tüm İşleri Gör <ArrowRight size={12} />
+          </Link>
         </div>
       </div>
     </div>
