@@ -456,8 +456,8 @@ export const HERO_PRIMARY_CTA = {
 };
 
 export const HERO_SECONDARY_CTA = {
-  label: "Platformu Keşfet",
-  href: "#platform",
+  label: "Usta Olarak Katıl",
+  href: "/auth/kayit",
 };
 
 export const FINAL_CTA = {

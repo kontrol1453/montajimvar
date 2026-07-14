@@ -6,6 +6,7 @@ import AdminTable, { type TableColumn } from "@/components/admin/DataTable/Admin
 import { SearchInput } from "@/components/admin/DataTable/AdminToolbar";
 import UserActions from "./UserActions";
 import CreateUserForm from "./CreateUserForm";
+import UsersTableClient from "./UsersTableClient";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -135,18 +136,9 @@ export default async function AdminUsersPage() {
         </div>
       </div>
 
-      <AdminTable<UserRow>
+      <UsersTableClient
         rows={rows}
         columns={columns}
-        keyField={(r) => r.id}
-        actions={(r) => (
-          <UserActions
-            userId={r.id}
-            userName={r.name}
-            userRoles={r.roles}
-            premiumUntil={r.premiumUntil?.toISOString() ?? null}
-          />
-        )}
       />
     </PageContainer>
   );
