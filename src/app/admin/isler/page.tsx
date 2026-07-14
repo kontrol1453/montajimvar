@@ -119,7 +119,16 @@ export default function AdminJobsPage() {
     <PageContainer>
       <div className="flex items-center justify-between mb-6">
         <PageTitle>İş Yönetimi</PageTitle>
-        <span className="text-sm text-[var(--admin-text-secondary)]">Toplam: {total} iş</span>
+        <div className="flex items-center gap-2">
+          <a
+            href="/api/admin/export?type=jobs"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--admin-primary)] text-white rounded-md hover:bg-[var(--admin-primary-strong)] transition text-sm font-medium"
+            aria-label="İşleri CSV olarak dışa aktar"
+          >
+            ⬇ CSV Export
+          </a>
+          <span className="text-sm text-[var(--admin-text-secondary)]">Toplam: {total} iş</span>
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-3 mb-6">

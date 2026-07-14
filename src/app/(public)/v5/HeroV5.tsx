@@ -1,12 +1,20 @@
 import Link from "next/link";
-import { ArrowRight, ShieldCheck, Star, Sparkles, MapPin } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, ShieldCheck, Star, Sparkles, MapPin, Search } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 import {
   HERO_PRIMARY_CTA,
   HERO_SECONDARY_CTA,
   TRUST_METRICS,
 } from "./_lib/v5.constants";
 
-export default function HeroV5() {
+export default async function HeroV5() {
+  const popularCategories = await prisma.category.findMany({
+    where: { isActive: true, parentId: null },
+    take: 6,
+    orderBy: { sortOrder: "asc" },
+  });
+
   return (
     <section
       aria-labelledby="hero-headline"
@@ -45,7 +53,46 @@ export default function HeroV5() {
               tutarak güvenle tamamlayın.
             </p>
 
-            <div className="mt-7 flex flex-wrap items-center gap-3 animate-fade-in-up">
+            <div className="mt-8 animate-fade-in-up">
+              <form 
+                action="/ara" 
+                method="GET" 
+                className="relative max-w-xl group"
+              >
+                <div className="relative flex items-center">
+                  <div className="absolute left-4 text-text-tertiary group-focus-within:text-primary transition-colors">
+                    <Search className="h-5 w-5" />
+                  </div>
+                  <input
+                    type="text"
+                    name="q"
+                    placeholder="Hangi montaj hizmetini arıyorsunuz? Örn: IKEA, Klima..."
+                    className="w-full pl-12 pr-32 py-4 rounded-2xl border border-border bg-surface shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-text-primary"
+                  />
+                  <button
+                    type="submit"
+                    className="absolute right-2 px-5 py-2 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors"
+                  >
+                    Ara
+                  </button>
+                </div>
+              </form>
+              
+              <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-text-tertiary">
+                <span>Popüler:</span>
+                {popularCategories.map((cat) => (
+                  <Link 
+                    key={cat.slug} 
+                    href={`/ara?kategoriler=${cat.slug}`} 
+                    className="px-2 py-1 rounded-full bg-muted border border-border hover:border-primary hover:text-primary transition-all"
+                  >
+                    {cat.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-8 flex flex-wrap items-center gap-3 animate-fade-in-up">
               <Link
                 href={HERO_PRIMARY_CTA.href}
                 className="btn-primary"

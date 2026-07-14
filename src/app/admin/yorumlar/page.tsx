@@ -140,7 +140,16 @@ export default function AdminReviewsPage() {
     <PageContainer>
       <div className="flex items-center justify-between mb-4">
         <PageTitle>Yorum Yönetimi</PageTitle>
-        <span className="text-sm text-[var(--admin-text-secondary)]">Toplam: {reviews.length} yorum</span>
+        <div className="flex items-center gap-2">
+          <a
+            href="/api/admin/export?type=reviews"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--admin-primary)] text-white rounded-md hover:bg-[var(--admin-primary-strong)] transition text-sm font-medium"
+            aria-label="Yorumları CSV olarak dışa aktar"
+          >
+            ⬇ CSV Export
+          </a>
+          <span className="text-sm text-[var(--admin-text-secondary)]">Toplam: {reviews.length} yorum</span>
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-3 mb-4">

@@ -97,7 +97,16 @@ export default function AdminDisputesPage() {
 
   return (
     <PageContainer>
-      <PageTitle className="mb-4">Anlaşmazlıklar</PageTitle>
+      <div className="flex items-center justify-between mb-4">
+        <PageTitle>Anlaşmazlıklar</PageTitle>
+        <a
+          href="/api/admin/export?type=disputes"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--admin-primary)] text-white rounded-md hover:bg-[var(--admin-primary-strong)] transition text-sm font-medium"
+          aria-label="Anlaşmazlıkları CSV olarak dışa aktar"
+        >
+          ⬇ CSV Export
+        </a>
+      </div>
 
       <AdminTable<Dispute>
         rows={disputes}

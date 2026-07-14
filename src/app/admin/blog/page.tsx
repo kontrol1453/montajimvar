@@ -172,6 +172,13 @@ export default function AdminBlogPage() {
       <div className="flex items-center justify-between mb-6">
         <PageTitle>Blog Yönetimi</PageTitle>
         <div className="flex items-center gap-2">
+          <a
+            href="/api/admin/export?type=blog"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--admin-primary)] text-white rounded-md hover:bg-[var(--admin-primary-strong)] transition text-sm font-medium"
+            aria-label="Blog yazılarını CSV olarak dışa aktar"
+          >
+            ⬇ CSV Export
+          </a>
           <button onClick={() => { setShowCatManager(!showCatManager); }}
             className="border border-[var(--admin-border)] text-[var(--admin-text-secondary)] px-4 py-2 rounded-md text-sm font-medium hover:text-[var(--admin-text-primary)] transition">
             Kategoriler

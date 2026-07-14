@@ -91,6 +91,13 @@ export default function AdminCertificatesPage() {
     <PageContainer>
       <div className="flex items-center justify-between mb-4">
         <PageTitle>Sertifikalar</PageTitle>
+        <a
+          href="/api/admin/export?type=certificates"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--admin-primary)] text-white rounded-md hover:bg-[var(--admin-primary-strong)] transition text-sm font-medium"
+          aria-label="Sertifikaları CSV olarak dışa aktar"
+        >
+          ⬇ CSV Export
+        </a>
         <div className="flex items-center gap-2">
           <Filter size={16} className="text-[var(--admin-text-muted)]" />
           <select
