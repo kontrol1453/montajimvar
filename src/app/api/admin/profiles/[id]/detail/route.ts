@@ -64,6 +64,18 @@ export async function GET(
         return NextResponse.json(payments);
       }
 
+      case "disputes": {
+        const disputes = await prisma.dispute.findMany({
+          where: { openedById: profile.userId },
+          orderBy: { createdAt: "desc" },
+          take: 50,
+          include: {
+            job: { select: { id: true, title: true } },
+          },
+        });
+        return NextResponse.json(disputes);
+      }
+
       case "jobs_stats": {
         const jobCounts = await prisma.job.groupBy({
           by: ["status"],

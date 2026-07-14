@@ -7,6 +7,7 @@ import CompanyHeader from "./CompanyHeader";
 import CompanyOverview from "./CompanyOverview";
 import CompanyJobs from "./CompanyJobs";
 import CompanyReviews from "./CompanyReviews";
+import CompanyDisputes from "./CompanyDisputes";
 import CompanySubscription from "./CompanySubscription";
 import LoadingSkeleton from "@/components/admin/LoadingSkeleton";
 
@@ -14,6 +15,7 @@ const TAB_COMPONENTS: Record<string, any> = {
   overview: CompanyOverview,
   jobs: CompanyJobs,
   reviews: CompanyReviews,
+  disputes: CompanyDisputes,
   subscription: CompanySubscription,
 };
 
@@ -22,6 +24,7 @@ export default function CompanyWorkspace({ profile, summary, activeTab }: any) {
     { id: "overview", label: "Genel Bakış" },
     { id: "jobs", label: "İşler", count: summary.totalJobs },
     { id: "reviews", label: "Yorumlar", count: profile._count.reviews },
+    { id: "disputes", label: "Anlaşmazlıklar" },
   ];
 
   if (profile.subscription) {
