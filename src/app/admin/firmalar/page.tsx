@@ -7,6 +7,7 @@ import VerifyButton from "./VerifyButton";
 import FeaturedButton from "./FeaturedButton";
 import CategoryEditor from "./CategoryEditor";
 import DeleteProfileButton from "./DeleteProfileButton";
+import { Trash2, Shield } from "lucide-react";
 
 interface ProfileRow {
   id: number;
@@ -129,6 +130,11 @@ export default async function AdminFirmsPage() {
         columns={columns}
         keyField={(r) => r.id}
         onRowClick={(r) => window.location.href = `/admin/firmalar/${r.id}`}
+        selectable={true}
+        bulkActions={[
+          { label: "Sil", onClick: (selected: any[]) => alert(`${selected.length} firma silinecek`), variant: "danger" as const, icon: <Trash2 size={14} /> },
+          { label: "Onay Ver", onClick: (selected: any[]) => alert(`${selected.length} firma onaylanacak`), variant: "primary" as const, icon: <Shield size={14} /> },
+        ]}
         actions={(r) => (
           <div className="flex items-center justify-end gap-2">
             <CategoryEditor profileId={r.id} selectedCategoryIds={r.categoryIds} />

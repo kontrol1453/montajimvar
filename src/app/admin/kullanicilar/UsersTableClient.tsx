@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import AdminTable, { type TableColumn } from "@/components/admin/DataTable/AdminTable";
-import UserActions from "./UserActions";
+import { Trash2, Shield } from "lucide-react";
 
 interface UsersTableClientProps {
   rows: {
@@ -21,6 +21,11 @@ interface UsersTableClientProps {
 export default function UsersTableClient({ rows, columns }: UsersTableClientProps) {
   const router = useRouter();
 
+  const bulkActions = [
+    { label: "Sil", onClick: (selected: any[]) => alert(`${selected.length} user will be deleted`), variant: "danger" as const, icon: <Trash2 size={14} /> },
+    { label: "Premium Ver", onClick: (selected: any[]) => alert(`${selected.length} user will be granted premium`), variant: "primary" as const, icon: <Shield size={14} /> },
+  ];
+
   return (
     <AdminTable
       rows={rows}
@@ -28,13 +33,18 @@ export default function UsersTableClient({ rows, columns }: UsersTableClientProp
       keyField={(r) => r.id}
       onRowClick={(row) => router.push(`/admin/kullanicilar/${row.id}`)}
       actions={(r) => (
-        <UserActions
-          userId={r.id}
-          userName={r.name}
-          userRoles={r.roles}
-          premiumUntil={r.premiumUntil?.toISOString() ?? null}
-        />
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={(e) => { e.stopPropagation(); router.push(`/admin/kullanicilar/${r.id}?edit=true`); }}
+            className="text-xs text-[var(--admin-primary)] hover:underline"
+          >
+            Düzenle
+          </button>
+          <button className="text-xs text-[var(--admin-danger)] hover:underline">Sil</button>
+        </div>
       )}
+      selectable={true}
+      bulkActions={bulkActions}
     />
   );
 }
