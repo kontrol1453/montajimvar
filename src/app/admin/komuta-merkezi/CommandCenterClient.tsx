@@ -56,6 +56,12 @@ interface SummaryData {
   recentJobs?: { id: number; title: string; status: string; city: string; createdAt: Date | string; customer: { name: string } }[];
   recentDisputes?: { id: number; reason: string; status: string; createdAt: Date | string; openedBy: { name: string } }[];
   recentAuditLogs?: { id: number; action: string; entity: string; entityId: number; details: any; createdAt: Date | string }[];
+  oldestDates: {
+    unverifiedProfiles: string | null;
+    openDisputes: string | null;
+    pendingCertificates: string | null;
+    jobsWithoutOffers: string | null;
+  };
 }
 
 async function fetchSummary(): Promise<SummaryData | null> {
@@ -170,6 +176,19 @@ async function fetchSummary(): Promise<SummaryData | null> {
     const pendingJobs = jobsByStatus["pending"] || 0;
     const offersReceivedCount = jobsByStatus["offers_received"] || 0;
 
+    const [oldestUnverifiedProfile, oldestOpenDispute, oldestPendingCert, oldestJobWithoutOffer] = await Promise.all([
+      prisma.profile.findFirst({ where: { isVerified: false }, orderBy: { createdAt: "asc" }, select: { createdAt: true } }),
+      prisma.dispute.findFirst({ where: { status: "open" }, orderBy: { createdAt: "asc" }, select: { createdAt: true } }),
+      prisma.artisanSkill.findFirst({ where: { verified: false }, orderBy: { createdAt: "asc" }, select: { createdAt: true } }),
+      prisma.job.findFirst({ where: { offers: { none: {} }, status: { notIn: ["cancelled", "completed"] } }, orderBy: { createdAt: "asc" }, select: { createdAt: true } }),
+    ]);
+    const oldestDates = {
+      unverifiedProfiles: oldestUnverifiedProfile?.createdAt?.toISOString() ?? null,
+      openDisputes: oldestOpenDispute?.createdAt?.toISOString() ?? null,
+      pendingCertificates: oldestPendingCert?.createdAt?.toISOString() ?? null,
+      jobsWithoutOffers: oldestJobWithoutOffer?.createdAt?.toISOString() ?? null,
+    };
+
     return {
       platform: {
         totalUsers: userCount,
@@ -223,6 +242,7 @@ async function fetchSummary(): Promise<SummaryData | null> {
       recentJobs,
       recentDisputes,
       recentAuditLogs,
+      oldestDates,
     } as any;
   } catch (error) {
     console.error("Command Center data fetch error:", error);

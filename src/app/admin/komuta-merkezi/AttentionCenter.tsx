@@ -37,6 +37,12 @@ interface AttentionData {
   marketplace: {
     jobsWithoutOffers: number;
   };
+  oldestDates: {
+    unverifiedProfiles: string | null;
+    openDisputes: string | null;
+    pendingCertificates: string | null;
+    jobsWithoutOffers: string | null;
+  };
 }
 
 interface AttentionCenterProps {
@@ -51,6 +57,18 @@ interface AttentionItem {
   href: string;
   icon: typeof AlertTriangle;
   explanation: string;
+  waitingSince: string | null;
+}
+
+function durationSince(dateStr: string | null): string | null {
+  if (!dateStr) return null;
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  if (days > 30) return `${Math.floor(days / 30)} ay`;
+  if (days > 0) return `${days} gün ${hours} saat`;
+  if (hours > 0) return `${hours} saat`;
+  return "< 1 saat";
 }
 
 const SEVERITY_ORDER = { critical: 0, high: 1, medium: 2, info: 3 };
@@ -79,7 +97,7 @@ const SEVERITY_CONFIG = {
 };
 
 export default function AttentionCenter({ data }: AttentionCenterProps) {
-  const { operations: o, marketplace: m } = data;
+  const { operations: o, marketplace: m, oldestDates } = data;
 
   const items: AttentionItem[] = [];
 
@@ -93,6 +111,7 @@ export default function AttentionCenter({ data }: AttentionCenterProps) {
       href: "/admin/anlasmazliklar",
       icon: Scale,
       explanation: "Çözülmeyi bekleyen anlaşmazlık bulunuyor. Taraflar arasında gecikmeye yol açabilir.",
+      waitingSince: oldestDates.openDisputes,
     });
   }
 
@@ -108,6 +127,7 @@ export default function AttentionCenter({ data }: AttentionCenterProps) {
       explanation: o.unverifiedProfiles > 10
         ? "Birikmiş firma onayları var. Gecikme müşteri deneyimini etkileyebilir."
         : "Onay bekleyen firma profilleri mevcut.",
+      waitingSince: oldestDates.unverifiedProfiles,
     });
   }
 
@@ -121,6 +141,7 @@ export default function AttentionCenter({ data }: AttentionCenterProps) {
       href: "/admin/sertifikalar",
       icon: Award,
       explanation: "Onay bekleyen usta sertifikaları var.",
+      waitingSince: oldestDates.pendingCertificates,
     });
   }
 
@@ -134,6 +155,7 @@ export default function AttentionCenter({ data }: AttentionCenterProps) {
       href: "/admin/isler",
       icon: Briefcase,
       explanation: "Bu işler hiç teklif almadı. Talep eşleştirme sorunu olabilir.",
+      waitingSince: oldestDates.jobsWithoutOffers,
     });
   }
 
@@ -178,6 +200,11 @@ export default function AttentionCenter({ data }: AttentionCenterProps) {
                 <div className="flex items-center gap-1 mt-0.5">
                   <Clock size={10} className="text-[var(--admin-text-muted)] shrink-0" aria-hidden />
                   <p className="text-xs text-[var(--admin-text-secondary)]">{item.explanation}</p>
+                  {item.waitingSince && (
+                    <span className="text-[10px] text-[var(--admin-danger)] shrink-0 ml-auto">
+                      {durationSince(item.waitingSince)}dır bekliyor
+                    </span>
+                  )}
                 </div>
               </div>
               <ChevronRight size={16} className="text-[var(--admin-text-muted)] group-hover:text-[var(--admin-primary)] transition-colors shrink-0 self-center" aria-hidden />
