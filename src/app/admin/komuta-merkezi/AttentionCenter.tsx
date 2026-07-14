@@ -71,6 +71,11 @@ const SEVERITY_CONFIG = {
     dot: "bg-[var(--admin-info)]",
     label: "Orta",
   },
+  info: {
+    border: "border-l-[var(--admin-text-muted)/30] bg-[var(--admin-surface-muted)]",
+    dot: "bg-[var(--admin-text-muted)]",
+    label: "Bilgi",
+  },
 };
 
 export default function AttentionCenter({ data }: AttentionCenterProps) {

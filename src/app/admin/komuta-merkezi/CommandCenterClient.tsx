@@ -87,6 +87,8 @@ async function fetchSummary(): Promise<SummaryData | null> {
       recentUsers,
       recentProfiles,
       recentJobs,
+      recentDisputes,
+      recentAuditLogs,
     ] = await Promise.all([
       prisma.user.count(),
       prisma.profile.count(),

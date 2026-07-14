@@ -40,14 +40,13 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
     : "var(--admin-sidebar-width)";
 
   return (
-    <>
+    <div className="h-dvh bg-[var(--color-surface-secondary)] text-zinc-900 overflow-hidden">
       <a
         href="#admin-main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:rounded-md focus:shadow-lg focus:text-sm focus:font-medium"
       >
         İçeriğe geç
       </a>
-      <div className="h-dvh bg-[var(--color-surface-secondary)] text-zinc-900 overflow-hidden">
       <div className="hidden lg:block fixed inset-y-0 left-0" style={{ zIndex: "var(--admin-z-sidebar)" }}>
         <AdminSidebar variant={collapsed ? "collapsed" : "expanded"} />
       </div>
@@ -69,5 +68,5 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         <main id="admin-main-content" className="flex-1 min-w-0 overflow-y-auto" tabIndex={-1}>{children}</main>
       </div>
     </div>
-    </>
+  );
 }

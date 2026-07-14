@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Users, Building2, Briefcase, TrendingUp, AlertTriangle, Shield, Certificate } from "lucide-react";
+import { Users, Building2, Briefcase, TrendingUp, AlertTriangle, Shield, Award } from "lucide-react";
 
 interface PlatformPulseProps {
   data: {
@@ -77,7 +77,7 @@ const pendingOps = [
     key: "pendingCertificates",
     label: "Onay Bekleyen Sertifikalar",
     href: "/admin/kullanicilar",
-    icon: Certificate,
+    icon: Award,
     color: "border-l-[var(--admin-info)]",
     bg: "bg-[var(--admin-info-soft)] text-[var(--admin-info)]",
   },
