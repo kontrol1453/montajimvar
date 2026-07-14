@@ -128,6 +128,7 @@ export default async function AdminFirmsPage() {
         rows={rows}
         columns={columns}
         keyField={(r) => r.id}
+        onRowClick={(r) => window.location.href = `/admin/firmalar/${r.id}`}
         actions={(r) => (
           <div className="flex items-center justify-end gap-2">
             <CategoryEditor profileId={r.id} selectedCategoryIds={r.categoryIds} />

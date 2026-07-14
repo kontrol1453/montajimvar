@@ -103,6 +103,7 @@ export default function AdminDisputesPage() {
         rows={disputes}
         columns={columns}
         keyField={(r) => r.id}
+        onRowClick={(r) => window.location.href = `/admin/anlasmazliklar/${r.id}`}
         actions={(r) =>
           r.status === "open" ? (
             <select

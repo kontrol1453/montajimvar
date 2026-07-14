@@ -350,6 +350,7 @@ export default function AdminBlogPage() {
         rows={posts}
         columns={columns}
         keyField={(r) => r.id}
+        onRowClick={(r) => window.location.href = `/admin/blog/${r.id}/edit`}
         emptyState={<span>Henüz blog yazısı yok.</span>}
         actions={(r) => (
           <RowActionsDropdown

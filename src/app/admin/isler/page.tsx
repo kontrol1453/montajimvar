@@ -145,7 +145,15 @@ export default function AdminJobsPage() {
         {jobs.length === 0 ? (
           <p className="text-[var(--admin-text-muted)] text-center py-8">İş bulunamadı.</p>
         ) : jobs.map(job => (
-          <div key={job.id} className="bg-[var(--admin-surface)] rounded-lg border border-[var(--admin-border)] p-4">
+          <div
+            key={job.id}
+            className="bg-[var(--admin-surface)] rounded-lg border border-[var(--admin-border)] p-4 cursor-pointer hover:bg-[var(--admin-surface-muted)] transition-colors"
+            onClick={(e) => {
+              if (!(e.target as HTMLElement).closest("button")) {
+                window.location.href = `/admin/isler/${job.id}`;
+              }
+            }}
+          >
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">

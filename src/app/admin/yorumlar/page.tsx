@@ -169,6 +169,7 @@ export default function AdminReviewsPage() {
         rows={filtered}
         columns={columns}
         keyField={(r) => `${r.type}-${r.id}`}
+        onRowClick={(r) => r.type === "is" ? window.location.href = `/admin/isler/${r.job?.id}` : window.location.href = `/admin/firmalar/${r.profile?.id}`}
         actions={(r) => (
           <RowActionsDropdown
             items={[
