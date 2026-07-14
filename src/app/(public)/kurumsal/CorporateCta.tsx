@@ -12,7 +12,7 @@ const trustItems = [
 
 export default function CorporateCta() {
   return (
-    <section className="py-24 bg-white">
+    <section id="teklif" className="py-24 bg-white">
       <div className="container-app">
         <div className="max-w-5xl mx-auto">
           <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-100 rounded-3xl p-10 md:p-16 text-center">

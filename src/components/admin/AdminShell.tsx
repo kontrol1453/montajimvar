@@ -5,6 +5,7 @@ import AdminSidebar from "./Sidebar/AdminSidebar";
 import MobileSidebarDrawer from "./Sidebar/MobileSidebarDrawer";
 import AdminHeader from "./Header/AdminHeader";
 import AdminSearchModal from "./AdminSearchModal";
+import { Toaster } from "sonner";
 
 const COLLAPSED_KEY = "admin-sidebar-collapsed";
 
@@ -79,10 +80,12 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         onClose={() => setDrawerOpen(false)}
       />
 
-      <AdminSearchModal
-        open={searchOpen}
-        onClose={() => setSearchOpen(false)}
-      />
+        <AdminSearchModal
+          open={searchOpen}
+          onClose={() => setSearchOpen(false)}
+        />
+
+        <Toaster position="top-right" richColors closeButton />
 
       <div
         className="flex flex-col h-full transition-[padding-left] duration-200 ease-out"

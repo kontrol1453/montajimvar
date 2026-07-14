@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { ArrowRight, Camera } from "lucide-react";
 
@@ -48,13 +49,15 @@ export default async function BlogSection() {
           {posts.map((post) => (
             <Link key={post.slug} href={`/blog/${post.slug}`}>
               <div className="card overflow-hidden group">
-                <div className="aspect-[16/9] bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-accent)]/10 flex items-center justify-center">
+                <div className="aspect-[16/9] bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-accent)]/10 flex items-center justify-center relative">
                   {post.coverImage ? (
-                    <img
+                    <Image
                       src={post.coverImage}
-                      alt=""
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      loading="lazy"
+                      alt={post.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      unoptimized
                     />
                   ) : (
                     <Camera size={32} className="text-[var(--color-text-tertiary)]" />
