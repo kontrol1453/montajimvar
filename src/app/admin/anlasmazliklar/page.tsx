@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { formatDate } from "@/lib/utils";
+import Link from "next/link";
 import { PageTitle, PageContainer } from "@/components/ui/Typography";
 import AdminTable, { type TableColumn } from "@/components/admin/DataTable/AdminTable";
 import Badge from "@/components/ui/Badge";
@@ -64,7 +65,7 @@ export default function AdminDisputesPage() {
     {
       header: "Sebep",
       accessor: (r) => (
-        <span className="text-[var(--admin-text-primary)] text-xs max-w-[200px] truncate block">{r.reason}</span>
+        <Link href={`/admin/anlasmazliklar/${r.id}`} className="text-[var(--admin-text-primary)] text-xs max-w-[200px] truncate block hover:text-[var(--admin-primary)] transition-colors">{r.reason}</Link>
       ),
     },
     {

@@ -133,7 +133,7 @@ export default function RecentActivity({ data }: RecentActivityProps) {
     items.push({
       type: "dispute",
       item: d,
-      href: `/admin/isler?dispute=${d.id}`,
+      href: `/admin/anlasmazliklar/${d.id}`,
       label: `Anlaşmazlık: ${d.reason.slice(0, 60)}${d.reason.length > 60 ? "..." : ""}`,
       subtitle: `${d.openedBy.name} · ${d.status === "open" ? "Açık" : "Çözüldü"}`,
       icon: Shield,

@@ -3,6 +3,34 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { logAdminAction, extractAdminId } from "@/lib/admin-audit";
 
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  if (!session?.user || !(session.user as any).roles?.includes("ADMIN")) {
+    return NextResponse.json({ error: "Yetkisiz." }, { status: 403 });
+  }
+
+  const { id: idStr } = await params;
+  const id = Number(idStr);
+
+  const dispute = await (prisma as any).dispute?.findUnique({
+    where: { id },
+    include: {
+      job: {
+        select: { id: true, title: true, status: true, city: true, amount: true,
+          customer: { select: { id: true, name: true, email: true, phone: true } } },
+      },
+      payment: { select: { id: true, amount: true, status: true, createdAt: true } },
+      openedBy: { select: { id: true, name: true, email: true } },
+    },
+  });
+
+  if (!dispute) {
+    return NextResponse.json({ error: "Anlaşmazlık bulunamadı." }, { status: 404 });
+  }
+
+  return NextResponse.json(dispute);
+}
+
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session?.user || !(session.user as any).roles?.includes("ADMIN")) {
