@@ -1,3 +1,5 @@
+"use client";
+
 import { DollarSign, CreditCard, Clock, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +26,30 @@ function formatTRY(kurus: number): string {
   const tl = kurus / 100;
   if (tl === 0) return "—";
   return `${tl.toLocaleString("tr-TR")} TL`;
+}
+
+function MonthlyBarChart({ data }: { data: NonNullable<FinancialOverviewProps["data"]["monthlyBreakdown"]> }) {
+  const max = Math.max(...data.map((d) => d.volume));
+  const barMaxHeight = 100;
+
+  return (
+    <div className="flex items-end gap-1.5 h-[120px]">
+      {data.map((d) => {
+        const h = max > 0 ? Math.max((d.volume / max) * barMaxHeight, 4) : 4;
+        return (
+          <div key={d.month} className="flex-1 flex flex-col items-center gap-1">
+            <span className="text-[9px] text-[var(--admin-text-muted)] leading-tight">{d.count}</span>
+            <div
+              className="w-full rounded-t-sm transition-all bg-[var(--admin-primary)]/70 hover:bg-[var(--admin-primary)] cursor-pointer"
+              style={{ height: h }}
+              title={`${d.month}: ${formatTRY(d.volume)}`}
+            />
+            <span className="text-[9px] text-[var(--admin-text-muted)] leading-tight">{d.month.slice(0, 3)}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 export default function FinancialOverview({ data }: FinancialOverviewProps) {
@@ -95,6 +121,12 @@ export default function FinancialOverview({ data }: FinancialOverviewProps) {
       {data.monthlyBreakdown && data.monthlyBreakdown.length > 0 && (
         <div className="mt-6">
           <h3 className="text-sm font-semibold text-[var(--admin-text-primary)] mb-3">Aylık Kırılım (Son 12 Ay)</h3>
+
+          <div className="rounded-lg border border-[var(--admin-border)] bg-[var(--admin-surface)] px-4 pt-6 pb-3 mb-4">
+            <p className="text-[10px] text-[var(--admin-text-muted)] mb-2 text-center">Hacim Trendi (bar yüksekliği = hacim, üstteki = iş sayısı)</p>
+            <MonthlyBarChart data={data.monthlyBreakdown} />
+          </div>
+
           <div className="overflow-x-auto rounded-lg border border-[var(--admin-border)]">
             <table className="w-full text-sm">
               <thead>
