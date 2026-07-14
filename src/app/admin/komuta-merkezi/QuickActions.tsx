@@ -1,15 +1,5 @@
 import Link from "next/link";
-import {
-  Users,
-  Building2,
-  AlertTriangle,
-  ShieldAlert,
-  Star,
-  Bell,
-  CreditCard,
-  Award,
-  Briefcase,
-} from "lucide-react";
+import { AlertTriangle, Award, Bell, Scale, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface QuickActionsProps {
@@ -19,108 +9,73 @@ interface QuickActionsProps {
       openDisputes: number;
       pendingCertificates: number;
     };
-    platform: {
-      totalUsers: number;
+    marketplace: {
+      jobsWithoutOffers: number;
     };
   };
 }
 
 export default function QuickActions({ data }: QuickActionsProps) {
-  const { operations: o } = data;
+  const { operations: o, marketplace: m } = data;
 
   const actions = [
-    {
-      href: "/admin/kullanicilar",
-      label: "Kullanıcıları Yönet",
-      desc: `${data.platform.totalUsers.toLocaleString("tr-TR")} kullanıcı`,
-      icon: Users,
-      variant: "info",
-    },
-    {
-      href: "/admin/firmalar",
-      label: o.unverifiedProfiles > 0 ? "Onayları İncele" : "Firmaları Gör",
-      desc: o.unverifiedProfiles > 0 ? `${o.unverifiedProfiles} firma onay bekliyor` : "Tüm firmalar",
-      icon: Building2,
-      variant: o.unverifiedProfiles > 0 ? "warning" : "neutral",
-    },
-    {
-      href: "/admin/isler",
-      label: "İşleri Yönet",
-      desc: "İşleri görüntüle ve durum değiştir",
-      icon: Briefcase,
-      variant: "info",
-    },
-    {
-      href: "/admin/sertifikalar",
-      label: o.pendingCertificates > 0 ? "Sertifikaları Onayla" : "Sertifikaları Gör",
-      desc: o.pendingCertificates > 0 ? `${o.pendingCertificates} sertifika bekliyor` : "Sertifika yönetimi",
-      icon: Award,
-      variant: o.pendingCertificates > 0 ? "warning" : "neutral",
-    },
-    {
-      href: "/admin/anlasmazliklar",
-      label: o.openDisputes > 0 ? "Anlaşmazlıkları Çöz" : "Anlaşmazlıkları Gör",
-      desc: o.openDisputes > 0 ? `${o.openDisputes} açık anlaşmazlık` : "Anlaşmazlık yönetimi",
-      icon: AlertTriangle,
-      variant: o.openDisputes > 0 ? "danger" : "neutral",
-    },
-    {
-      href: "/admin/yorumlar",
-      label: "Yorumları Yönet",
-      desc: "Firma ve iş yorumları",
-      icon: Star,
-      variant: "neutral",
-    },
+    ...(o.unverifiedProfiles > 0
+      ? [{
+          href: "/admin/firmalar",
+          label: "Firmaları Onayla",
+          desc: `${o.unverifiedProfiles} firma onay bekliyor`,
+          icon: Building2,
+          variant: "warning" as const,
+        }]
+      : []),
+    ...(o.pendingCertificates > 0
+      ? [{
+          href: "/admin/sertifikalar",
+          label: "Sertifikaları Onayla",
+          desc: `${o.pendingCertificates} sertifika bekliyor`,
+          icon: Award,
+          variant: "warning" as const,
+        }]
+      : []),
+    ...(o.openDisputes > 0
+      ? [{
+          href: "/admin/anlasmazliklar",
+          label: "Anlaşmazlıkları Çöz",
+          desc: `${o.openDisputes} açık anlaşmazlık`,
+          icon: Scale,
+          variant: "danger" as const,
+        }]
+      : []),
+    ...(m.jobsWithoutOffers > 0
+      ? [{
+          href: "/admin/isler",
+          label: "Teklifsiz İşler",
+          desc: `${m.jobsWithoutOffers} iş henüz teklif almadı`,
+          icon: AlertTriangle,
+          variant: "warning" as const,
+        }]
+      : []),
     {
       href: "/admin/bildirim",
       label: "Bildirim Gönder",
       desc: "Push notification yönetimi",
       icon: Bell,
-      variant: "neutral",
-    },
-    {
-      href: "/admin/abonelik-plani",
-      label: "Abonelik Planları",
-      desc: "Premium üyelik yönetimi",
-      icon: CreditCard,
-      variant: "neutral",
-    },
-    {
-      href: "/admin/izinler",
-      label: "İzinleri Yönet",
-      desc: "Rol bazlı yetkilendirme",
-      icon: ShieldAlert,
-      variant: "neutral",
+      variant: "neutral" as const,
     },
   ];
 
+  if (actions.length === 0) return null;
+
   const variantColor: Record<string, { border: string; bg: string; icon: string }> = {
-    danger: {
-      border: "border-[var(--admin-danger)]/30",
-      bg: "bg-[var(--admin-danger-soft)]",
-      icon: "text-[var(--admin-danger)]",
-    },
-    warning: {
-      border: "border-[var(--admin-warning)]/30",
-      bg: "bg-[var(--admin-warning-soft)]",
-      icon: "text-[var(--admin-warning)]",
-    },
-    info: {
-      border: "border-[var(--admin-border)]",
-      bg: "bg-[var(--admin-info-soft)]",
-      icon: "text-[var(--admin-info)]",
-    },
-    neutral: {
-      border: "border-[var(--admin-border)]",
-      bg: "bg-[var(--admin-surface-muted)]",
-      icon: "text-[var(--admin-text-secondary)]",
-    },
+    danger: { border: "border-[var(--admin-danger)]/30", bg: "bg-[var(--admin-danger-soft)]", icon: "text-[var(--admin-danger)]" },
+    warning: { border: "border-[var(--admin-warning)]/30", bg: "bg-[var(--admin-warning-soft)]", icon: "text-[var(--admin-warning)]" },
+    neutral: { border: "border-[var(--admin-border)]", bg: "bg-[var(--admin-surface-muted)]", icon: "text-[var(--admin-text-secondary)]" },
   };
 
   return (
     <div>
       <h2 className="text-base font-semibold text-[var(--admin-text-primary)] mb-3">
-        Hızlı İşlemler
+        Operasyonel Kısayollar
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {actions.map((action) => {

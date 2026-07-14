@@ -252,7 +252,7 @@ export default async function CommandCenterClient() {
         <RecentActivity data={data} />
       </SectionErrorBoundary>
 
-      <SectionErrorBoundary section="Hızlı İşlemler">
+      <SectionErrorBoundary section="Operasyonel Kısayollar">
         <QuickActions data={data} />
       </SectionErrorBoundary>
     </Stack>
