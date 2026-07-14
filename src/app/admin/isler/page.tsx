@@ -61,19 +61,30 @@ const STATUS_BADGE: Record<string, "warning" | "info" | "success" | "neutral" | 
 export default function AdminJobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [statusFilter, setStatusFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [cancelTarget, setCancelTarget] = useState<number | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
 
-  useEffect(() => { loadJobs(); }, []);
+  useEffect(() => { loadJobs(); }, [page, statusFilter]);
 
   async function loadJobs() {
+    setLoading(true);
     try {
-      const res = await fetch("/api/jobs?admin=all");
-      if (res.ok) setJobs(await res.json());
-      else toast.error("İşler yüklenemedi.");
+      const params = new URLSearchParams({ admin: "all", page: String(page), limit: "20" });
+      if (statusFilter !== "all") params.set("status", statusFilter);
+      if (search.trim()) params.set("q", search.trim());
+      const res = await fetch(`/api/jobs?${params}`);
+      if (res.ok) {
+        const data = await res.json();
+        setJobs(data.jobs);
+        setTotal(data.pagination.total);
+        setTotalPages(data.pagination.totalPages);
+      } else toast.error("İşler yüklenemedi.");
     } catch { toast.error("Bağlantı hatası."); }
     finally { setLoading(false); }
   }
@@ -102,26 +113,19 @@ export default function AdminJobsPage() {
     finally { setDeleteTarget(null); }
   }
 
-  const filtered = jobs.filter(j => {
-    if (statusFilter !== "all" && j.status !== statusFilter) return false;
-    if (search && !j.title.toLowerCase().includes(search.toLowerCase()) &&
-        !j.customer.name.toLowerCase().includes(search.toLowerCase())) return false;
-    return true;
-  });
-
   if (loading) return <LoadingSkeleton variant="page" />;
 
   return (
     <PageContainer>
       <div className="flex items-center justify-between mb-6">
         <PageTitle>İş Yönetimi</PageTitle>
-        <span className="text-sm text-[var(--admin-text-secondary)]">Toplam: {jobs.length} iş</span>
+        <span className="text-sm text-[var(--admin-text-secondary)]">Toplam: {total} iş</span>
       </div>
 
       <div className="flex flex-wrap gap-3 mb-6">
         <div className="flex items-center gap-2 bg-[var(--admin-surface)] border border-[var(--admin-border)] rounded-md px-3 py-2">
           <Filter size={16} className="text-[var(--admin-text-muted)]" />
-          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
+          <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
             className="bg-transparent text-sm text-[var(--admin-text-primary)] focus:outline-none">
             <option value="all">Tüm Durumlar</option>
             {Object.entries(STATUS_LABELS).map(([k, v]) => (
@@ -131,16 +135,16 @@ export default function AdminJobsPage() {
         </div>
         <div className="flex items-center gap-2 bg-[var(--admin-surface)] border border-[var(--admin-border)] rounded-md px-3 py-2 flex-1 min-w-[200px]">
           <Search size={16} className="text-[var(--admin-text-muted)]" />
-          <input value={search} onChange={(e) => setSearch(e.target.value)}
+          <input value={search} onChange={(e) => setSearch(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { setPage(1); loadJobs(); } }}
             placeholder="İş veya müşteri ara..."
             className="bg-transparent text-sm text-[var(--admin-text-primary)] focus:outline-none flex-1 placeholder:text-[var(--admin-text-muted)]" />
         </div>
       </div>
 
       <div className="space-y-3">
-        {filtered.length === 0 ? (
+        {jobs.length === 0 ? (
           <p className="text-[var(--admin-text-muted)] text-center py-8">İş bulunamadı.</p>
-        ) : filtered.map(job => (
+        ) : jobs.map(job => (
           <div key={job.id} className="bg-[var(--admin-surface)] rounded-lg border border-[var(--admin-border)] p-4">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
@@ -228,6 +232,44 @@ export default function AdminJobsPage() {
           </div>
         ))}
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-6">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page <= 1}
+            className="px-3 py-1.5 text-xs rounded-md border border-[var(--admin-border)] bg-[var(--admin-surface)] text-[var(--admin-text-secondary)] hover:bg-[var(--admin-surface-muted)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            Önceki
+          </button>
+          {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+            const start = Math.max(1, page - 2);
+            const n = start + i;
+            if (n > totalPages) return null;
+            return (
+              <button
+                key={n}
+                onClick={() => setPage(n)}
+                className={`w-8 h-8 text-xs rounded-md border transition-colors ${
+                  page === n
+                    ? "bg-[var(--admin-primary)] text-white border-[var(--admin-primary)]"
+                    : "border-[var(--admin-border)] bg-[var(--admin-surface)] text-[var(--admin-text-secondary)] hover:bg-[var(--admin-surface-muted)]"
+                }`}
+              >
+                {n}
+              </button>
+            );
+          })}
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page >= totalPages}
+            className="px-3 py-1.5 text-xs rounded-md border border-[var(--admin-border)] bg-[var(--admin-surface)] text-[var(--admin-text-secondary)] hover:bg-[var(--admin-surface-muted)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            Sonraki
+          </button>
+        </div>
+      )}
+
       <Dialog
         open={!!cancelTarget}
         onClose={() => setCancelTarget(null)}
