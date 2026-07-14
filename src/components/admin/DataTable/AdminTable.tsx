@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { ChevronDown, Check, Eye, EyeOff } from "lucide-react";
+import { ChevronDown, Eye, EyeOff } from "lucide-react";
+import EmptyState from "@/components/admin/EmptyState";
 
 export interface TableColumn<T> {
   header: string;
@@ -167,9 +168,12 @@ export default function AdminTable<T extends Record<string, any>>({
               <tr>
                 <td
                   colSpan={visibleCols.length + (hasActions ? 1 : 0)}
-                  className="p-8 text-center text-[var(--admin-text-muted)]"
+                  className="p-8"
                 >
-                  {emptyState ?? "Henüz veri yok."}
+                  <EmptyState
+                    title="Veri bulunamadı"
+                    description={typeof emptyState === "string" ? emptyState : "Listelenecek hiçbir kayıt yok."}
+                  />
                 </td>
               </tr>
             ) : (
