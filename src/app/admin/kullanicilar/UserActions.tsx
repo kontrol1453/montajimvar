@@ -32,6 +32,7 @@ export default function UserActions({ userId, userName, userRoles, premiumUntil 
   const [premiumSaving, setPremiumSaving] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [reason, setReason] = useState("");
 
   const isPremium = premiumUntil ? new Date(premiumUntil) > new Date() : false;
 
@@ -43,7 +44,7 @@ export default function UserActions({ userId, userName, userRoles, premiumUntil 
       const res = await fetch(`/api/admin/users/${userId}/premium`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ days: premiumDays }),
+        body: JSON.stringify({ days: premiumDays, reason }),
       });
       if (res.ok) { setPremiumOpen(false); refresh(); toast.success("Premium güncellendi."); }
       else { const data = await res.json(); toast.error(data.error || "Premium güncellenemedi."); }
@@ -55,7 +56,7 @@ export default function UserActions({ userId, userName, userRoles, premiumUntil 
     setPremiumSaving(true);
     try {
       const res = await fetch(`/api/admin/users/${userId}/premium`, {
-        method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ days: 0 }),
+        method: "PUT", headers: { "Content-Type": "application/json" },         body: JSON.stringify({ days: 0, reason }),
       });
       if (res.ok) { setPremiumOpen(false); refresh(); toast.success("Premium iptal edildi."); }
       else { const data = await res.json(); toast.error(data.error || "Premium iptal edilemedi."); }
@@ -68,7 +69,7 @@ export default function UserActions({ userId, userName, userRoles, premiumUntil 
     if (selectedRoles.length === 0) { toast.error("En az bir rol seçilmelidir."); return; }
     setSaving(true);
     try {
-      const res = await fetch(`/api/admin/users/${userId}/roles`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ roles: selectedRoles }) });
+      const res = await fetch(`/api/admin/users/${userId}/roles`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ roles: selectedRoles, reason }) });
       if (res.ok) { setRoleEditorOpen(false); refresh(); toast.success("Roller güncellendi."); }
       else { const data = await res.json(); toast.error(data.error || "Roller güncellenemedi."); }
     } catch { toast.error("Bir hata oluştu."); }
@@ -112,6 +113,16 @@ export default function UserActions({ userId, userName, userRoles, premiumUntil 
               <span className="text-sm text-[var(--admin-text-primary)]">{r.label}</span>
             </label>
           ))}
+          <div className="pt-2">
+            <label className="block text-xs text-[var(--admin-text-secondary)] mb-1">İşlem Nedeni (opsiyonel)</label>
+            <input
+              type="text"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Rol değişikliği nedeni..."
+              className="w-full px-3 py-2 rounded-md border border-[var(--admin-border)] bg-[var(--admin-surface)] text-sm text-[var(--admin-text-primary)] placeholder:text-[var(--admin-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--admin-primary)]"
+            />
+          </div>
         </div>
       </Dialog>
 
@@ -146,6 +157,16 @@ export default function UserActions({ userId, userName, userRoles, premiumUntil 
           {[7, 15, 30, 60, 90, 365].map((d) => (
             <button key={d} onClick={() => setPremiumDays(d)} className={`px-3 py-2 rounded-md text-sm border transition ${premiumDays === d ? "bg-[var(--admin-primary)] text-white border-[var(--admin-primary)]" : "bg-[var(--admin-surface)] text-[var(--admin-text-secondary)] border-[var(--admin-border)] hover:border-[var(--admin-primary)]"}`}>{d} gün</button>
           ))}
+        </div>
+        <div className="mt-3">
+          <label className="block text-xs text-[var(--admin-text-secondary)] mb-1">İşlem Nedeni (opsiyonel)</label>
+          <input
+            type="text"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="Premium değişiklik nedeni..."
+            className="w-full px-3 py-2 rounded-md border border-[var(--admin-border)] bg-[var(--admin-surface)] text-sm text-[var(--admin-text-primary)] placeholder:text-[var(--admin-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--admin-primary)]"
+          />
         </div>
       </Dialog>
 

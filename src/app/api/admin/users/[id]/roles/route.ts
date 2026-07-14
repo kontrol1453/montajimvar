@@ -16,7 +16,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const userId = Number(id);
-    const { roles } = await request.json();
+    const { roles, reason } = await request.json();
 
     if (!roles || !Array.isArray(roles) || roles.length === 0) {
       return NextResponse.json(
@@ -52,7 +52,7 @@ export async function PUT(
       action: "role_change",
       entity: "user",
       entityId: userId,
-      details: { previousRoles: prev?.roles, newRoles: roles },
+      details: { previousRoles: prev?.roles, newRoles: roles, reason },
     });
 
     revalidatePath("/admin/kullanicilar");

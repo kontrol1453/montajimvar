@@ -16,7 +16,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const userId = Number(id);
-    const { days } = await request.json();
+    const { days, reason } = await request.json();
 
     if (typeof days !== "number" || days < 0) {
       return NextResponse.json(
@@ -60,7 +60,7 @@ export async function PUT(
       action: "premium_change",
       entity: "user",
       entityId: userId,
-      details: { days, previousPremiumUntil: user.premiumUntil?.toISOString(), newPremiumUntil: premiumUntil?.toISOString() },
+      details: { days, reason, previousPremiumUntil: user.premiumUntil?.toISOString(), newPremiumUntil: premiumUntil?.toISOString() },
     });
 
     revalidatePath("/admin/kullanicilar");
