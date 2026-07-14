@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 import { UserPlus, Building2, Briefcase, Shield, FileEdit, ChevronRight } from "lucide-react";
 
 interface RecentActivityProps {
@@ -78,7 +81,17 @@ const AUDIT_ACTION_LABELS: Record<string, string> = {
   create: "oluşturma",
 };
 
+const FILTERS = [
+  { type: "all", label: "Tümü" },
+  { type: "user", label: "Kullanıcı" },
+  { type: "profile", label: "Firma" },
+  { type: "job", label: "İş" },
+  { type: "dispute", label: "Anlaşmazlık" },
+  { type: "audit", label: "Denetim" },
+];
+
 export default function RecentActivity({ data }: RecentActivityProps) {
+  const [filter, setFilter] = useState("all");
   const { recentUsers = [], recentProfiles = [], recentJobs = [], recentDisputes = [], recentAuditLogs = [] } = data;
 
   const items: { type: string; item: any; href: string; label: string; subtitle: string; icon: any }[] = [];
@@ -144,13 +157,15 @@ export default function RecentActivity({ data }: RecentActivityProps) {
     });
   });
 
-  items.sort((a, b) => {
+  const filtered = filter === "all" ? items : items.filter((i) => i.type === filter);
+
+  filtered.sort((a, b) => {
     const aDate = new Date(a.item.createdAt).getTime();
     const bDate = new Date(b.item.createdAt).getTime();
     return bDate - aDate;
   });
 
-  const top = items.slice(0, 20);
+  const top = filtered.slice(0, 20);
 
   if (top.length === 0) {
     return (
@@ -168,6 +183,21 @@ export default function RecentActivity({ data }: RecentActivityProps) {
       <h2 className="text-base font-semibold text-[var(--admin-text-primary)] mb-3">
         Son Aktiviteler
       </h2>
+      <div className="flex gap-1.5 mb-3 flex-wrap">
+        {FILTERS.map((f) => (
+          <button
+            key={f.type}
+            onClick={() => setFilter(f.type)}
+            className={`px-3 py-1.5 text-xs rounded-lg border transition-colors ${
+              filter === f.type
+                ? "bg-[var(--admin-primary)] text-white border-[var(--admin-primary)]"
+                : "bg-[var(--admin-surface)] text-[var(--admin-text-secondary)] border-[var(--admin-border)] hover:bg-[var(--admin-surface-muted)]"
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
       <div className="rounded-lg border border-[var(--admin-border)] divide-y divide-[var(--admin-border)] bg-[var(--admin-surface)]">
         {top.map((entry) => {
           const Icon = entry.icon;
