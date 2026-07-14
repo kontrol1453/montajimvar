@@ -1,4 +1,4 @@
-import { DollarSign, CreditCard, Clock } from "lucide-react";
+import { DollarSign, CreditCard, Clock, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FinancialOverviewProps {
@@ -10,6 +10,11 @@ interface FinancialOverviewProps {
       latestPayment: string | null;
       subscriptionRevenue: number;
       subscriptionCount: number;
+      escrowAmount: number;
+      escrowCount: number;
+    };
+    marketplace: {
+      jobsEligibleForOffers: number;
     };
   };
 }
@@ -50,6 +55,14 @@ export default function FinancialOverview({ data }: FinancialOverviewProps) {
       bg: "bg-[var(--admin-warning-soft)] text-[var(--admin-warning)]",
       desc: `${f.subscriptionCount.toLocaleString("tr-TR")} ödeme`,
     },
+    {
+      label: "Blokede Tutar",
+      value: formatTRY(f.escrowAmount),
+      icon: Lock,
+      color: "border-l-[var(--admin-danger)]",
+      bg: "bg-[var(--admin-danger-soft)] text-[var(--admin-danger)]",
+      desc: `${f.escrowCount.toLocaleString("tr-TR")}`,
+    },
   ];
 
   return (
@@ -57,7 +70,7 @@ export default function FinancialOverview({ data }: FinancialOverviewProps) {
       <h2 className="text-base font-semibold text-[var(--admin-text-primary)] mb-3">
         Finansal Görünüm
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {cards.map((card) => {
           const Icon = card.icon;
           return (

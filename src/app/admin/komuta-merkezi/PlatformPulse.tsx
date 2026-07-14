@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Users, Building2, Briefcase, TrendingUp } from "lucide-react";
+import { Users, Building2, Briefcase, TrendingUp, AlertTriangle, Shield, Certificate } from "lucide-react";
 
 interface PlatformPulseProps {
   data: {
@@ -8,6 +8,11 @@ interface PlatformPulseProps {
       totalProfiles: number;
       totalJobs: number;
       totalOffers: number;
+    };
+    operations: {
+      unverifiedProfiles: number;
+      openDisputes: number;
+      pendingCertificates: number;
     };
     marketplace: {
       activeJobs: number;
@@ -51,36 +56,96 @@ const metrics = [
   },
 ] as const;
 
+const pendingOps = [
+  {
+    key: "unverifiedProfiles",
+    label: "Onay Bekleyen Firmalar",
+    href: "/admin/firmalar",
+    icon: AlertTriangle,
+    color: "border-l-[var(--admin-danger)]",
+    bg: "bg-[var(--admin-danger-soft)] text-[var(--admin-danger)]",
+  },
+  {
+    key: "openDisputes",
+    label: "Açık Anlaşmazlıklar",
+    href: "/admin/isler",
+    icon: Shield,
+    color: "border-l-[var(--admin-warning)]",
+    bg: "bg-[var(--admin-warning-soft)] text-[var(--admin-warning)]",
+  },
+  {
+    key: "pendingCertificates",
+    label: "Onay Bekleyen Sertifikalar",
+    href: "/admin/kullanicilar",
+    icon: Certificate,
+    color: "border-l-[var(--admin-info)]",
+    bg: "bg-[var(--admin-info-soft)] text-[var(--admin-info)]",
+  },
+] as const;
+
 export default function PlatformPulse({ data }: PlatformPulseProps) {
   const stats = metrics.map((m) => ({
     ...m,
     value: data.platform[m.key],
   }));
 
+  const pending = pendingOps.map((p) => ({
+    ...p,
+    value: data.operations[p.key],
+  }));
+
   return (
-    <div>
-      <h2 className="text-base font-semibold text-[var(--admin-text-primary)] mb-3">
-        Platform Durumu
-      </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {stats.map((stat) => {
-          const Icon = stat.icon;
-          return (
-            <Link
-              key={stat.key}
-              href={stat.href}
-              className={`group flex flex-col p-4 rounded-lg border border-l-4 border-[var(--admin-border)] ${stat.color} bg-[var(--admin-surface)] hover:shadow-sm transition-shadow`}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-xs text-[var(--admin-text-secondary)]">{stat.label}</p>
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${stat.bg}`}>
-                  <Icon size={14} />
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-base font-semibold text-[var(--admin-text-primary)] mb-3">
+          Platform Durumu
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {stats.map((stat) => {
+            const Icon = stat.icon;
+            return (
+              <Link
+                key={stat.key}
+                href={stat.href}
+                className={`group flex flex-col p-4 rounded-lg border border-l-4 border-[var(--admin-border)] ${stat.color} bg-[var(--admin-surface)] hover:shadow-sm transition-shadow`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs text-[var(--admin-text-secondary)]">{stat.label}</p>
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${stat.bg}`}>
+                    <Icon size={14} />
+                  </div>
                 </div>
-              </div>
-              <p className="text-2xl font-bold text-[var(--admin-text-primary)]">{stat.value.toLocaleString("tr-TR")}</p>
-            </Link>
-          );
-        })}
+                <p className="text-2xl font-bold text-[var(--admin-text-primary)]">{stat.value.toLocaleString("tr-TR")}</p>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold text-[var(--admin-text-primary)] mb-3">
+          Bekleyen Operasyonlar
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {pending.map((p) => {
+            const Icon = p.icon;
+            return (
+              <Link
+                key={p.key}
+                href={p.href}
+                className={`group flex flex-col p-4 rounded-lg border border-l-4 border-[var(--admin-border)] ${p.color} bg-[var(--admin-surface)] hover:shadow-sm transition-shadow`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs text-[var(--admin-text-secondary)]">{p.label}</p>
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${p.bg}`}>
+                    <Icon size={14} />
+                  </div>
+                </div>
+                <p className="text-2xl font-bold text-[var(--admin-text-primary)]">{p.value.toLocaleString("tr-TR")}</p>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

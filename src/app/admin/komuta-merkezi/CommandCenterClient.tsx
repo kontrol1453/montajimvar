@@ -48,6 +48,8 @@ interface SummaryData {
     latestPayment: string | null;
     subscriptionRevenue: number;
     subscriptionCount: number;
+    escrowAmount: number;
+    escrowCount: number;
   };
   recentUsers?: { id: number; name: string; email: string; createdAt: Date | string }[];
   recentProfiles?: { id: number; companyName: string; city: string | null; createdAt: Date | string; user: { name: string } }[];
@@ -81,6 +83,7 @@ async function fetchSummary(): Promise<SummaryData | null> {
       jobReviewCount,
       firmReviewCount,
       subscriptionPaymentAgg,
+      escrowAgg,
       recentUsers,
       recentProfiles,
       recentJobs,
@@ -103,6 +106,11 @@ async function fetchSummary(): Promise<SummaryData | null> {
       prisma.jobReview.count(),
       prisma.review.count(),
       prisma.subscriptionPayment.aggregate({
+        _sum: { amount: true },
+        _count: true,
+      }),
+      prisma.payment.aggregate({
+        where: { status: "escrow" },
         _sum: { amount: true },
         _count: true,
       }),
@@ -205,6 +213,8 @@ async function fetchSummary(): Promise<SummaryData | null> {
         latestPayment: paymentAgg._max?.createdAt?.toISOString() ?? null,
         subscriptionRevenue: Number(subscriptionPaymentAgg._sum?.amount ?? 0),
         subscriptionCount: Number(subscriptionPaymentAgg._count ?? 0),
+        escrowAmount: Number(escrowAgg._sum?.amount ?? 0),
+        escrowCount: Number(escrowAgg._count ?? 0),
       },
       recentUsers,
       recentProfiles,
