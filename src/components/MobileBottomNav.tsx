@@ -3,14 +3,13 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Home,
   Search,
   Briefcase,
   MessageSquare,
   User,
-  X,
   Sparkles,
 } from "lucide-react";
 

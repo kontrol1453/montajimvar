@@ -78,7 +78,7 @@ export default function HomeHero() {
 
               <motion.p
                 variants={itemVariants}
-                className="text-lg text-white/80 max-w-lg leading-relaxed mb-10"
+                className="text-lg text-white/85 max-w-lg leading-relaxed mb-10"
               >
                 İhtiyacınızı oluşturun, doğrulanmış montaj ekiplerinden teklif
                 alın, süreci takip edin ve işi güvenle tamamlayın.
@@ -124,7 +124,7 @@ export default function HomeHero() {
                   </div>
                   <div>
                     <p className="text-white text-sm font-semibold">Bireysel</p>
-                    <p className="text-white/50 text-xs">
+                    <p className="text-white/70 text-xs">
                       Montaj ihtiyacını oluştur
                     </p>
                   </div>
@@ -140,7 +140,7 @@ export default function HomeHero() {
                     <p className="text-white text-sm font-semibold">
                       Kurumsal
                     </p>
-                    <p className="text-white/50 text-xs">
+                    <p className="text-white/70 text-xs">
                       Operasyonlarını yönet
                     </p>
                   </div>
@@ -156,7 +156,7 @@ export default function HomeHero() {
                     <p className="text-white text-sm font-semibold">
                       Montaj Ekibi
                     </p>
-                    <p className="text-white/50 text-xs">
+                    <p className="text-white/70 text-xs">
                       İş fırsatlarına ulaş
                     </p>
                   </div>
@@ -165,7 +165,7 @@ export default function HomeHero() {
 
               <motion.div
                 variants={itemVariants}
-                className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-white/50 text-xs"
+                className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-white/65 text-xs"
               >
                 <span className="flex items-center gap-1.5">
                   <Shield size={12} />
@@ -208,7 +208,7 @@ export default function HomeHero() {
                           key={stat.label}
                           className="bg-white/[0.04] rounded-xl p-4 border border-white/[0.06]"
                         >
-                          <p className="text-white/40 text-xs mb-2">
+                          <p className="text-white/65 text-xs mb-2">
                             {stat.label}
                           </p>
                           <div
@@ -222,7 +222,7 @@ export default function HomeHero() {
                       ))}
                     </div>
                     <div className="bg-white/[0.03] rounded-xl p-4 border border-white/[0.06]">
-                      <p className="text-white/50 text-xs mb-3 font-medium uppercase tracking-wider">
+                      <p className="text-white/65 text-xs mb-3 font-medium uppercase tracking-wider">
                         Son İşler
                       </p>
                       <div className="space-y-3">

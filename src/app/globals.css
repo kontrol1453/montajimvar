@@ -14,15 +14,20 @@
   --color-surface-secondary: #f5f7fa;
   --color-surface-tertiary: #eef0f4;
 
-  /* Text */
+  /* Text — WCAG AA compliance verified */
   --color-text-primary: #101828;
   --color-text-secondary: #475467;
-  --color-text-tertiary: #98a2b3;
+  --color-text-tertiary: #6b7280;    /* ~4.6:1 on white — meets WCAG AA */
   --color-text-white: #ffffff;
 
   /* Border */
+  --color-border: #eaecf0;
   --color-border-light: #eaecf0;
   --color-border-default: #d0d5dd;
+
+  /* Muted background (used by v5 sections) */
+  --color-muted: #f5f7fa;
+  --color-app: #f5f7fa;
 
   /* Shadows */
   --shadow-card: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
@@ -136,6 +141,37 @@
       scroll-behavior: auto !important;
     }
   }
+
+  /* Focus-visible: keyboard-only focus ring for public pages */
+  *:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Remove focus ring for mouse clicks (keeps :focus-visible clean) */
+  *:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Skip to content link (accessibility) */
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    z-index: 999;
+    padding: 0.5rem 1rem;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 0 0 8px 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: top 0.15s;
+  }
+  .skip-link:focus {
+    top: 0;
+    outline: none;
+  }
 }
 
 /* ─── Utility Classes ──────────────────────────────────────────── */
@@ -197,6 +233,13 @@
   transform: translateY(0);
 }
 
+.btn-primary:disabled,
+.btn-primary[aria-disabled="true"] {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .btn-secondary {
   display: inline-flex;
   align-items: center;
@@ -218,6 +261,13 @@
   background: var(--color-surface-secondary);
   border-color: var(--color-border-default);
   box-shadow: var(--shadow-card-hover);
+}
+
+.btn-secondary:disabled,
+.btn-secondary[aria-disabled="true"] {
+  opacity: 0.65;
+  cursor: not-allowed;
+  background: var(--color-surface-tertiary);
 }
 
 .btn-accent {
@@ -385,11 +435,10 @@
   animation: scale-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Hero section keeps forced white text */
-.hero-section,
-.hero-section * {
-  color: #ffffff !important;
+/* Hero section — white text on dark gradient bg */
+.hero-section {
+  color: #ffffff;
 }
 .hero-section .text-transparent {
-  color: transparent !important;
+  color: transparent;
 }

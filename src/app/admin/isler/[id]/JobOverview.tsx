@@ -115,17 +115,27 @@ export default function JobOverview({ job }: any) {
           <h3 className="text-sm font-semibold text-[var(--admin-text-primary)] mb-3">Operasyonel Risk</h3>
           <div className="space-y-2">
             {[
-              [job._count.offers === 0 && job.status === "pending", "Teklif Yok", "Bu iş henüz teklif almamış"],
+              [job._count.offers === 0 && job.status === "pending", "Teklif Yok", "Henüz teklif almamış iş"],
+              [job._count.offers === 0 && !["pending", "cancelled"].includes(job.status), "Teklifsiz İlerliyor", "Atanmış ama hiç teklif almamış"],
               [job.status === "cancelled", "İptal Edilmiş", "İş iptal edildi"],
+              [!job.assignedArtisan && ["assigned", "en_route", "in_progress"].includes(job.status), "Usta Atanmamış", "İş atanmış durumda ama usta belirtilmemiş"],
+              [job.urgency === "cok_acil", "Çok Acil", "Müşteri tarafından çok acil olarak işaretlenmiş"],
+              [job.customer && !job.customer.identityVerified, "Müşteri Kimlik Doğrulanmamış", "İş sahibinin kimlik doğrulaması yok"],
             ].filter(([cond]) => cond).map(([, label, desc]) => (
               <div key={String(label)} className="p-3 rounded-lg border border-[var(--admin-danger)]/20 bg-[var(--admin-danger-soft)]">
                 <p className="text-sm font-medium text-[var(--admin-danger)]">{label}</p>
                 <p className="text-xs text-[var(--admin-text-secondary)]">{desc}</p>
               </div>
             ))}
-            {!job._count.offers && job.status !== "pending" && job.status !== "cancelled" && (
-              <div className="p-3 rounded-lg border border-[var(--admin-border)] bg-[var(--admin-surface)]">
-                <p className="text-xs text-[var(--admin-text-secondary)]">Operasyonel risk tespit edilmedi.</p>
+            {[
+              job._count.offers > 0,
+              job.status !== "cancelled",
+              !!job.assignedArtisan || !["assigned", "en_route", "in_progress"].includes(job.status),
+              job.urgency !== "cok_acil",
+              job.customer?.identityVerified !== false,
+            ].filter(Boolean).length >= 4 && (
+              <div className="p-3 rounded-lg border border-[var(--admin-success)]/20 bg-[var(--admin-success-soft)]">
+                <p className="text-xs text-[var(--admin-success)]">Risk tespit edilmedi.</p>
               </div>
             )}
           </div>

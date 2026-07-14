@@ -24,7 +24,7 @@ export default function HeroV5() {
         <div className="grid items-center gap-12 md:grid-cols-12">
           <div className="md:col-span-7">
             <span className="section-label animate-fade-in">
-              <Sparkles className="h-3.5 w-3.5" /> Montajım Var · v5
+              <Sparkles className="h-3.5 w-3.5" /> Profesyonel Montaj Platformu
             </span>
 
             <h1
@@ -80,14 +80,49 @@ export default function HeroV5() {
 
           <div className="md:col-span-5" aria-hidden="true">
             <div className="relative mx-auto w-full max-w-md">
-              <div className="rounded-card border border-border bg-surface shadow-elevated aspect-[4/3] flex items-center justify-center">
-                <div className="text-center p-8">
-                  <div className="mx-auto mb-4 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Sparkles className="h-8 w-8 text-primary" />
+              <div className="rounded-card border border-border bg-surface shadow-elevated overflow-hidden">
+                <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-muted/30">
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-400/60" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
                   </div>
-                  <p className="text-text-secondary text-sm">
-                    Ürün ekran görüntüsü<br />buraya eklenecek
-                  </p>
+                  <span className="text-xs text-text-tertiary ml-2 font-mono">panel.montajimvar.com</span>
+                </div>
+                <div className="p-4 space-y-3">
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { label: "Aktif İşler", color: "bg-primary/20" },
+                      { label: "Montaj Ekibi", color: "bg-accent/20" },
+                      { label: "Tamamlanma", color: "bg-amber-500/20" },
+                    ].map((stat) => (
+                      <div key={stat.label} className="bg-muted/50 rounded-lg p-3 border border-border">
+                        <div className="text-xs text-text-tertiary mb-1.5">{stat.label}</div>
+                        <div className={`h-1.5 rounded-full ${stat.color}`} style={{ width: `${55 + Math.random() * 35}%` }} />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="bg-muted/30 rounded-lg p-3 border border-border">
+                    <div className="text-xs text-text-tertiary mb-2 font-medium uppercase tracking-wider">Son İşler</div>
+                    <div className="space-y-2">
+                      {[
+                        { job: "AVM Montajı — İstanbul", status: "Devam Ediyor", color: "text-primary" },
+                        { job: "Mobilya Kurulumu — Ankara", status: "Tamamlandı", color: "text-accent" },
+                      ].map((item) => (
+                        <div key={item.job} className="flex items-center justify-between">
+                          <span className="text-xs text-text-primary">{item.job}</span>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full bg-muted font-medium ${item.color}`}>{item.status}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="bg-muted/30 rounded-lg p-3 border border-border flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                      <span className="text-xs text-text-primary">Canlı Ekip Takibi</span>
+                    </div>
+                    <span className="text-[10px] text-text-tertiary">Aktif</span>
+                  </div>
                 </div>
               </div>
             </div>

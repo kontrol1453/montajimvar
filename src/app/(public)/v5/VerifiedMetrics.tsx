@@ -31,13 +31,15 @@ function buildMetrics(props: VerifiedMetricsProps): MetricItem[] {
       label: "Şehir",
       helper: "Aktif hizmet edilen il",
     },
-    {
-      id: "rating",
-      Icon: Star,
-      value: props.avgRating > 0 ? props.avgRating.toFixed(1) : "—",
-      label: "Ortalama puan",
-      helper: "Müşteri puanlamasından",
-    },
+    ...(props.avgRating > 3.5
+      ? [{
+          id: "rating" as const,
+          Icon: Star,
+          value: props.avgRating.toFixed(1),
+          label: "Ortalama puan",
+          helper: "Müşteri puanlamasından",
+        }]
+      : []),
     {
       id: "categories",
       Icon: Layers,

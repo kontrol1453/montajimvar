@@ -1,7 +1,16 @@
-import { HelpCircle } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import { HelpCircle, ChevronDown } from "lucide-react";
 import { FAQ_ITEMS } from "./_lib/v5.constants";
 
 export default function FAQv5() {
+  const [openId, setOpenId] = useState<string | null>(FAQ_ITEMS[0]?.id ?? null);
+
+  function toggle(id: string) {
+    setOpenId((prev) => (prev === id ? null : id));
+  }
+
   return (
     <section
       aria-labelledby="faq-headline"
@@ -39,37 +48,39 @@ export default function FAQv5() {
         </div>
 
         <div className="mt-10 max-w-3xl divide-y divide-border rounded-card border border-border">
-          {FAQ_ITEMS.map((f, idx) => (
-            <details
-              key={f.id}
-              className="group"
-              open={idx === 0}
-            >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 hover:text-primary">
-                <span className="text-sm font-semibold text-text-primary group-hover:text-primary">
-                  {f.question}
-                </span>
-                <span className="shrink-0 text-text-tertiary transition-transform duration-200 group-open:rotate-180">
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </span>
-              </summary>
-              <div className="px-5 pb-4 text-sm leading-relaxed text-text-secondary">
-                {f.answer}
+          {FAQ_ITEMS.map((f) => {
+            const isOpen = openId === f.id;
+            return (
+              <div key={f.id}>
+                <button
+                  onClick={() => toggle(f.id)}
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${f.id}`}
+                  id={`faq-trigger-${f.id}`}
+                  className="flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left hover:text-primary transition-colors"
+                >
+                  <span className="text-sm font-semibold text-text-primary">
+                    {f.question}
+                  </span>
+                  <ChevronDown
+                    size={16}
+                    className={`shrink-0 text-text-tertiary transition-transform duration-200 ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                <div
+                  id={`faq-answer-${f.id}`}
+                  role="region"
+                  aria-labelledby={`faq-trigger-${f.id}`}
+                  hidden={!isOpen}
+                  className="px-5 pb-4 text-sm leading-relaxed text-text-secondary"
+                >
+                  {f.answer}
+                </div>
               </div>
-            </details>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
