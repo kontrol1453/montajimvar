@@ -62,6 +62,7 @@ interface SummaryData {
     pendingCertificates: string | null;
     jobsWithoutOffers: string | null;
   };
+  monthlyBreakdown: { month: string; volume: number; commission: number; count: number }[];
 }
 
 async function fetchSummary(): Promise<SummaryData | null> {
@@ -189,6 +190,26 @@ async function fetchSummary(): Promise<SummaryData | null> {
       jobsWithoutOffers: oldestJobWithoutOffer?.createdAt?.toISOString() ?? null,
     };
 
+    const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+    const monthlyPayments = await prisma.payment.groupBy({
+      by: ["createdAt"],
+      where: { createdAt: { gte: twelveMonthsAgo } },
+      _sum: { amount: true, commission: true },
+      _count: true,
+      orderBy: { createdAt: "desc" },
+    });
+    const monthlyMap: Record<string, { volume: number; commission: number; count: number }> = {};
+    monthlyPayments.forEach((p) => {
+      const key = `${p.createdAt.getFullYear()}-${String(p.createdAt.getMonth() + 1).padStart(2, "0")}`;
+      if (!monthlyMap[key]) monthlyMap[key] = { volume: 0, commission: 0, count: 0 };
+      monthlyMap[key].volume += Number(p._sum.amount ?? 0);
+      monthlyMap[key].commission += Number(p._sum.commission ?? 0);
+      monthlyMap[key].count += Number(p._count ?? 0);
+    });
+    const monthlyBreakdown = Object.entries(monthlyMap)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([month, data]) => ({ month, ...data }));
+
     return {
       platform: {
         totalUsers: userCount,
@@ -243,6 +264,7 @@ async function fetchSummary(): Promise<SummaryData | null> {
       recentDisputes,
       recentAuditLogs,
       oldestDates,
+      monthlyBreakdown,
     } as any;
   } catch (error) {
     console.error("Command Center data fetch error:", error);

@@ -16,6 +16,7 @@ interface FinancialOverviewProps {
     marketplace: {
       jobsEligibleForOffers: number;
     };
+    monthlyBreakdown?: { month: string; volume: number; commission: number; count: number }[];
   };
 }
 
@@ -90,6 +91,34 @@ export default function FinancialOverview({ data }: FinancialOverviewProps) {
           );
         })}
       </div>
+
+      {data.monthlyBreakdown && data.monthlyBreakdown.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-sm font-semibold text-[var(--admin-text-primary)] mb-3">Aylık Kırılım (Son 12 Ay)</h3>
+          <div className="overflow-x-auto rounded-lg border border-[var(--admin-border)]">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-[var(--admin-surface-muted)] border-b border-[var(--admin-border)]">
+                  <th className="text-left px-4 py-2 text-xs text-[var(--admin-text-secondary)] font-medium">Ay</th>
+                  <th className="text-right px-4 py-2 text-xs text-[var(--admin-text-secondary)] font-medium">Hacim</th>
+                  <th className="text-right px-4 py-2 text-xs text-[var(--admin-text-secondary)] font-medium">Komisyon</th>
+                  <th className="text-right px-4 py-2 text-xs text-[var(--admin-text-secondary)] font-medium">Adet</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--admin-border)]">
+                {data.monthlyBreakdown.map((row) => (
+                  <tr key={row.month} className="hover:bg-[var(--admin-surface-muted)]">
+                    <td className="px-4 py-2 text-[var(--admin-text-primary)]">{row.month}</td>
+                    <td className="px-4 py-2 text-right text-[var(--admin-text-primary)]">{formatTRY(row.volume)}</td>
+                    <td className="px-4 py-2 text-right text-[var(--admin-text-secondary)]">{formatTRY(row.commission)}</td>
+                    <td className="px-4 py-2 text-right text-[var(--admin-text-muted)]">{row.count}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
