@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { ChevronDown, Check, Eye, EyeOff } from "lucide-react";
 
 export interface TableColumn<T> {
   header: string;
@@ -10,6 +12,8 @@ export interface TableColumn<T> {
   align?: "left" | "center" | "right";
   /** Optional sticky classes */
   className?: string;
+  /** Optional unique key for column visibility toggle (defaults to header) */
+  key?: string;
 }
 
 interface AdminTableProps<T> {
@@ -26,6 +30,8 @@ interface AdminTableProps<T> {
   actions?: (row: T) => ReactNode;
   /** Row click handler */
   onRowClick?: (row: T) => void;
+  /** Enable column visibility toggle; default true */
+  columnVisibility?: boolean;
   className?: string;
 }
 
@@ -36,6 +42,53 @@ const hiddenMap = {
   xl: "hidden xl:table-cell",
 } as const;
 
+function ColumnVisibilityDropdown<T extends Record<string, any>>({
+  columns,
+  visibleColumns,
+  onToggle,
+}: {
+  columns: TableColumn<T>[];
+  visibleColumns: Set<string>;
+  onToggle: (key: string) => void;
+}) {
+  const toggleable = columns.filter((c) => c.key || c.header);
+  if (toggleable.length <= 1) return null;
+
+  return (
+    <div className="relative inline-block">
+      <button
+        className="px-3 py-1.5 text-xs text-[var(--admin-text-secondary)] hover:text-[var(--admin-text-primary)] flex items-center gap-1.5 border border-[var(--admin-border)] rounded-lg hover:bg-[var(--admin-surface-muted)] transition-colors"
+        aria-label="Sütun görünürlüğü"
+      >
+        <Eye size={14} />
+        <span>Sütunlar</span>
+        <ChevronDown size={12} />
+      </button>
+      <div className="absolute right-0 top-full mt-1 z-10 min-w-[180px] bg-[var(--admin-surface)] border border-[var(--admin-border)] rounded-lg shadow-lg overflow-hidden">
+        {toggleable.map((col) => {
+          const k = col.key || col.header;
+          const isVisible = visibleColumns.has(k);
+          return (
+            <label
+              key={k}
+              className="flex items-center gap-2 px-3 py-2 hover:bg-[var(--admin-surface-muted)] cursor-pointer"
+            >
+              <input
+                type="checkbox"
+                checked={isVisible}
+                onChange={() => onToggle(k)}
+                className="rounded border-[var(--admin-border)] text-[var(--admin-primary)] focus:ring-[var(--admin-primary)]"
+              />
+              <span className="text-sm text-[var(--admin-text-primary)]">{col.header}</span>
+              {isVisible && <Eye size={12} className="text-[var(--admin-success)] ml-auto" />}
+            </label>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function AdminTable<T extends Record<string, any>>({
   rows,
   columns,
@@ -44,9 +97,25 @@ export default function AdminTable<T extends Record<string, any>>({
   bordered = true,
   actions,
   onRowClick,
+  columnVisibility = true,
   className,
 }: AdminTableProps<T>) {
   const hasActions = !!actions;
+
+  const getColKey = (col: TableColumn<T>) => col.key || col.header;
+  const defaultVisible = new Set(columns.map(getColKey));
+  const [visibleColumns, setVisibleColumns] = useState<Set<string>>(defaultVisible);
+
+  const toggleColumn = (key: string) => {
+    setVisibleColumns((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const visibleCols = columns.filter((c) => visibleColumns.has(getColKey(c)));
 
   return (
     <div
@@ -56,11 +125,16 @@ export default function AdminTable<T extends Record<string, any>>({
         className
       )}
     >
+      {columnVisibility && visibleCols.length > 1 && (
+        <div className="p-3 border-b border-[var(--admin-border)] bg-[var(--admin-surface-muted)]">
+          <ColumnVisibilityDropdown columns={columns} visibleColumns={visibleColumns} onToggle={toggleColumn} />
+        </div>
+      )}
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-[var(--admin-border)] bg-[var(--admin-surface-muted)]">
-              {columns.map((col, i) => (
+              {visibleCols.map((col, i) => (
                 <th
                   key={`col-${i}`}
                   scope="col"
@@ -92,7 +166,7 @@ export default function AdminTable<T extends Record<string, any>>({
             {rows.length === 0 ? (
               <tr>
                 <td
-                  colSpan={columns.length + (hasActions ? 1 : 0)}
+                  colSpan={visibleCols.length + (hasActions ? 1 : 0)}
                   className="p-8 text-center text-[var(--admin-text-muted)]"
                 >
                   {emptyState ?? "Henüz veri yok."}
@@ -108,7 +182,7 @@ export default function AdminTable<T extends Record<string, any>>({
                     onRowClick && "cursor-pointer"
                   )}
                 >
-                  {columns.map((col, i) => (
+                  {visibleCols.map((col, i) => (
                     <td
                       key={`cell-${i}`}
                       className={cn(
