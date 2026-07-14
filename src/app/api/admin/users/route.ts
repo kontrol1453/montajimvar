@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { logAdminAction, extractAdminId } from "@/lib/admin-audit";
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -51,6 +52,14 @@ export async function POST(request: Request) {
       select: { id: true, name: true, email: true, roles: true, createdAt: true },
     });
 
+    await logAdminAction({
+      adminId: extractAdminId(session),
+      action: "create",
+      entity: "user",
+      entityId: user.id,
+      details: { name, email, roles },
+    });
+
     return NextResponse.json(user, { status: 201 });
   } catch (error) {
     console.error("Admin kullanıcı oluşturma hatası:", error);
@@ -78,7 +87,21 @@ export async function DELETE(request: Request) {
       );
     }
 
+    const deletedUser = await prisma.user.findUnique({
+      where: { id: Number(id) },
+      select: { name: true, email: true },
+    });
+
     await prisma.user.delete({ where: { id: Number(id) } });
+
+    await logAdminAction({
+      adminId: extractAdminId(session),
+      action: "delete",
+      entity: "user",
+      entityId: Number(id),
+      details: { name: deletedUser?.name, email: deletedUser?.email },
+    });
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Kullanıcı silme hatası:", error);

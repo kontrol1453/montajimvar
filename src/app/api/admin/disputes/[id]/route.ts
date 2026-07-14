@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logAdminAction, extractAdminId } from "@/lib/admin-audit";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
@@ -35,6 +36,14 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       data: paymentAction,
     });
   }
+
+  await logAdminAction({
+    adminId: extractAdminId(session),
+    action: "resolve",
+    entity: "dispute",
+    entityId: id,
+    details: { resolution, jobId: dispute.jobId, paymentId: dispute.paymentId },
+  });
 
   return NextResponse.json(updated);
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logAdminAction, extractAdminId } from "@/lib/admin-audit";
 
 
 export async function GET() {
@@ -30,6 +31,14 @@ export async function POST(request: Request) {
       where: { role_feature: { role, feature } },
       update: { enabled },
       create: { role, feature, enabled },
+    });
+
+    await logAdminAction({
+      adminId: extractAdminId(session),
+      action: "update",
+      entity: "role_permission",
+      entityId: perm.id,
+      details: { role, feature, enabled },
     });
 
     return NextResponse.json(perm);

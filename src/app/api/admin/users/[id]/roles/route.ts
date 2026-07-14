@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { logAdminAction, extractAdminId } from "@/lib/admin-audit";
 
 export async function PUT(
   request: Request,
@@ -33,12 +34,25 @@ export async function PUT(
       );
     }
 
+    const prev = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { roles: true },
+    });
+
     await prisma.user.update({
       where: { id: userId },
       data: { 
         roles,
         tokenVersion: { increment: 1 }
       },
+    });
+
+    await logAdminAction({
+      adminId: extractAdminId(session),
+      action: "role_change",
+      entity: "user",
+      entityId: userId,
+      details: { previousRoles: prev?.roles, newRoles: roles },
     });
 
     revalidatePath("/admin/kullanicilar");

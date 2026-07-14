@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logAdminAction, extractAdminId } from "@/lib/admin-audit";
 
 export async function DELETE(request: Request) {
   const session = await auth();
@@ -36,6 +37,14 @@ export async function DELETE(request: Request) {
     // Cascade delete: profile_images, reviews, favorites, profile_categories,
     // subscription_payments, and the profile itself
     await prisma.profile.delete({ where: { id: Number(id) } });
+
+    await logAdminAction({
+      adminId: extractAdminId(session),
+      action: "delete",
+      entity: "profile",
+      entityId: Number(id),
+      details: { companyName: profile.companyName },
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -87,6 +96,24 @@ export async function PATCH(request: Request) {
       await prisma.profile.update({
         where: { id: Number(id) },
         data,
+      });
+    }
+
+    const changes: Record<string, unknown> = {};
+    if (isVerified !== undefined) changes.isVerified = isVerified;
+    if (isFeatured !== undefined) changes.isFeatured = isFeatured;
+
+    if (Object.keys(changes).length > 0) {
+      const action = isVerified !== undefined
+        ? (isVerified ? "approve" as const : "unverify" as const)
+        : (isFeatured ? "feature" as const : "unfeature" as const);
+
+      await logAdminAction({
+        adminId: extractAdminId(session),
+        action,
+        entity: "profile",
+        entityId: Number(id),
+        details: changes,
       });
     }
 

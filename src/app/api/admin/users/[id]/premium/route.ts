@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { logAdminAction, extractAdminId } from "@/lib/admin-audit";
 
 export async function PUT(
   request: Request,
@@ -52,6 +53,14 @@ export async function PUT(
     await prisma.profile.updateMany({
       where: { userId },
       data: { premiumUntil },
+    });
+
+    await logAdminAction({
+      adminId: extractAdminId(session),
+      action: "premium_change",
+      entity: "user",
+      entityId: userId,
+      details: { days, previousPremiumUntil: user.premiumUntil?.toISOString(), newPremiumUntil: premiumUntil?.toISOString() },
     });
 
     revalidatePath("/admin/kullanicilar");
