@@ -106,6 +106,30 @@ export async function GET(
         return NextResponse.json(disputes);
       }
 
+      case "financial": {
+        const [paymentsMade, paymentsReceived] = await Promise.all([
+          prisma.payment.findMany({
+            where: { customerId: userId },
+            orderBy: { createdAt: "desc" },
+            take: 50,
+            include: {
+              job: { select: { id: true, title: true } },
+              artisan: { select: { id: true, name: true } },
+            },
+          }),
+          prisma.payment.findMany({
+            where: { artisanId: userId },
+            orderBy: { createdAt: "desc" },
+            take: 50,
+            include: {
+              job: { select: { id: true, title: true } },
+              customer: { select: { id: true, name: true } },
+            },
+          }),
+        ]);
+        return NextResponse.json({ paymentsMade, paymentsReceived });
+      }
+
       default:
         return NextResponse.json({ error: "Geçersiz sekme." }, { status: 400 });
     }

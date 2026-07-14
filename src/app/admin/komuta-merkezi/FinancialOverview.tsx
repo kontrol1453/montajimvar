@@ -61,7 +61,7 @@ export default function FinancialOverview({ data }: FinancialOverviewProps) {
       icon: Lock,
       color: "border-l-[var(--admin-danger)]",
       bg: "bg-[var(--admin-danger-soft)] text-[var(--admin-danger)]",
-      desc: `${f.escrowCount.toLocaleString("tr-TR")}`,
+      desc: `${f.escrowCount.toLocaleString("tr-TR")} blokede ödeme`,
     },
   ];
 

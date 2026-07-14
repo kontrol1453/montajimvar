@@ -10,6 +10,7 @@ import UserOffers from "./UserOffers";
 import UserReviews from "./UserReviews";
 import UserCertificates from "./UserCertificates";
 import UserDisputes from "./UserDisputes";
+import UserFinancial from "./UserFinancial";
 import LoadingSkeleton from "@/components/admin/LoadingSkeleton";
 
 interface UserWorkspaceProps {
@@ -25,6 +26,7 @@ const TAB_COMPONENTS: Record<string, any> = {
   reviews: UserReviews,
   certificates: UserCertificates,
   disputes: UserDisputes,
+  financial: UserFinancial,
 };
 
 export default function UserWorkspace({ data, userId, activeTab }: UserWorkspaceProps) {
@@ -38,6 +40,7 @@ export default function UserWorkspace({ data, userId, activeTab }: UserWorkspace
     { id: "reviews", label: "Yorumlar", count: summary.totalReviews },
     { id: "certificates", label: "Sertifikalar", count: summary.totalCertificates },
     { id: "disputes", label: "Anlaşmazlıklar", count: summary.totalDisputes },
+    { id: "financial", label: "Finans", count: summary.paymentsMade + summary.paymentsReceived },
   ];
 
   const [currentTab, setCurrentTab] = useState(activeTab || "overview");
