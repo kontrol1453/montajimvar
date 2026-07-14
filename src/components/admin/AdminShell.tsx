@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import AdminSidebar from "./Sidebar/AdminSidebar";
 import MobileSidebarDrawer from "./Sidebar/MobileSidebarDrawer";
 import AdminHeader from "./Header/AdminHeader";
+import AdminSearchModal from "./AdminSearchModal";
 
 const COLLAPSED_KEY = "admin-sidebar-collapsed";
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
     try {
@@ -35,6 +37,27 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
     return () => document.removeEventListener("click", handleClick);
   }, []);
 
+  useEffect(() => {
+    function handleSearchClick(e: MouseEvent) {
+      const target = e.target as Element | null;
+      if (!target) return;
+      if (target.closest("[data-admin-search-toggle]")) setSearchOpen(true);
+    }
+    document.addEventListener("click", handleSearchClick);
+    return () => document.removeEventListener("click", handleSearchClick);
+  }, []);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen((v) => !v);
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
+
   const paddingLeft = collapsed
     ? "var(--admin-sidebar-width-collapsed)"
     : "var(--admin-sidebar-width)";
@@ -54,6 +77,11 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
       <MobileSidebarDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
+      />
+
+      <AdminSearchModal
+        open={searchOpen}
+        onClose={() => setSearchOpen(false)}
       />
 
       <div

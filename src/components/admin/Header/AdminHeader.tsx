@@ -8,6 +8,7 @@ import {
   ChevronDown,
   LayoutDashboard,
   LogOut,
+  Search,
   User as UserIcon,
 } from "lucide-react";
 import NotificationBell from "@/app/admin/NotificationBell";
@@ -66,6 +67,15 @@ export default function AdminHeader({ collapsed, onToggleCollapsed }: AdminHeade
 
       {/* Right side */}
       <div className="flex items-center gap-1 shrink-0">
+        <button
+          type="button"
+          data-admin-search-toggle
+          aria-label="Ara (Cmd+K)"
+          className="h-9 w-9 flex items-center justify-center rounded-md text-[var(--admin-text-muted)] hover:bg-[var(--admin-surface-muted)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+          title="Ara (Cmd+K)"
+        >
+          <Search size={16} />
+        </button>
         <NotificationBell />
         <div className="relative" ref={profileRef}>
           <button
