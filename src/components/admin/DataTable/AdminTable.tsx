@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { ChevronDown, Eye, EyeOff } from "lucide-react";
+import { ChevronDown, Eye, EyeOff, CheckSquare, Square, Trash2, Shield } from "lucide-react";
 import EmptyState from "@/components/admin/EmptyState";
 
 export interface TableColumn<T> {
@@ -35,6 +35,10 @@ interface AdminTableProps<T> {
   onRowClick?: (row: T) => void;
   /** Enable column visibility toggle; default true */
   columnVisibility?: boolean;
+  /** Bulk action definitions when rows selected */
+  bulkActions?: { label: string; onClick: (rows: T[]) => void; variant?: "danger" | "primary" | "default"; icon?: ReactNode }[];
+  /** Enable row selection (checkbox column); default false */
+  selectable?: boolean;
   className?: string;
 }
 
@@ -101,6 +105,8 @@ export default function AdminTable<T extends Record<string, any>>({
   actions,
   onRowClick,
   columnVisibility = true,
+  bulkActions,
+  selectable = false,
   className,
 }: AdminTableProps<T>) {
   const hasActions = !!actions;
@@ -120,6 +126,24 @@ export default function AdminTable<T extends Record<string, any>>({
 
   const visibleCols = columns.filter((c) => visibleColumns.has(getColKey(c)));
 
+  const [selected, setSelected] = useState<Set<string | number>>(new Set());
+  const selectedRows = rows.filter((r) => selected.has(keyField(r)));
+  const allSelected = rows.length > 0 && selectedRows.length === rows.length;
+
+  const toggleRow = (id: string | number) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (allSelected) setSelected(new Set());
+    else setSelected(new Set(rows.map(keyField)));
+  };
+
   return (
     <div
       className={cn(
@@ -128,15 +152,56 @@ export default function AdminTable<T extends Record<string, any>>({
         className
       )}
     >
-      {columnVisibility && visibleCols.length > 1 && (
+      {columnVisibility && visibleCols.length > 1 && !selectable && (
         <div className="p-3 border-b border-[var(--admin-border)] bg-[var(--admin-surface-muted)]">
           <ColumnVisibilityDropdown columns={columns} visibleColumns={visibleColumns} onToggle={toggleColumn} />
         </div>
       )}
+
+      {selectable && selectedRows.length > 0 && (
+        <div className="flex items-center gap-3 p-3 border-b border-[var(--admin-border)] bg-[var(--admin-primary-soft)]">
+          <span className="text-sm font-medium text-[var(--admin-primary)]">{selectedRows.length} seçili</span>
+          {bulkActions?.map((a, i) => (
+            <button
+              key={i}
+              onClick={() => a.onClick(selectedRows)}
+              className={cn(
+                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors",
+                a.variant === "danger"
+                  ? "bg-[var(--admin-danger)] text-white hover:opacity-90"
+                  : a.variant === "primary"
+                  ? "bg-[var(--admin-primary)] text-white hover:opacity-90"
+                  : "bg-[var(--admin-surface)] border border-[var(--admin-border)] text-[var(--admin-text-secondary)] hover:bg-[var(--admin-surface-muted)]"
+              )}
+            >
+              {a.icon}
+              {a.label}
+            </button>
+          ))}
+          <button
+            onClick={() => setSelected(new Set())}
+            className="ml-auto text-xs text-[var(--admin-text-secondary)] hover:text-[var(--admin-text-primary)]"
+          >
+            Seçimi temizle
+          </button>
+        </div>
+      )}
+
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-[var(--admin-border)] bg-[var(--admin-surface-muted)]">
+              {selectable && (
+                <th scope="col" className="p-3 w-10">
+                  <button
+                    onClick={toggleAll}
+                    className="text-[var(--admin-text-secondary)] hover:text-[var(--admin-primary)] transition-colors"
+                    aria-label="Tümünü seç"
+                  >
+                    {allSelected ? <CheckSquare size={16} /> : <Square size={16} />}
+                  </button>
+                </th>
+              )}
               {visibleCols.map((col, i) => (
                 <th
                   key={`col-${i}`}
@@ -169,7 +234,7 @@ export default function AdminTable<T extends Record<string, any>>({
             {rows.length === 0 ? (
               <tr>
                 <td
-                  colSpan={visibleCols.length + (hasActions ? 1 : 0)}
+                  colSpan={visibleCols.length + (hasActions ? 1 : 0) + (selectable ? 1 : 0)}
                   className="p-8"
                 >
                   <EmptyState
@@ -185,9 +250,21 @@ export default function AdminTable<T extends Record<string, any>>({
                   onClick={onRowClick ? () => onRowClick(row) : undefined}
                   className={cn(
                     "hover:bg-[var(--admin-surface-muted)] transition",
-                    onRowClick && "cursor-pointer"
+                    onRowClick && "cursor-pointer",
+                    selected.has(keyField(row)) && "bg-[var(--admin-primary-soft)]"
                   )}
                 >
+                  {selectable && (
+                    <td className="p-3 text-center">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); toggleRow(keyField(row)); }}
+                        className="text-[var(--admin-text-secondary)] hover:text-[var(--admin-primary)] transition-colors"
+                        aria-label="Seç"
+                      >
+                        {selected.has(keyField(row)) ? <CheckSquare size={16} /> : <Square size={16} />}
+                      </button>
+                    </td>
+                  )}
                   {visibleCols.map((col, i) => (
                     <td
                       key={`cell-${i}`}
