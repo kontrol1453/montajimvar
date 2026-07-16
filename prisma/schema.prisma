@@ -26,6 +26,10 @@ model User {
   coverPhoto            String?
   completedJobs         Int        @default(0)
   premiumUntil          DateTime?
+  failedLoginAttempts   Int        @default(0)
+  lockedUntil           DateTime?
+  lastLoginAt           DateTime?
+  lastLoginIp           String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
@@ -44,6 +48,23 @@ model User {
   jobMessages          JobMessage[]
   invoices             Invoice[]
   disputesOpened       Dispute[]
+  loginAttempts        LoginAttempt[]
+}
+
+model LoginAttempt {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  email     String
+  success   Boolean
+  ip        String?
+  userAgent String?
+  timestamp DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([email, timestamp])
+  @@index([userId, timestamp])
+  @@index([ip, timestamp])
 }
 
 model Profile {
@@ -85,6 +106,10 @@ model Profile {
   subscription  SubscriptionPlan? @relation(fields: [subscriptionId], references: [id])
   subscriptionPayments SubscriptionPayment[]
   viewLogs      ProfileViewLog[]
+
+  @@index([city, categoryId])
+  @@index([isVerified, isFeatured])
+  @@index([createdAt])
 }
 
 model Category {
@@ -303,6 +328,10 @@ model Job {
   payment      Payment?
   dispute      Dispute?
   invoices     Invoice[]
+
+  @@index([status, city])
+  @@index([customerId, status])
+  @@index([createdAt])
 }
 
 model JobCategory {
@@ -330,6 +359,9 @@ model Offer {
 
   job     Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
   artisan User @relation("ArtisanOffers", fields: [artisanId], references: [id])
+
+  @@index([jobId, status])
+  @@index([artisanId, status])
 }
 
 model JobTimeline {

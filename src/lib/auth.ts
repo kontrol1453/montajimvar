@@ -7,6 +7,15 @@ import crypto from "crypto";
 import { cookies } from "next/headers";
 import { verifySignedCookie } from "./cookie-sign";
 import { loginSchema } from "./validation";
+import * as Sentry from "@sentry/nextjs";
+
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_DURATION_MS = 15 * 60 * 1000;
+const SESSION_ABSOLUTE_TIMEOUT_MS = 24 * 60 * 60 * 1000;
+
+function getClientIp(): string | null {
+  return null;
+}
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -16,7 +25,7 @@ export const authOptions: AuthOptions = {
         email: { label: "E-posta", type: "email" },
         password: { label: "Şifre", type: "password" },
       },
-async authorize(credentials) {
+async authorize(credentials, req) {
         const parsed = loginSchema.safeParse(credentials);
         if (!parsed.success) {
           throw new Error("E-posta ve şifre gerekli");
@@ -28,19 +37,68 @@ async authorize(credentials) {
           where: { email },
         });
 
+        const requestHeaders = req?.headers as Record<string, string[]> | undefined;
+        const ip = requestHeaders?.["x-forwarded-for"]?.[0]?.split(",")[0]?.trim()
+          || requestHeaders?.["x-real-ip"]?.[0]
+          || null;
+        const userAgent = requestHeaders?.["user-agent"]?.[0] || null;
+
+        if (user && user.lockedUntil && new Date() < user.lockedUntil) {
+          const remaining = Math.ceil((user.lockedUntil.getTime() - Date.now()) / 60000);
+          throw new Error(`Hesabınız ${remaining} dakika süreyle kilitlendi. Daha sonra tekrar deneyin.`);
+        }
+
         if (!user) {
-          throw new Error("Bu e-posta ile kayıtlı kullanıcı bulunamadı");
+          await prisma.loginAttempt.create({
+            data: { userId: 0, email, success: false, ip, userAgent },
+          });
+          throw new Error("E-posta veya şifre hatalı");
         }
 
         const isValid = await bcrypt.compare(password, user.password);
 
         if (!isValid) {
-          throw new Error("Hatalı şifre");
+          const newAttemptCount = user.failedLoginAttempts + 1;
+          const shouldLock = newAttemptCount >= MAX_LOGIN_ATTEMPTS;
+
+          await prisma.user.update({
+            where: { id: user.id },
+            data: {
+              failedLoginAttempts: newAttemptCount,
+              lockedUntil: shouldLock ? new Date(Date.now() + LOCKOUT_DURATION_MS) : user.lockedUntil,
+            },
+          });
+
+          await prisma.loginAttempt.create({
+            data: { userId: user.id, email, success: false, ip, userAgent },
+          });
+
+          if (shouldLock) {
+            Sentry.captureMessage(`Account locked: ${email} (${newAttemptCount} failed attempts from IP ${ip})`, "warning");
+            throw new Error("Çok fazla başarısız deneme. Hesabınız 15 dakika süreyle kilitlendi.");
+          }
+
+          const remaining = MAX_LOGIN_ATTEMPTS - newAttemptCount;
+          throw new Error(`Hatalı şifre. ${remaining} deneme hakkınız kaldı.`);
         }
 
         if (!user.emailVerified) {
           throw new Error("E-posta adresiniz doğrulanmamış. Lütfen e-postanızı kontrol edin.");
         }
+
+        if (user.lastLoginIp && ip && user.lastLoginIp !== ip) {
+          Sentry.captureMessage(`Suspicious login: ${email} from new IP ${ip} (previous: ${user.lastLoginIp})`, "warning");
+        }
+
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            failedLoginAttempts: 0,
+            lockedUntil: null,
+            lastLoginAt: new Date(),
+            lastLoginIp: ip,
+          },
+        });
 
         return {
           id: String(user.id),
@@ -124,11 +182,19 @@ let googleRole = "CUSTOMER";
         token.role = token.roles;
         token.avatar = (user as any).avatar;
         token.tokenVersion = (user as any).tokenVersion || 0;
-        console.log("[JWT] New login - token created:", { id: token.id, roles: token.roles, tokenVersion: token.tokenVersion });
+        token.loginAt = Math.floor(Date.now() / 1000);
       }
       // Normalise eski JWT token'lardaki string ID'leri (Prisma Int uyumu)
       if (typeof token.id === "string") {
         token.id = Number(token.id) || 0;
+      }
+      // Session absolute timeout (24 saat)
+      if (token.loginAt) {
+        const elapsed = Date.now() - (token.loginAt as number) * 1000;
+        if (elapsed > SESSION_ABSOLUTE_TIMEOUT_MS) {
+          console.log("[JWT] Session absolute timeout exceeded, forcing re-login");
+          throw new Error("Oturum süresi doldu, lütfen tekrar giriş yapın");
+        }
       }
       // Versiyon kontrolü SADECE token yenilemesinde (yeni girişte değil)
       if (token.id && !user && !account) {
@@ -172,6 +238,7 @@ let googleRole = "CUSTOMER";
   },
   session: {
     strategy: "jwt",
+    maxAge: 24 * 60 * 60, // 24 saat (sliding)
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
