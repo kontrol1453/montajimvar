@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 
-const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET || 'montajimvar-refresh-secret';
-const JWT_SECRET = process.env.NEXTAUTH_SECRET || 'montajimvar-gizli-anahtar-degistirin';
+const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET!;
+const JWT_SECRET = process.env.NEXTAUTH_SECRET!;
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     // Verify refresh token
     let decoded: { id: number } | null = null;
     try {
-      decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET || 'montajimvar-refresh-secret') as { id: number };
+      decoded = jwt.verify(refreshToken, REFRESH_SECRET!) as { id: number };
     } catch {
       return NextResponse.json(
         { error: 'Geçersiz veya süresi dolmuş refresh token' },
@@ -48,14 +48,14 @@ export async function POST(request: NextRequest) {
         name: user.name, 
         roles: user.roles 
       },
-      process.env.NEXTAUTH_SECRET || 'montajimvar-gizli-anahtar-degistirin',
+      JWT_SECRET!,
       { expiresIn: '15m' }
     );
 
     // Optionally generate new refresh token (rotation)
     const newRefreshToken = jwt.sign(
       { id: user.id },
-      process.env.REFRESH_TOKEN_SECRET || 'montajimvar-refresh-secret',
+      REFRESH_SECRET!,
       { expiresIn: '7d' }
     );
 

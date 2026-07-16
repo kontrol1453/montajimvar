@@ -9,9 +9,9 @@ export async function hasPermission(
       where: { role_feature: { role, feature } },
     });
 
-    return perm?.enabled ?? true; // Default to true if not set
+    return perm?.enabled ?? false;
   } catch {
-    return true; // Default to true on error
+    return false;
   }
 }
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { HelpCircle, ChevronDown } from "lucide-react";
 import { FAQ_ITEMS } from "./_lib/v5.constants";
+import { sanitizeJSONLD } from "@/lib/sanitize";
 
 export default function FAQv5() {
   const [openId, setOpenId] = useState<string | null>(FAQ_ITEMS[0]?.id ?? null);
@@ -19,7 +20,7 @@ export default function FAQv5() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: sanitizeJSONLD(JSON.stringify({
             "@context": "https://schema.org",
             "@type": "FAQPage",
             mainEntity: FAQ_ITEMS.map((f) => ({
@@ -30,7 +31,7 @@ export default function FAQv5() {
                 text: f.answer,
               },
             })),
-          }),
+          })),
         }}
       />
 

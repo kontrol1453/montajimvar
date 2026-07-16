@@ -11,6 +11,7 @@ const csp = [
   `object-src 'none'`,
   `base-uri 'self'`,
   `form-action 'self'`,
+  `frame-ancestors 'none'`,
 ].join("; ");
 
 const withBundleAnalyzer = process.env.ANALYZE === "true"
@@ -38,6 +39,7 @@ const nextConfig = withBundleAnalyzer({
           { key: "Content-Security-Policy", value: csp },
           { key: "X-XSS-Protection", value: "1; mode=block" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+          { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains; preload" },
         ],
       },
       {

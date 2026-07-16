@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import crypto from "crypto";
 import { auth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
@@ -42,7 +43,7 @@ export async function POST(request: Request) {
 
     for (const file of files) {
       const ext = file.name.split(".").pop() || "jpg";
-      const fileName = `reviews/${userId}/${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${ext}`;
+      const fileName = `reviews/${userId}/${Date.now()}-${crypto.randomBytes(8).toString("hex")}.${ext}`;
 
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);

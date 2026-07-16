@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { sanitizeHTML, sanitizeJSONLD } from "@/lib/sanitize";
 
 export const dynamic = "force-dynamic";
 
@@ -84,7 +85,7 @@ export default async function CityServicePage({ params }: Props) {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: sanitizeJSONLD(JSON.stringify(jsonLd)) }}
       />
       <div className="text-sm text-sub-text mb-4">
         <Link href="/" className="hover:text-montaj">Anasayfa</Link>
@@ -98,7 +99,7 @@ export default async function CityServicePage({ params }: Props) {
 
       <div
         className="prose prose-invert max-w-none mb-8 [&_p]:text-gray-200 [&_h2]:text-white [&_h3]:text-white"
-        dangerouslySetInnerHTML={{ __html: page.content }}
+        dangerouslySetInnerHTML={{ __html: sanitizeHTML(page.content) }}
       />
 
       {profiles.length > 0 && (

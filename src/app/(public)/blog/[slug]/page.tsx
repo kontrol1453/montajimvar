@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { sanitizeHTML } from "@/lib/sanitize";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -72,7 +73,7 @@ export default async function BlogPostPage({ params }: Props) {
 
       <div
         className="prose prose-slate max-w-none [&_h2]:text-[var(--color-text-primary)] [&_h3]:text-[var(--color-text-primary)] [&_p]:text-[var(--color-text-secondary)] [&_li]:text-[var(--color-text-secondary)] [&_a]:text-montaj [&_img]:rounded-lg"
-        dangerouslySetInnerHTML={{ __html: post.content }}
+        dangerouslySetInnerHTML={{ __html: sanitizeHTML(post.content) }}
       />
     </article>
   );

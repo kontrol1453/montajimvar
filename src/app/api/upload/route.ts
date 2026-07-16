@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
+import crypto from "crypto";
 import { auth } from "@/lib/auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { supabase } from "@/lib/supabase";
 
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
 
     // Upload to Supabase Storage
     const ext = file.name.split(".").pop() || "jpg";
-    const fileName = `${profileId}/${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${ext}`;
+    const fileName = `${profileId}/${Date.now()}-${crypto.randomBytes(8).toString("hex")}.${ext}`;
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);

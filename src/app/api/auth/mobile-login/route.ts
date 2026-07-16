@@ -1,23 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
+import { loginSchema } from '@/lib/validation';
 
-const JWT_SECRET = process.env.NEXTAUTH_SECRET || 'montajimvar-gizli-anahtar-degistirin';
-const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET || 'montajimvar-refresh-secret';
+const JWT_SECRET = process.env.NEXTAUTH_SECRET!;
+const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET!;
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { email, password } = body;
+    const rawBody = await request.json();
+    const parsed = loginSchema.safeParse(rawBody);
 
-    if (!email || !password) {
+    if (!parsed.success) {
+      const errors = parsed.error.flatten().fieldErrors;
+      const firstError = Object.values(errors).flat()[0] || 'Geçersiz veri';
       return NextResponse.json(
-        { error: 'E-posta ve şifre gerekli' },
+        { error: firstError },
         { status: 400 }
       );
     }
+
+    const { email, password } = parsed.data;
 
     // Find user
     const user = await prisma.user.findUnique({
@@ -32,7 +36,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify password
-    const bcrypt = require('bcryptjs');
     const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) {

@@ -2,19 +2,20 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
 import { sendEmail, resetPasswordHtml } from "@/lib/email";
+import { emailSchema } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   try {
-    const { email } = await request.json();
+    const rawBody = await request.json();
+    const parsed = emailSchema.safeParse(rawBody);
 
-    if (!email) {
-      return NextResponse.json(
-        { error: "E-posta adresi gerekli." },
-        { status: 400 }
-      );
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Geçerli bir e-posta adresi girin" }, { status: 400 });
     }
+
+    const { email } = parsed.data;
 
     // Check if user exists (don't reveal)
     const user = await prisma.user.findUnique({ where: { email } });

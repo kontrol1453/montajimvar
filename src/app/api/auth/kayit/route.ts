@@ -4,26 +4,20 @@ import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { sendEmail, verifyEmailHtml } from "@/lib/email";
 import { notifyAdmin } from "@/lib/notifications";
+import { registerSchema } from "@/lib/validation";
 
 export async function POST(request: Request) {
   try {
-    const { name, email, password, phone, role, city } = await request.json();
+    const rawBody = await request.json();
+    const parsed = registerSchema.safeParse(rawBody);
 
-    if (!name || !email || !password || !role) {
-      return NextResponse.json(
-        { error: "Ad, e-posta, şifre ve rol zorunludur." },
-        { status: 400 }
-      );
+    if (!parsed.success) {
+      const errors = parsed.error.flatten().fieldErrors;
+      const firstError = Object.values(errors).flat()[0] || "Geçersiz veri";
+      return NextResponse.json({ error: firstError }, { status: 400 });
     }
 
-    const validRoles = ["CUSTOMER", "ASSEMBLER", "MANUFACTURER"];
-    if (!validRoles.includes(role)) {
-      return NextResponse.json(
-        { error: "Geçersiz kullanıcı rolü." },
-        { status: 400 }
-      );
-    }
-
+    const { name, email, password, phone, role, city } = parsed.data;
     const roles = [role];
 
     const existing = await prisma.user.findUnique({ where: { email } });

@@ -1,9 +1,31 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import Provider from "@/components/Provider";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { sanitizeJSONLD, escapeScriptBody } from "@/lib/sanitize";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-manrope",
+});
+
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://montajimvar.xyz";
 
 export const metadata: Metadata = {
-  title: "Montajım Var - Profesyonel Montaj Platformu",
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: "Montajım Var - Profesyonel Montaj Platformu",
+    template: "%s | Montajım Var",
+  },
   description:
     "Kurumsal firmalar ile doğrulanmış montaj ekiplerini buluşturuyoruz. Mobilya, reklam, AVM, fuar standı ve elektrik montaj hizmetleri.",
   manifest: "/manifest.json",
@@ -13,11 +35,7 @@ export const metadata: Metadata = {
     title: "Montajım Var",
     startupImage: ["/apple-splash-icon.png"],
   },
-  other: {
-    "apple-mobile-web-app-capable": "yes",
-    "mobile-web-app-capable": "yes",
-    "apple-touch-fullscreen": "yes",
-  },
+  other: {},
   icons: {
     icon: [
       { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
@@ -34,6 +52,17 @@ export const metadata: Metadata = {
     type: "website",
     locale: "tr_TR",
     siteName: "Montajım Var",
+    url: baseUrl,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Montajım Var - Profesyonel Montaj Platformu",
+    description:
+      "Kurumsal firmalar ile doğrulanmış montaj ekiplerini buluşturuyoruz.",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -50,33 +79,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr">
+    <html lang="tr" className={`${inter.variable} ${manrope.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="//montajimvar.xyz" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap"
-        />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap"
-        />
+        <link rel="dns-prefetch" href="//*.supabase.co" />
+        <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION || ""} />
       </head>
       <body
-        className="min-h-screen flex flex-col"
-        style={{ fontFamily: "'Inter', system-ui, -apple-system, sans-serif" }}
+        className="min-h-screen flex flex-col antialiased"
+        style={{ fontFamily: "var(--font-inter), system-ui, -apple-system, sans-serif" }}
       >
         <Provider>
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
-              __html: JSON.stringify({
+              __html: sanitizeJSONLD(JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "WebSite",
                 name: "Montajım Var",
-                url: "https://montajimvar.xyz",
+                url: baseUrl,
                 description:
                   "Kurumsal firmalar ile doğrulanmış montaj ekiplerini buluşturuyoruz.",
                 inLanguage: "tr",
@@ -84,39 +105,39 @@ export default function RootLayout({
                   "@type": "SearchAction",
                   target: {
                     "@type": "EntryPoint",
-                    urlTemplate:
-                      "https://montajimvar.xyz/ara?q={search_term_string}",
+                    urlTemplate: `${baseUrl}/ara?q={search_term_string}`,
                   },
                   "query-input": "required name=search_term_string",
                 },
-              }),
+              })),
             }}
           />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
-              __html: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "Organization",
-                name: "Montajım Var",
-                url: "https://montajimvar.xyz",
-                logo: "https://montajimvar.xyz/icon-512.png",
-                description:
-                  "Türkiye'nin profesyonel montaj platformu. Mobilya, klima, tabela, AVM, fuar standı, elektrik ve endüstriyel montaj.",
-              }),
+__html: sanitizeJSONLD(JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Montajım Var",
+              url: baseUrl,
+              logo: `${baseUrl}/icon-512.png`,
+              description:
+                "Türkiye'nin profesyonel montaj platformu. Mobilya, klima, tabela, AVM, fuar standı, elektrik ve endüstriyel montaj.",
+            })),
             }}
           />
           <script
             dangerouslySetInnerHTML={{
-              __html: `
+              __html: escapeScriptBody(`
                 if ('serviceWorker' in navigator) {
                   window.addEventListener('load', function() {
                     navigator.serviceWorker.register('/sw.js');
                   });
                 }
-              `,
-            }}
+`),
+              }}
           />
+          <GoogleAnalytics />
           {children}
         </Provider>
       </body>

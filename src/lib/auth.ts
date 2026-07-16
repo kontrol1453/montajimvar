@@ -5,6 +5,8 @@ import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
 import crypto from "crypto";
 import { cookies } from "next/headers";
+import { verifySignedCookie } from "./cookie-sign";
+import { loginSchema } from "./validation";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -14,20 +16,23 @@ export const authOptions: AuthOptions = {
         email: { label: "E-posta", type: "email" },
         password: { label: "Şifre", type: "password" },
       },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+async authorize(credentials) {
+        const parsed = loginSchema.safeParse(credentials);
+        if (!parsed.success) {
           throw new Error("E-posta ve şifre gerekli");
         }
 
+        const { email, password } = parsed.data;
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email },
         });
 
         if (!user) {
           throw new Error("Bu e-posta ile kayıtlı kullanıcı bulunamadı");
         }
 
-        const isValid = await bcrypt.compare(credentials.password, user.password);
+        const isValid = await bcrypt.compare(password, user.password);
 
         if (!isValid) {
           throw new Error("Hatalı şifre");
@@ -60,11 +65,16 @@ export const authOptions: AuthOptions = {
         });
 
         // Google ile kayıt olurken seçilen rolü cookie'den al
-        let googleRole = "CUSTOMER";
+let googleRole = "CUSTOMER";
         try {
           const cookieStore = await cookies();
-          googleRole = cookieStore.get("google_signup_role")?.value || "CUSTOMER";
-          // Cookie'yi temizle
+          const rawCookie = cookieStore.get("google_signup_role")?.value;
+          if (rawCookie) {
+            const verified = verifySignedCookie(rawCookie);
+            if (verified) {
+              googleRole = verified;
+            }
+          }
           cookieStore.set("google_signup_role", "", { maxAge: 0, path: "/" });
         } catch {
           // cookies() kullanılamazsa varsayılan role devam et
@@ -163,7 +173,7 @@ export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt",
   },
-  secret: process.env.NEXTAUTH_SECRET || "montajimvar-gizli-anahtar-degistirin",
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 export async function auth() {

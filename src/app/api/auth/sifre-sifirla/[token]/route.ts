@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { passwordResetSchema } from "@/lib/validation";
 
 export async function POST(
   request: Request,
@@ -8,14 +9,15 @@ export async function POST(
 ) {
   try {
     const { token } = await params;
-    const { password } = await request.json();
+    const parsed = passwordResetSchema.safeParse({ token, password: (await request.json()).password });
 
-    if (!password || password.length < 6) {
-      return NextResponse.json(
-        { error: "Şifre en az 6 karakter olmalıdır." },
-        { status: 400 }
-      );
+    if (!parsed.success) {
+      const errors = parsed.error.flatten().fieldErrors;
+      const firstError = Object.values(errors).flat()[0] || "Geçersiz veri";
+      return NextResponse.json({ error: firstError }, { status: 400 });
     }
+
+    const { password } = parsed.data;
 
     // Find token
     const resetToken = await prisma.passwordResetToken.findUnique({

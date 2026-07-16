@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 export type PaymentProvider = "mock" | "iyzico" | "paytr" | "stripe";
 
 export interface CreatePaymentInput {
@@ -44,13 +46,13 @@ class MockProvider implements PaymentProviderInterface {
     const err = this.validateCard(input);
     if (err) return { success: false, error: err };
 
-    const ok = Math.random() > 0.1;
+    const ok = crypto.randomInt(0, 10) > 0;
     if (!ok) return { success: false, error: "Ödeme reddedildi. (mock)" };
 
     return {
       success: true,
-      providerPaymentId: `mock_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
-      providerConvId: `MOCK${Math.floor(Math.random() * 1000000)}`,
+      providerPaymentId: `mock_${Date.now()}_${crypto.randomBytes(4).toString("hex")}`,
+      providerConvId: `MOCK${crypto.randomInt(1000000)}`,
     };
   }
 

@@ -8,6 +8,7 @@ import AdminTable, { type TableColumn } from "@/components/admin/DataTable/Admin
 import Badge from "@/components/ui/Badge";
 import RowActionsDropdown from "@/components/admin/DataTable/RowActionsDropdown";
 import LoadingSkeleton from "@/components/admin/LoadingSkeleton";
+import { sanitizeHTML } from "@/lib/sanitize";
 import Dialog from "@/components/admin/Dialog";
 import { Edit, Trash2, Eye, EyeOff } from "lucide-react";
 
@@ -218,7 +219,7 @@ export default function AdminBlogPage() {
                     className={`text-xs px-2 py-1 rounded ${preview ? 'bg-[var(--admin-primary)] text-white' : 'bg-[var(--admin-surface-muted)] text-[var(--admin-text-secondary)]'}`}>Önizle</button>
                 </div>
                 {preview ? (
-                  <div className="bg-[var(--admin-surface-muted)] border border-[var(--admin-border)] rounded-md p-4 text-[var(--admin-text-primary)] prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: form.content }} />
+                  <div className="bg-[var(--admin-surface-muted)] border border-[var(--admin-border)] rounded-md p-4 text-[var(--admin-text-primary)] prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: sanitizeHTML(form.content) }} />
                 ) : (
                   <textarea value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
                     className={`${inputClass} font-mono text-sm`} rows={16} required />
