@@ -1,0 +1,64 @@
+name: Production Deploy
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  deploy:
+    name: Deploy to Production (Pi)
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+        env:
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+
+      - name: Deploy to Pi via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.PI_HOST }}
+          username: ${{ secrets.PI_USER }}
+          key: ${{ secrets.PI_SSH_KEY }}
+          script: |
+            cd /home/pi/montajimvar
+            git fetch --all
+            git checkout ${{ github.ref_name }}
+            npm ci --omit=dev
+            npx prisma generate
+            npx prisma migrate deploy
+            npx prisma db push --skip-generate
+            pm2 reload montajimvar --update-env
+
+      - name: Health check
+        run: |
+          sleep 10
+          curl -fsS https://test.montajimvar.xyz/api/health || exit 1
+
+      - name: Smoke test
+        run: |
+          curl -fsS https://test.montajimvar.xyz/ > /dev/null
+          curl -fsS https://test.montajimvar.xyz/api/categories > /dev/null
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          draft: false
+          prerelease: false

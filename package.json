@@ -2,6 +2,10 @@
   "name": "montajimvar_app",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.11.0",
+    "npm": ">=10.0.0"
+  },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
   },
@@ -10,6 +14,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "seed": "npx tsx prisma/seed.ts",
     "seed-city-pages": "npx tsx prisma/seed-city-pages.ts",
     "seed-blog": "npx tsx prisma/seed-blog.ts"
@@ -42,13 +51,18 @@
   "devDependencies": {
     "@next/bundle-analyzer": "^16.2.10",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^20",
     "@types/nodemailer": "^8.0.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "jsdom": "^29.1.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.10"
   }
 }
