@@ -35,6 +35,7 @@ echo ""
 # Step 3: Run migrations
 echo "[3/7] Running database migrations..."
 npx prisma migrate deploy 2>/dev/null || echo "migrations skipped or already applied"
+npx prisma db push --skip-generate 2>/dev/null || echo "db push skipped"
 echo "OK"
 echo ""
 

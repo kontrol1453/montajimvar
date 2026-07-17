@@ -1,0 +1,149 @@
+version: '3.8'
+
+# Staging Environment
+# Usage: docker compose -f docker-compose.yml -f docker-compose.staging.yml up -d
+
+services:
+  # --------------------------------------------------
+  # Staging Database (Neon Branch - External)
+  # --------------------------------------------------
+  # Uses external Neon branch database via DATABASE_URL
+  # No local postgres container
+
+  # --------------------------------------------------
+  # Staging Application
+  # --------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    container_name: montajimvar-staging
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${STAGING_DATABASE_URL}
+      - REDIS_URL=${STAGING_REDIS_URL}
+      - NEXTAUTH_URL=https://staging.montajimvar.xyz
+      - NEXTAUTH_SECRET=${STAGING_NEXTAUTH_SECRET}
+      - NEXT_PUBLIC_APP_URL=https://staging.montajimvar.xyz
+      - NEXT_PUBLIC_SUPABASE_URL=${STAGING_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${STAGING_SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${STAGING_SUPABASE_SERVICE_ROLE_KEY}
+      - SENTRY_DSN=${STAGING_SENTRY_DSN}
+      - SENTRY_ORG=${STAGING_SENTRY_ORG}
+      - SENTRY_PROJECT=${STAGING_SENTRY_PROJECT}
+      - SENTRY_AUTH_TOKEN=${STAGING_SENTRY_AUTH_TOKEN}
+    ports:
+      - "3000:3000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    networks:
+      - montajimvar-staging-network
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # --------------------------------------------------
+  # Staging Redis (for rate limiting, sessions)
+  # --------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: montajimvar-staging-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - staging_redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - montajimvar-staging-network
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  # --------------------------------------------------
+  # Staging Push Service
+  # --------------------------------------------------
+  push-service:
+    build:
+      context: ./push-service
+      dockerfile: Dockerfile
+      target: runner
+    container_name: montajimvar-staging-push
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      VAPID_PUBLIC_KEY: ${STAGING_VAPID_PUBLIC_KEY}
+      VAPID_PRIVATE_KEY: ${STAGING_VAPID_PRIVATE_KEY}
+      VAPID_SUBJECT: ${STAGING_VAPID_SUBJECT}
+      CORS_ORIGIN: https://staging.montajimvar.xyz
+      PUSH_SERVICE_KEY: ${STAGING_PUSH_SERVICE_KEY}
+    ports:
+      - "3001:3001"
+    volumes:
+      - staging_push_data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    networks:
+      - montajimvar-staging-network
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # --------------------------------------------------
+  # Nginx Reverse Proxy (SSL Termination)
+  # --------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: montajimvar-staging-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/staging.conf:/etc/nginx/nginx.conf:ro
+      - ./certs/staging:/etc/nginx/certs:ro
+      - nginx_cache:/var/cache/nginx
+    depends_on:
+      - app
+      - push-service
+    networks:
+      - montajimvar-staging-network
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+volumes:
+  staging_redis_data:
+  staging_push_data:
+
+networks:
+  montajimvar-staging-network:
+    driver: bridge
+    name: montajimvar-staging-network

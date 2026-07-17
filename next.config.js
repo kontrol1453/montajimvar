@@ -19,6 +19,7 @@ const withBundleAnalyzer = process.env.ANALYZE === "true"
   : (c) => c;
 
 const nextConfig = withBundleAnalyzer({
+  output: "standalone",
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 86400,

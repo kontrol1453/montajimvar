@@ -1,0 +1,85 @@
+version: '3.8'
+
+# Local Development Override
+# Usage: docker compose -f docker-compose.yml -f docker-compose.override.yml up
+
+services:
+  app:
+    build:
+      target: builder  # Use builder stage for hot reload
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://montajimvar:montajimvar_dev@postgres:5432/montajimvar?schema=public
+      - REDIS_URL=redis://redis:6379
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=dev-secret-change-in-production
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+      - WATCHPACK_POLLING=true  # Required for file watching in Docker
+    volumes:
+      - ./:/app:cached
+      - /app/node_modules
+      - /app/.next
+    command: >
+      sh -c "
+        npx prisma generate &&
+        npx prisma db push &&
+        npm run dev
+      "
+
+  push-service:
+    build:
+      target: builder
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      CORS_ORIGIN: http://localhost:3000
+      PUSH_SERVICE_KEY: local-dev-push-key
+    volumes:
+      - ./push-service:/app:cached
+      - /app/node_modules
+    command: >
+      sh -c "
+        npm ci &&
+        node server.js
+      "
+
+  postgres:
+    volumes:
+      - ./postgres-init:/docker-entrypoint-initdb.d:ro
+
+  # Mailhog for email testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: montajimvar-mailhog
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - montajimvar-network
+    restart: unless-stopped
+
+  # LocalStack for AWS services (S3, etc.)
+  localstack:
+    image: localstack/localstack:latest
+    container_name: montajimvar-localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - AWS_DEFAULT_REGION=us-east-1
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - montajimvar-network
+    profiles:
+      - tools
+    restart: unless-stopped
+
+volumes:
+  localstack_data:
+
+networks:
+  montajimvar-network:
+    external: true

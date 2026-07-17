@@ -1,0 +1,160 @@
+name: Preview Deploy
+
+on:
+  pull_request:
+    types: [opened, synchronize, closed]
+
+concurrency:
+  group: preview-${{ github.event.pull_request.head.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    name: Preview (${{ github.event.action }})
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute preview config
+        id: config
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          # Sanitize branch name for subdomain (lowercase, alnum + hyphen only, max 20 chars)
+          SLUG=$(echo "$BRANCH" | tr -cd 'a-zA-Z0-9-' | tr 'A-Z' 'a-z' | head -c 20)
+          if [ -z "$SLUG" ]; then SLUG="pr-${{ github.event.pull_request.number }}"; fi
+
+          # Port: hash branch slug to 3002-3099 range
+          PORT=$(( 3002 + $(echo "$SLUG" | cksum | cut -d' ' -f1) % 98 ))
+
+          echo "slug=$SLUG" >> $GITHUB_OUTPUT
+          echo "port=$PORT" >> $GITHUB_OUTPUT
+          echo "process=montajimvar-preview-$SLUG" >> $GITHUB_OUTPUT
+
+      - name: Deploy to Pi (on open/sync)
+        if: github.event.action == 'opened' || github.event.action == 'synchronize'
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.PI_HOST }}
+          username: ${{ secrets.PI_USER }}
+          key: ${{ secrets.PI_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            SLUG="${{ steps.config.outputs.slug }}"
+            PORT="${{ steps.config.outputs.port }}"
+            PROCESS="montajimvar-preview-$SLUG"
+            APP_DIR="/home/pi/previews/$SLUG"
+
+            echo "=== Preview Deploy: $SLUG on port $PORT ==="
+
+            # Check Pi resources
+            AVAIL_MB=$(free -m | awk '/Mem:/ {print $4}')
+            if [ "$AVAIL_MB" -lt 300 ]; then
+              echo "WARN: Low memory (${AVAIL_MB}MB). Skipping preview deploy."
+              exit 0
+            fi
+
+            # Create preview directory
+            mkdir -p $APP_DIR
+            cd $APP_DIR
+
+            # Clone or update
+            if [ ! -d ".git" ]; then
+              git clone https://github.com/kontrol1453/montajimvar.git .
+            fi
+            git fetch --all
+            git checkout ${{ github.event.pull_request.head.sha }}
+
+            # Install deps (omit dev for leaner preview)
+            npm ci --omit=dev
+
+            # Prisma
+            npx prisma generate
+            npx prisma migrate deploy
+
+            # Build
+            npm run build
+
+            # Kill existing if running
+            pm2 delete $PROCESS 2>/dev/null || true
+
+            # Start with PM2 (limit memory to 256MB)
+            pm2 start npm --name $PROCESS \
+              --max-memory-restart 256M \
+              -- start -- --port $PORT
+            pm2 save
+
+            # Health check
+            sleep 5
+            curl -fsS http://localhost:$PORT/api/health || {
+              echo "WARN: Health check failed. Restarting..."
+              pm2 restart $PROCESS
+              sleep 3
+              curl -fsS http://localhost:$PORT/api/health || exit 1
+            }
+
+            echo "Preview URL: https://preview-$SLUG.test.montajimvar.xyz"
+
+      - name: Teardown preview (on close/merge)
+        if: github.event.action == 'closed'
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.PI_HOST }}
+          username: ${{ secrets.PI_USER }}
+          key: ${{ secrets.PI_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            SLUG="${{ steps.config.outputs.slug }}"
+            PROCESS="montajimvar-preview-$SLUG"
+            APP_DIR="/home/pi/previews/$SLUG"
+
+            echo "=== Preview Teardown: $SLUG ==="
+            pm2 delete $PROCESS 2>/dev/null || true
+            pm2 save
+            rm -rf $APP_DIR
+            echo "Cleaned up $SLUG"
+
+      - name: Comment on PR
+        if: github.event.action == 'opened' || github.event.action == 'synchronize'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const slug = '${{ steps.config.outputs.slug }}';
+            const port = '${{ steps.config.outputs.port }}';
+            const url = `https://preview-${slug}.test.montajimvar.xyz`;
+
+            const body = `## Preview Deployment
+
+            | | |
+            |---|---|
+            | URL | ${url} |
+            | Port | ${port} |
+            | Commit | \`${{ github.event.pull_request.head.sha }}\` |
+            | Health | ${url}/api/health |
+
+            Preview will auto-destroy when this PR is merged or closed.`;
+
+            // Find and update existing preview comment, or create new
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.data.find(c => c.body && c.body.includes('Preview Deployment'));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
