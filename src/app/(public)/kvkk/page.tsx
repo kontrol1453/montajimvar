@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "KVKK Aydınlatma Metni | Montajım Var",
   description: "Kişisel verilerin korunması kapsamında Montajım Var KVKK aydınlatma metni.",
+  alternates: { canonical: "/kvkk" },
+  openGraph: {
+    title: "KVKK Aydınlatma Metni | Montajım Var",
+    description: "Kişisel verilerin korunması kapsamında Montajım Var KVKK aydınlatma metni.",
+  },
 };
 
 export default function KvkkPage() {

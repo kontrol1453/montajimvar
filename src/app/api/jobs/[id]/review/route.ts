@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logActivity } from "@/lib/crm-activity";
 
 export const dynamic = "force-dynamic";
 
@@ -152,6 +153,16 @@ export async function POST(
 
       return r;
     });
+
+    logActivity({
+      type: "review",
+      subject: "İş değerlendirmesi yapıldı",
+      description: `${rating}/5 — ${comment ? comment.slice(0, 100) : "Yorum yok"}`,
+      entityType: "job",
+      entityId: Number(id),
+      ownerId: userId,
+      metadata: { rating },
+    }).catch(() => {});
 
     return NextResponse.json(
       { review, message: "Değerlendirmeniz kaydedildi." },

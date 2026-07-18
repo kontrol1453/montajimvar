@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { getSiteSettings } from "@/lib/site-settings";
 import HeroV5 from "./v5/HeroV5";
 import TrustBar from "./v5/TrustBar";
 import AudienceGateway from "./v5/AudienceGateway";
@@ -20,7 +21,16 @@ export const metadata: Metadata = {
   title: "Montajım Var - Profesyonel Montaj Platformu",
   description:
     "Türkiye'nin profesyonel montaj platformu. Mobilya, klima, tabela, AVM, fuar standı, elektrik ve endüstriyel montaj hizmetleri için doğrulanmış ekiplerden anında teklif alın.",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
+    title: "Montajım Var - Profesyonel Montaj Platformu",
+    description:
+      "Mobilya, klima, tabela, AVM, fuar standı ve elektrik montaj hizmetleri için doğrulanmış ekiplerden anında teklif alın.",
+  },
+  twitter: {
+    card: "summary_large_image",
     title: "Montajım Var - Profesyonel Montaj Platformu",
     description:
       "Mobilya, klima, tabela, AVM, fuar standı ve elektrik montaj hizmetleri için doğrulanmış ekiplerden anında teklif alın.",
@@ -47,8 +57,10 @@ async function getHomeData() {
             where: { isActive: true },
             orderBy: { sortOrder: "asc" },
             take: 4,
-          },
-        },
+  },
+
+  },
+
       }),
     ]);
   return {
@@ -63,12 +75,15 @@ async function getHomeData() {
 }
 
 export default async function HomePage() {
-  const data = await getHomeData();
+  const [data, settings] = await Promise.all([
+    getHomeData(),
+    getSiteSettings(),
+  ]);
 
   return (
     <div className="overflow-hidden">
       {/* ─── HERO (v5) ─── */}
-      <HeroV5 />
+      <HeroV5 settings={settings} />
 
       {/* ─── TRUST BAR (v5) ─── */}
       <TrustBar />
@@ -109,7 +124,7 @@ export default async function HomePage() {
       <FAQv5 />
 
       {/* ─── FİNAL CTA (v5) ─── */}
-      <FinalConversionCTA />
+      <FinalConversionCTA settings={settings} />
     </div>
   );
 }

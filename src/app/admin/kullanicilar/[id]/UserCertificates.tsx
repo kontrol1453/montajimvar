@@ -1,5 +1,7 @@
 "use client";
 
+"use client";
+
 import { formatDate } from "@/lib/utils";
 import EntityStatus from "@/components/admin/entity/EntityStatus";
 import AdminTable, { type TableColumn } from "@/components/admin/DataTable/AdminTable";

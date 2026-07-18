@@ -1,10 +1,26 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "Yardım & SSS - Montajım Var",
   description:
     "Sıkça sorulan sorular ve yardım dokümanları. Montajım Var platformunda firma nasıl bulunur, profil nasıl oluşturulur.",
+  alternates: {
+    canonical: "/yardim",
+  },
+  openGraph: {
+    title: "Yardım & SSS - Montajım Var",
+    description:
+      "Montajım Var platformunda firma nasıl bulunur, profil nasıl oluşturulur.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Yardım & SSS - Montajım Var",
+    description:
+      "Montajım Var platformunda firma nasıl bulunur, profil nasıl oluşturulur.",
+  },
 };
 
 const faqs = [

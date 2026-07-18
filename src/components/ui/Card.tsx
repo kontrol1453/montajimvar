@@ -3,11 +3,17 @@ import { cn } from "@/lib/utils";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
-  /** If false, removes default p-6 padding */
   padding?: boolean | "sm" | "md" | "lg";
-  /** When true, removes top/bottom border-radius for full-width sections */
   flush?: boolean;
+  variant?: "default" | "elevated" | "flat" | "dark";
 }
+
+const cardVariants = {
+  default: "card",
+  elevated: "card-elevated",
+  flat: "card-flat",
+  dark: "card-dark",
+};
 
 const paddingMap = {
   sm: "p-3",
@@ -20,6 +26,7 @@ export default function Card({
   className,
   padding = true,
   flush = false,
+  variant = "default",
   ...rest
 }: CardProps) {
   const paddingClass =
@@ -31,8 +38,8 @@ export default function Card({
   return (
     <div
       className={cn(
-        "bg-[var(--admin-surface)] border border-[var(--admin-border)] shadow-sm",
-        flush ? "" : "rounded-lg",
+        cardVariants[variant],
+        flush ? "" : "",
         paddingClass,
         className
       )}

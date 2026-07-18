@@ -39,7 +39,7 @@ export default async function TekliflerPage() {
 
   const userId = Number((session.user as any).id);
   const roles: string[] = (session.user as any).roles || [];
-  const isArtisan = roles.includes("ASSEMBLER") || roles.includes("MANUFACTURER") || roles.includes("ARTISAN");
+  const isArtisan = roles.some((r: string) => ["ASSEMBLER", "MANUFACTURER", "ARTISAN"].includes(r));
 
   const offers = await prisma.offer.findMany({
     where: isArtisan ? { artisanId: userId } : { job: { customerId: userId } },

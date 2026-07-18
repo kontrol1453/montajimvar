@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "İş Sağlığı ve Güvenliği | Montajım Var",
   description: "Montajım Var iş sağlığı ve güvenliği politikaları.",
+  alternates: { canonical: "/is-sagligi" },
+  openGraph: {
+    title: "İş Sağlığı ve Güvenliği | Montajım Var",
+    description: "Montajım Var iş sağlığı ve güvenliği politikaları.",
+  },
 };
 
 export default function IsSagligiPage() {

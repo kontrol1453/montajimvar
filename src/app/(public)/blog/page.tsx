@@ -8,6 +8,18 @@ export const fetchCache = "force-no-store";
 export const metadata: Metadata = {
   title: "Blog - Montajım Var",
   description: "Montaj, mobilya kurulumu ve ev dekorasyonu hakkında ipuçları, rehberler ve sektör haberleri.",
+  alternates: {
+    canonical: "/blog",
+  },
+  openGraph: {
+    title: "Blog - Montajım Var",
+    description: "Montaj, mobilya kurulumu ve ev dekorasyonu hakkında ipuçları ve rehberler.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog - Montajım Var",
+    description: "Montaj, mobilya kurulumu ve ev dekorasyonu hakkında ipuçları ve rehberler.",
+  },
 };
 
 export default async function BlogPage() {

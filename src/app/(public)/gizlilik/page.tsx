@@ -1,8 +1,15 @@
 import { Metadata } from "next";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "Gizlilik Politikası | Montajım Var",
   description: "Montajım Var platformunun gizlilik politikası ve KVKK uyumluluk bilgileri.",
+  alternates: { canonical: "/gizlilik" },
+  openGraph: {
+    title: "Gizlilik Politikası | Montajım Var",
+    description: "Montajım Var platformunun gizlilik politikası ve KVKK uyumluluk bilgileri.",
+  },
 };
 
 export default function GizlilikPage() {

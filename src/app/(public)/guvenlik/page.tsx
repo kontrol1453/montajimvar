@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "Güvenlik | Montajım Var",
   description: "Montajım Var güvenlik politikaları ve önlemleri.",
+  alternates: { canonical: "/guvenlik" },
+  openGraph: {
+    title: "Güvenlik | Montajım Var",
+    description: "Montajım Var güvenlik politikaları ve önlemleri.",
+  },
 };
 
 export default function GuvenlikPage() {

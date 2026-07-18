@@ -26,7 +26,10 @@ type AuditEntity =
   | "certificate"
   | "subscription_plan"
   | "role_permission"
-  | "notification";
+  | "notification"
+  | "blog_category"
+  | "category"
+  | "city_page";
 
 interface AuditParams {
   adminId: number;

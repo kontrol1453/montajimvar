@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logAdminAction, extractAdminId } from "@/lib/admin-audit";
 
 export const dynamic = "force-dynamic";
 
@@ -35,6 +36,14 @@ export async function POST(request: Request) {
 
     const page = await prisma.cityServicePage.create({
       data: { city, service, title, content, metaTitle: metaTitle || null, metaDesc: metaDesc || null, slug },
+    });
+
+    await logAdminAction({
+      adminId: extractAdminId(session),
+      action: "create",
+      entity: "city_page",
+      entityId: page.id,
+      details: { city, service, title },
     });
 
     return NextResponse.json(page, { status: 201 });

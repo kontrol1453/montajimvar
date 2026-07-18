@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "Ön Bilgilendirme Formu | Montajım Var",
   description: "Mesafeli Sözleşme ön bilgilendirme formu.",
+  alternates: { canonical: "/on-bilgilendirme" },
+  openGraph: {
+    title: "Ön Bilgilendirme Formu | Montajım Var",
+    description: "Mesafeli Sözleşme ön bilgilendirme formu.",
+  },
 };
 
 export default function OnBilgilendirmePage() {

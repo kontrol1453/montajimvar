@@ -120,9 +120,9 @@ export default async function SearchPage(props: { searchParams: Promise<{ [key: 
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold text-white mb-2">Tüm Firmalar</h1>
+      <h1 className="h2 mb-2">Tüm Firmalar</h1>
 
-      <div className="bg-dark-card rounded-xl border border-dark-border p-4 mb-8">
+      <div className="card p-4 mb-8">
         <SearchForm
           categories={categories}
           initialSehir={sehir}

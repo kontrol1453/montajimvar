@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, ShieldCheck } from "lucide-react";
-import { FINAL_CTA } from "./_lib/v5.constants";
+import type { SiteSettings } from "@/lib/site-settings";
 
-export default function FinalConversionCTA() {
+export default function FinalConversionCTA({ settings }: { settings: SiteSettings }) {
   return (
     <section
       aria-labelledby="final-headline"
@@ -18,37 +18,41 @@ export default function FinalConversionCTA() {
       <div className="container-app py-16 md:py-24">
         <div className="rounded-card border border-border bg-surface p-8 text-center shadow-elevated md:p-12">
           <h2 id="final-headline" className="heading-xl text-balance">
-            {FINAL_CTA.title}
+            {settings.finalCta.title}
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-text-secondary">
-            {FINAL_CTA.description}
+            {settings.finalCta.description}
           </p>
 
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <Link
-              href={FINAL_CTA.primary.href}
+              href={settings.finalCta.primary.href}
               className="btn-primary"
-              aria-label="Ücretsiz iş açma sayfasını tıkla"
+              aria-label={settings.finalCta.primary.label + " sayfasını tıkla"}
             >
-              {FINAL_CTA.primary.label}
+              {settings.finalCta.primary.label}
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href={FINAL_CTA.secondary.href}
+              href={settings.finalCta.secondary.href}
               className="btn-secondary"
             >
-              {FINAL_CTA.secondary.label}
+              {settings.finalCta.secondary.label}
             </Link>
           </div>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-text-tertiary">
-            <span className="inline-flex items-center gap-1.5">
-              <ShieldCheck className="h-3.5 w-3.5 text-accent" /> Emanet ödeme
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <ShieldCheck className="h-3.5 w-3.5 text-accent" /> Doğrulanmış ekipler
-            </span>
-            <span>· 81 il · ücretsiz iş ilanı</span>
+            {settings.finalCta.trustSignals.map((signal, i) => (
+              i === 0 ? (
+                <span key={i} className="inline-flex items-center gap-1.5">
+                  <ShieldCheck className="h-3.5 w-3.5 text-accent" /> {signal}
+                </span>
+              ) : (
+                <span key={i} className="inline-flex items-center gap-1.5">
+                  <ShieldCheck className="h-3.5 w-3.5 text-accent" /> {signal}
+                </span>
+              )
+            ))}
           </div>
         </div>
       </div>

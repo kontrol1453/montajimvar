@@ -2,13 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ShieldCheck, Star, Sparkles, MapPin, Search } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import {
-  HERO_PRIMARY_CTA,
-  HERO_SECONDARY_CTA,
-  TRUST_METRICS,
-} from "./_lib/v5.constants";
-
-export default async function HeroV5() {
+import type { SiteSettings } from "@/lib/site-settings";
+import { TRUST_METRICS } from "./_lib/v5.constants";
+export default async function HeroV5({ settings }: { settings: SiteSettings }) {
   const popularCategories = await prisma.category.findMany({
     where: { isActive: true, parentId: null },
     take: 6,
@@ -32,25 +28,19 @@ export default async function HeroV5() {
         <div className="grid items-center gap-12 md:grid-cols-12">
           <div className="md:col-span-7">
             <span className="section-label animate-fade-in">
-              <Sparkles className="h-3.5 w-3.5" /> Profesyonel Montaj Platformu
+              <Sparkles className="h-3.5 w-3.5" /> {settings.hero.badge}
             </span>
 
             <h1
               id="hero-headline"
               className="heading-xl mt-5 text-balance animate-fade-in-up"
             >
-              Türkiye&apos;nin profesyonel{" "}
-              <span className="gradient-text">montaj platformu</span>
+              {settings.hero.headline.replace(settings.hero.headlineHighlight, "")}
+              <span className="gradient-text">{settings.hero.headlineHighlight}</span>
             </h1>
 
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-text-secondary md:text-lg animate-fade-in-up">
-              Bireysel ya da kurumsal fark etmez: işinizi{" "}
-              <strong className="font-semibold text-text-primary">3 dakikada</strong>{" "}
-              tanımlayın, doğrulanmış ekiplerden teklifleri{" "}
-              <strong className="font-semibold text-text-primary">tek tabloda</strong>{" "}
-              karşılaştırın, ödemeyi{" "}
-              <strong className="font-semibold text-text-primary">emanette</strong>{" "}
-              tutarak güvenle tamamlayın.
+              {settings.hero.description}
             </p>
 
             <div className="mt-8 animate-fade-in-up">
@@ -66,20 +56,20 @@ export default async function HeroV5() {
                   <input
                     type="text"
                     name="q"
-                    placeholder="Hangi montaj hizmetini arıyorsunuz? Örn: IKEA, Klima..."
+                    placeholder={settings.hero.searchPlaceholder}
                     className="w-full pl-12 pr-32 py-4 rounded-2xl border border-border bg-surface shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-text-primary"
                   />
                   <button
                     type="submit"
                     className="absolute right-2 px-5 py-2 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors"
                   >
-                    Ara
+                    {settings.hero.searchButtonLabel}
                   </button>
                 </div>
               </form>
-              
+
               <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-text-tertiary">
-                <span>Popüler:</span>
+                <span>{settings.hero.popularLabel}</span>
                 {popularCategories.map((cat) => (
                   <Link 
                     key={cat.slug} 
@@ -94,18 +84,18 @@ export default async function HeroV5() {
 
             <div className="mt-8 flex flex-wrap items-center gap-3 animate-fade-in-up">
               <Link
-                href={HERO_PRIMARY_CTA.href}
+                href={settings.hero.primaryCta.href}
                 className="btn-primary"
-                aria-label="Ücretsiz iş oluşturma sayfasını aç"
+                aria-label={settings.hero.primaryCta.label + " sayfasını aç"}
               >
-                {HERO_PRIMARY_CTA.label}
+                {settings.hero.primaryCta.label}
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
-                href={HERO_SECONDARY_CTA.href}
+                href={settings.hero.secondaryCta.href}
                 className="btn-secondary"
               >
-                {HERO_SECONDARY_CTA.label}
+                {settings.hero.secondaryCta.label}
               </Link>
             </div>
 
@@ -113,15 +103,14 @@ export default async function HeroV5() {
               className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-text-tertiary animate-fade-in-up"
               aria-label="Hızlı güven sinyalleri"
             >
-              <li className="inline-flex items-center gap-1.5">
-                <ShieldCheck className="h-4 w-4 text-accent" /> Emanet ödeme
-              </li>
-              <li className="inline-flex items-center gap-1.5">
-                <Star className="h-4 w-4 text-amber-500" /> Doğrulanmış ekipler
-              </li>
-              <li className="inline-flex items-center gap-1.5">
-                <MapPin className="h-4 w-4 text-primary" /> 81 il · hızlı eşleşme
-              </li>
+              {settings.trustBar.items.map((item) => (
+                <li key={item.id} className="inline-flex items-center gap-1.5">
+                  {item.id === "escrow" && <ShieldCheck className="h-4 w-4 text-accent" />}
+                  {item.id === "verified" && <Star className="h-4 w-4 text-amber-500" />}
+                  {item.id === "coverage" && <MapPin className="h-4 w-4 text-primary" />}
+                  {item.label}
+                </li>
+              ))}
             </ul>
           </div>
 

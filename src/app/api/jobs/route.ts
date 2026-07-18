@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
+import { logActivity } from "@/lib/crm-activity";
 
 const PUSH_SERVICE_URL = process.env.NEXT_PUBLIC_PUSH_SERVICE_URL || "http://localhost:3001";
 const PUSH_SERVICE_KEY = process.env.PUSH_SERVICE_KEY;
@@ -187,6 +188,15 @@ export async function POST(request: Request) {
       console.error("Notification dispatch failed:", err)
     );
 
+    logActivity({
+      type: "status_change",
+      subject: "İş oluşturuldu",
+      description: `${title} — ${city}`,
+      entityType: "job",
+      entityId: job.id,
+      ownerId: userId,
+    }).catch(() => {});
+
     return NextResponse.json({ job, message: "İş başarıyla oluşturuldu." }, { status: 201 });
   } catch (error) {
     console.error("İş oluşturma hatası:", error);
@@ -207,7 +217,7 @@ async function notifyMatchingArtisans(
     // Find artisan profiles matching these categories AND this city
     const profiles = await prisma.profile.findMany({
       where: {
-        user: { roles: { has: "ARTISAN" } },
+        user: { roles: { hasSome: ["ASSEMBLER", "MANUFACTURER", "ARTISAN"] } },
         city,
       },
       select: { userId: true, user: { select: { email: true } } },

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { notifyAdmin } from "@/lib/notifications";
+import { logAdminAction, extractAdminId } from "@/lib/admin-audit";
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -135,6 +136,14 @@ export async function POST(request: Request) {
       title: "Google'dan Firma Eklendi",
       message: `${companyName} isimli firma Google araması üzerinden eklendi ve onay bekliyor.`,
       link: "/admin/firmalar",
+    });
+
+    await logAdminAction({
+      adminId: extractAdminId(session),
+      action: "create",
+      entity: "profile",
+      entityId: result.profileId,
+      details: { companyName: companyName.trim(), city: city.trim(), source: "google" },
     });
 
     return NextResponse.json({

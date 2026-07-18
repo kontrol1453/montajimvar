@@ -1,5 +1,4 @@
 import {
-  LayoutDashboard,
   Users,
   Building2,
   Briefcase,
@@ -17,6 +16,7 @@ import {
   UserCircle,
   Building,
   Wrench,
+  Palette,
 } from "lucide-react";
 import type { ComponentType } from "react";
 
@@ -108,6 +108,12 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
     label: "İçerik",
     items: [
       {
+        href: "/admin/site-ayarlari",
+        label: "Site Ayarları",
+        icon: Palette,
+        description: "Anasayfa metinleri, renkler ve içerik yönetimi",
+      },
+      {
         href: "/admin/blog",
         label: "Blog",
         icon: FileText,
@@ -157,30 +163,36 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
       },
     ],
   },
-  {
-    id: "system",
-    label: "Sistem",
-    items: [
-      {
-        href: "/admin/izinler",
-        label: "İzinler",
-        icon: Shield,
-        description: "Rollerin sayfa izinleri",
-      },
-      {
-        href: "/admin/abonelik-plani",
-        label: "Abonelik",
-        icon: CreditCard,
-        description: "Premium abonelik planları",
-      },
-      {
-        href: "/admin/crm",
-        label: "CRM",
-        icon: BarChart3,
-        description: "Müşteri ilişkileri ve analiz",
-      },
-    ],
-  },
+{
+      id: "system",
+      label: "Sistem",
+      items: [
+        {
+          href: "/admin/izinler",
+          label: "İzinler",
+          icon: Shield,
+          description: "Rollerin sayfa izinleri",
+        },
+        {
+          href: "/admin/abonelik-plani",
+          label: "Abonelik",
+          icon: CreditCard,
+          description: "Premium abonelik planları",
+        },
+        {
+          href: "/admin/crm",
+          label: "CRM",
+          icon: BarChart3,
+          description: "Müşteri ilişkileri ve analiz",
+        },
+        {
+          href: "/admin/audit-logs",
+          label: "Denetim Kayıtları",
+          icon: Shield,
+          description: "Sistem eylem denetim günlüğü",
+        },
+      ],
+    },
 ];
 
 export function findItemByPath(pathname: string | null): AdminNavItem | undefined {

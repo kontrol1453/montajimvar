@@ -1,8 +1,15 @@
 import { Metadata } from "next";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "Kullanım Koşulları | Montajım Var",
   description: "Montajım Var platformu kullanım koşulları ve sözleşmesi.",
+  alternates: { canonical: "/kullanim-kosullari" },
+  openGraph: {
+    title: "Kullanım Koşulları | Montajım Var",
+    description: "Montajım Var platformu kullanım koşulları ve sözleşmesi.",
+  },
 };
 
 export default function KullanimKosullariPage() {

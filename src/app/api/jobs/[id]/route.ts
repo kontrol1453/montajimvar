@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logActivity } from "@/lib/crm-activity";
 
 export const dynamic = "force-dynamic";
 
@@ -14,29 +15,30 @@ export async function GET(
 
     const job = await prisma.job.findUnique({
       where: { id: Number(id) },
-      include: {
-        customer: {
-          select: { id: true, name: true, avatar: true, phone: true },
-        },
-        categories: {
-          include: { category: { select: { id: true, name: true, slug: true, icon: true } } },
-        },
-        offers: {
-          orderBy: { amount: "asc" },
-          include: {
-            artisan: {
-              select: {
-                id: true,
-                name: true,
-                avatar: true,
-                profile: { select: { companyName: true, ratingAvg: true, reviewCount: true } },
+include: {
+          customer: {
+            select: { id: true, name: true, avatar: true, phone: true },
+          },
+          categories: {
+            include: { category: { select: { id: true, name: true, slug: true, icon: true } } },
+          },
+          offers: {
+            orderBy: { amount: "asc" },
+            include: {
+              artisan: {
+                select: {
+                  id: true,
+                  name: true,
+                  avatar: true,
+                  profile: { select: { companyName: true, ratingAvg: true, reviewCount: true } },
+                },
               },
             },
           },
+          timeline: { orderBy: { createdAt: "asc" } },
+          payment: true,
+          review: true,
         },
-        timeline: { orderBy: { createdAt: "asc" } },
-        review: true,
-      },
     });
 
     if (!job) {
@@ -77,7 +79,9 @@ export async function PATCH(
       en_route: ["in_progress", "cancelled"],
       in_progress: ["completed", "cancelled"],
       completed: ["review_pending"],
-      review_pending: [],
+      review_pending: ["payment_pending"],
+      payment_pending: ["paid"],
+      paid: [],
       cancelled: [],
     };
 
@@ -87,7 +91,14 @@ export async function PATCH(
       return NextResponse.json({ error: "İş bulunamadı." }, { status: 404 });
     }
 
-    // Customer can always update; artisan can update en_route / in_progress
+    if (!newStatus) {
+      return NextResponse.json(
+        { error: "Yeni durum belirtilmelidir." },
+        { status: 400 }
+      );
+    }
+
+    const isAdmin = (session.user as any).roles?.includes("ADMIN");
     const isCustomer = job.customerId === userId;
     const isArtisan =
       !isCustomer &&
@@ -96,17 +107,10 @@ export async function PATCH(
         where: { jobId: Number(id), artisanId: userId, status: "accepted" },
       }));
 
-    if (!isCustomer && !isArtisan) {
+    if (!isCustomer && !isArtisan && !isAdmin) {
       return NextResponse.json(
         { error: "Bu işi güncelleme yetkiniz yok." },
         { status: 403 }
-      );
-    }
-
-    if (!newStatus) {
-      return NextResponse.json(
-        { error: "Yeni durum belirtilmelidir." },
-        { status: 400 }
       );
     }
 
@@ -143,6 +147,16 @@ export async function PATCH(
         timeline: { orderBy: { createdAt: "asc" } },
       },
     });
+
+    logActivity({
+      type: "status_change",
+      subject: `İş durumu güncellendi: ${newStatus}`,
+      description: `#${job.id} — ${job.title || "İş"} (${job.status} → ${newStatus})`,
+      entityType: "job",
+      entityId: job.id,
+      ownerId: userId,
+      metadata: { from: job.status, to: newStatus },
+    }).catch(() => {});
 
     return NextResponse.json({ job: updated, message: "İş durumu güncellendi." });
   } catch (error) {

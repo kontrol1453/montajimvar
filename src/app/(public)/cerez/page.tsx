@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
-  title: "Gizlilik Politikası | Montajım Var",
-  description: "Montajım Var gizlilik politikası ve kullanıcı verilerinin korunması.",
+  title: "Çerez Politikası | Montajım Var",
+  description: "Montajım Var çerez politikası. Web sitemizde kullanılan çerezler ve tercihlerinizi yönetme.",
+  alternates: {
+    canonical: "/cerez",
+  },
+  openGraph: {
+    title: "Çerez Politikası | Montajım Var",
+    description: "Web sitemizde kullanılan çerezler ve tercihlerinizi yönetme.",
+  },
 };
 
 export default function CerezPage() {

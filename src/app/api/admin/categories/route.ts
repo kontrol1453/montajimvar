@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logAdminAction, extractAdminId } from "@/lib/admin-audit";
 
 export async function GET() {
   const session = await auth();
@@ -51,6 +52,14 @@ export async function POST(request: Request) {
       data: { name, slug, icon: icon || null },
     });
 
+    await logAdminAction({
+      adminId: extractAdminId(session),
+      action: "create",
+      entity: "category",
+      entityId: category.id,
+      details: { name, slug, icon: icon || null },
+    });
+
     return NextResponse.json(category, { status: 201 });
   } catch (error) {
     console.error("Kategori ekleme hatası:", error);
@@ -89,6 +98,14 @@ export async function PUT(request: Request) {
       data: { name, slug, icon: icon || null },
     });
 
+    await logAdminAction({
+      adminId: extractAdminId(session),
+      action: "update",
+      entity: "category",
+      entityId: category.id,
+      details: { name, slug, icon: icon || null },
+    });
+
     return NextResponse.json(category);
   } catch (error) {
     console.error("Kategori güncelleme hatası:", error);
@@ -118,6 +135,14 @@ export async function DELETE(request: Request) {
     }
 
     await prisma.category.delete({ where: { id: Number(id) } });
+
+    await logAdminAction({
+      adminId: extractAdminId(session),
+      action: "delete",
+      entity: "category",
+      entityId: Number(id),
+    });
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Kategori silme hatası:", error);

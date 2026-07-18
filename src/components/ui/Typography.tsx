@@ -3,9 +3,7 @@ import { cn } from "@/lib/utils";
 
 interface PageTitleProps extends HTMLAttributes<HTMLHeadingElement> {
   children: ReactNode;
-  /** Description rendered below the title */
   description?: ReactNode;
-  /** Action area on the right (button group / toolbar) */
   actions?: ReactNode;
 }
 
@@ -20,18 +18,13 @@ export function PageTitle({
     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
       <div className="min-w-0">
         <h1
-          className={cn(
-            "text-2xl font-semibold tracking-tight text-[var(--admin-text-primary)]",
-            className
-          )}
+          className={cn("h3", className)}
           {...rest}
         >
           {children}
         </h1>
         {description && (
-          <p className="mt-1 text-sm text-[var(--admin-text-secondary)]">
-            {description}
-          </p>
+          <p className="body-small mt-1">{description}</p>
         )}
       </div>
       {actions && (
@@ -58,18 +51,13 @@ export function SectionTitle({
     <div className="flex items-center justify-between gap-3">
       <div className="min-w-0">
         <h2
-          className={cn(
-            "text-lg font-semibold text-[var(--admin-text-primary)]",
-            className
-          )}
+          className={cn("h4", className)}
           {...rest}
         >
           {children}
         </h2>
         {description && (
-          <p className="mt-0.5 text-sm text-[var(--admin-text-secondary)]">
-            {description}
-          </p>
+          <p className="body-small mt-0.5">{description}</p>
         )}
       </div>
       {actions && (

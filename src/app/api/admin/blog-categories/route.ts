@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logAdminAction, extractAdminId } from "@/lib/admin-audit";
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -15,6 +16,13 @@ export async function POST(request: Request) {
 
   try {
     const cat = await prisma.blogCategory.create({ data: { name, slug } });
+    await logAdminAction({
+      adminId: extractAdminId(session),
+      action: "create",
+      entity: "blog_category",
+      entityId: cat.id,
+      details: { name, slug },
+    });
     return NextResponse.json(cat, { status: 201 });
   } catch (err: any) {
     if (err.code === "P2002") {
@@ -40,6 +48,13 @@ export async function PUT(request: Request) {
       where: { id: Number(id) },
       data: { name, slug },
     });
+    await logAdminAction({
+      adminId: extractAdminId(session),
+      action: "update",
+      entity: "blog_category",
+      entityId: cat.id,
+      details: { name, slug },
+    });
     return NextResponse.json(cat);
   } catch {
     return NextResponse.json({ error: "Hata." }, { status: 500 });
@@ -64,5 +79,11 @@ export async function DELETE(request: Request) {
   }
 
   await prisma.blogCategory.delete({ where: { id } });
+  await logAdminAction({
+    adminId: extractAdminId(session),
+    action: "delete",
+    entity: "blog_category",
+    entityId: id,
+  });
   return NextResponse.json({ success: true });
 }

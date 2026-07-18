@@ -563,3 +563,16 @@ model AdminAuditLog {
   @@index([createdAt])
 }
 
+model SiteSetting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     Json     @default("{}")
+  group     String   @default("general") // general, hero, content, services, footer
+  label     String?
+  type      String   @default("text")    // text, textarea, image, color, json
+  updatedAt DateTime @updatedAt
+  updatedBy Int?
+
+  @@index([group])
+}
+

@@ -30,7 +30,7 @@ export async function GET(request: Request) {
         select: { roles: true },
       });
 
-      if (user?.roles.includes("ARTISAN")) {
+      if (user?.roles.some((r: string) => ["ASSEMBLER", "MANUFACTURER", "ARTISAN"].includes(r))) {
         where.artisanId = userId;
       } else {
         // Customer — find jobs they own and get offers for those
@@ -88,7 +88,7 @@ export async function POST(request: Request) {
   const userRoles = (session.user as any).roles || [];
 
   // Must be an artisan
-  if (!userRoles.includes("ARTISAN")) {
+  if (!userRoles.some((r: string) => ["ASSEMBLER", "MANUFACTURER", "ARTISAN"].includes(r))) {
     return NextResponse.json(
       { error: "Sadece ustalar teklif gönderebilir." },
       { status: 403 }

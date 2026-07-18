@@ -1,8 +1,22 @@
 import type { Metadata } from "next";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: "İletişim | Montajım Var",
   description: "Montajım Var iletişim bilgileri. Sorularınız ve önerileriniz için bize ulaşın.",
+  alternates: {
+    canonical: "/iletisim",
+  },
+  openGraph: {
+    title: "İletişim | Montajım Var",
+    description: "Sorularınız ve önerileriniz için bize ulaşın.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "İletişim | Montajım Var",
+    description: "Sorularınız ve önerileriniz için bize ulaşın.",
+  },
 };
 
 export default function IletisimPage() {

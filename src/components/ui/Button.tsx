@@ -9,42 +9,32 @@ export type ButtonVariant =
   | "danger"
   | "premium";
 
-export type ButtonSize = "sm" | "md" | "lg" | "icon";
+export type ButtonSize = "sm" | "md" | "lg" | "xl" | "icon";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
-  /** Render as inline-flex link button if href/anchor is needed — wrap child component instead */
-  /** Optional icon node on the leading side */
   leadingIcon?: React.ReactNode;
   trailingIcon?: React.ReactNode;
 }
 
 const variants: Record<ButtonVariant, string> = {
-  primary:
-    "bg-[var(--admin-primary)] text-white hover:bg-[var(--admin-primary-strong)] focus-visible:ring-[var(--admin-primary)]",
-  secondary:
-    "bg-white text-[var(--admin-text-primary)] border border-[var(--admin-border)] hover:bg-[var(--admin-surface-muted)] focus-visible:ring-[var(--admin-primary)]",
-  outline:
-    "bg-transparent text-[var(--admin-primary)] border border-[var(--admin-primary)] hover:bg-[var(--admin-primary-soft)] focus-visible:ring-[var(--admin-primary)]",
-  ghost:
-    "bg-transparent text-[var(--admin-text-secondary)] hover:bg-[var(--admin-surface-muted)] hover:text-[var(--admin-text-primary)] focus-visible:ring-[var(--admin-primary)]",
-  danger:
-    "bg-[var(--admin-danger)] text-white hover:opacity-90 focus-visible:ring-[var(--admin-danger)]",
-  premium:
-    "bg-[var(--admin-premium-soft)] text-[var(--admin-premium)] border border-[var(--admin-premium)]/20 hover:bg-[var(--admin-premium-soft)]/80 focus-visible:ring-[var(--admin-premium)]",
+  primary: "btn-primary",
+  secondary: "btn-secondary",
+  outline: "btn-outline",
+  ghost: "btn-ghost",
+  danger: "btn-danger",
+  premium: "btn-premium",
 };
 
 const sizes: Record<ButtonSize, string> = {
-  sm: "h-8 px-3 text-xs gap-1.5",
-  md: "h-10 px-4 text-sm gap-2",
-  lg: "h-11 px-5 text-base gap-2",
+  sm: "btn-sm",
+  md: "btn-md",
+  lg: "btn-lg",
+  xl: "btn-xl",
   icon: "h-9 w-9 p-0",
 };
-
-const base =
-  "inline-flex items-center justify-center font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:opacity-50 disabled:cursor-not-allowed";
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {
@@ -65,7 +55,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     <button
       ref={ref}
       type={type ?? "button"}
-      className={cn(base, variants[variant], sizes[size], className)}
+      className={cn("btn", variants[variant], sizes[size], className)}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       {...props}

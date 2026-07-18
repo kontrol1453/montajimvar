@@ -1,8 +1,18 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import Link from "next/link";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "İş İlanları - Montajım Var",
+  description: "Montaj firmaları ve ekipler için yayınlanmış iş ilanları. Mobilya, reklam, klima, AVM ve endüstriyel montaj iş fırsatları.",
+  openGraph: {
+    title: "İş İlanları - Montajım Var",
+    description: "Profesyonel montajcılar için iş fırsatları.",
+  },
+};
 
 const URGENCY_STYLES: Record<string, string> = {
   normal: "bg-gray-500/10 text-gray-400",

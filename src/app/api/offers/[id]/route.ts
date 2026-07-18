@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logActivity } from "@/lib/crm-activity";
 
 export const dynamic = "force-dynamic";
 
@@ -70,7 +71,7 @@ export async function PATCH(
     }
 
     if (action === "accepted") {
-      // Accept this offer, update job status, reject all other pending offers
+      // Accept this offer, update job status, reject all other pending offers, create payment
       await prisma.$transaction([
         prisma.offer.update({
           where: { id: Number(id) },
@@ -92,7 +93,25 @@ export async function PATCH(
             },
           },
         }),
+        prisma.payment.create({
+          data: {
+            jobId: offer.jobId,
+            customerId: offer.job.customerId,
+            artisanId: offer.artisanId,
+            amount: offer.amount,
+            status: "escrow",
+          },
+        }),
       ]);
+
+      logActivity({
+        type: "status_change",
+        subject: "Teklif kabul edildi",
+        description: `Teklif #${offer.id}, İş #${offer.jobId} için kabul edildi`,
+        entityType: "job",
+        entityId: offer.jobId,
+        ownerId: offer.job.customerId,
+      }).catch(() => {});
 
       return NextResponse.json({ message: "Teklif kabul edildi. Usta işe atandı." });
     } else {
@@ -101,6 +120,15 @@ export async function PATCH(
         where: { id: Number(id) },
         data: { status: "rejected" },
       });
+
+      logActivity({
+        type: "status_change",
+        subject: "Teklif reddedildi",
+        description: `Teklif #${offer.id}, İş #${offer.jobId} için reddedildi`,
+        entityType: "job",
+        entityId: offer.jobId,
+        ownerId: offer.job.customerId,
+      }).catch(() => {});
 
       return NextResponse.json({ message: "Teklif reddedildi." });
     }

@@ -10,6 +10,9 @@ export async function GET(request: Request) {
     const categoryId = searchParams.get("categoryId");
     const city = searchParams.get("city");
     const q = searchParams.get("q");
+    const page = Math.max(1, Number(searchParams.get("page")) || 1);
+    const limit = Math.min(50, Math.max(1, Number(searchParams.get("limit")) || 20));
+    const skip = (page - 1) * limit;
 
     const where: Record<string, unknown> = {};
 
@@ -26,19 +29,32 @@ export async function GET(request: Request) {
       ];
     }
 
-    const profiles = await prisma.profile.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      include: {
-        category: true,
-        categories: {
-          include: { category: true },
+    const [profiles, total] = await Promise.all([
+      prisma.profile.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: limit,
+        include: {
+          category: true,
+          categories: {
+            include: { category: true },
+          },
+          user: { select: { id: true, name: true, email: true, phone: true } },
         },
-        user: { select: { id: true, name: true, email: true, phone: true } },
+      }),
+      prisma.profile.count({ where }),
+    ]);
+
+    return NextResponse.json({
+      profiles,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
       },
     });
-
-    return NextResponse.json(profiles);
   } catch (error) {
     console.error("Profil hatası:", error);
     return NextResponse.json(

@@ -49,6 +49,7 @@ export default async function JobDetailPage({
         },
       },
       timeline: { orderBy: { createdAt: "asc" } },
+      payment: true,
     },
   });
 
@@ -70,7 +71,7 @@ export default async function JobDetailPage({
 
   // Only customers of this job or logged-in artisans can view
   const isOwner = job.customerId === userId;
-  const isArtisan = userRoles.includes("ARTISAN");
+  const isArtisan = userRoles.some((r: string) => ["ASSEMBLER", "MANUFACTURER", "ARTISAN"].includes(r));
 
   if (!isOwner && !isArtisan) {
     return (
@@ -91,7 +92,13 @@ export default async function JobDetailPage({
       ...t,
       createdAt: t.createdAt.toISOString(),
     })),
-    offers: job.offers.map((o) => ({
+      payment: job.payment ? {
+        ...job.payment,
+        createdAt: job.payment.createdAt.toISOString(),
+        paidAt: job.payment.paidAt ? job.payment.paidAt.toISOString() : null,
+        releasedAt: job.payment.releasedAt ? job.payment.releasedAt.toISOString() : null,
+      } : null,
+      offers: job.offers.map((o) => ({
       ...o,
       createdAt: o.createdAt.toISOString(),
       updatedAt: o.updatedAt.toISOString(),

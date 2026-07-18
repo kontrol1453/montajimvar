@@ -60,6 +60,12 @@ interface JobDetail {
   categories: CategoryInfo[];
   offers: Offer[];
   timeline: TimelineEntry[];
+  payment?: {
+    id: number;
+    status: string;
+    amount: number;
+    [key: string]: any;
+  } | null;
 }
 
 interface Props {
@@ -70,7 +76,7 @@ interface Props {
   existingOffer: Offer | null;
 }
 
-const STATUS_LABELS: Record<string, string> = {
+const STATUS_LABELS: Record<string, string> = {"payment_pending":"Ödeme Bekleniyor","paid":"Ödeme Alındı",
   pending: "Teklif Bekliyor",
   offers_received: "Teklifler Geldi",
   assigned: "Usta Atandı",
@@ -81,7 +87,7 @@ const STATUS_LABELS: Record<string, string> = {
   cancelled: "İptal Edildi",
 };
 
-const STATUS_COLORS: Record<string, string> = {
+const STATUS_COLORS: Record<string, string> = {"payment_pending":"bg-yellow-500/20 text-yellow-400","paid":"bg-green-500/20 text-green-400",
   pending: "bg-yellow-500/20 text-yellow-400",
   offers_received: "bg-blue-500/20 text-blue-400",
   assigned: "bg-purple-500/20 text-purple-400",
@@ -672,6 +678,40 @@ export default function JobDetailClient({ job, userId, isOwner, isArtisan, exist
           </div>
         )}
 
+        {/* Artisan: Release payment button */}
+        {!isOwner && isArtisan && offerAccepted?.artisanId === userId && job.status === "payment_pending" && job.payment?.id && (
+          <div className="bg-dark-card border border-white/[0.06] rounded-xl p-6 mt-6">
+            <h3 className="text-lg font-semibold text-white mb-1">Ödeme Serbest Bırak</h3>
+            <p className="text-sub-text text-sm mb-4">İşi tamamladınız. Ödemeyi serbest bırakın.</p>
+            <Button
+              variant="primary"
+              loading={statusLoading}
+              onClick={async () => {
+                setStatusLoading(true);
+                setStatusError("");
+                try {
+                  const res = await fetch(`/api/payments/${job.payment?.id}`, {
+                    method: "PATCH",
+                  });
+                  const data = await res.json();
+                  if (!res.ok) {
+                    setStatusError(data.error || "Ödeme serbest bırakılamadı.");
+                    return;
+                  }
+                  router.refresh();
+                } catch {
+                  setStatusError("Bağlantı hatası.");
+                } finally {
+                  setStatusLoading(false);
+                }
+              }}
+            >
+              Ödemeyi Serbest Bırak
+            </Button>
+            {statusError && <div className="mt-2 text-sm text-red-400">{statusError}</div>}
+          </div>
+        )}
+
         {/* Customer: Review form */}
         {isOwner && job.status === "completed" && !existingReview && (
           <div className="bg-dark-card border border-white/[0.06] rounded-xl p-6">
@@ -764,6 +804,43 @@ export default function JobDetailClient({ job, userId, isOwner, isArtisan, exist
                 Gönder
               </Button>
             </div>
+          </div>
+        )}
+
+        {/* Customer: Payment button */}
+        {isOwner && job.status === "review_pending" && offerAccepted && (
+          <div className="bg-dark-card border border-white/[0.06] rounded-xl p-6 mt-6">
+            <h3 className="text-lg font-semibold text-white mb-1">Ödeme</h3>
+            <p className="text-sub-text text-sm mb-4">
+              Kabul edilen teklif: {formatCur(offerAccepted.amount)}
+            </p>
+            <Button
+              variant="primary"
+              loading={statusLoading}
+              onClick={async () => {
+                setStatusLoading(true);
+                try {
+                  const res = await fetch(`/api/jobs/${job.id}/payment`, {
+                    method: "POST",
+                  });
+                  const data = await res.json();
+                  if (!res.ok) {
+                    setStatusError(data.error || "Ödeme oluşturulamadı.");
+                    return;
+                  }
+                  router.refresh();
+                } catch {
+                  setStatusError("Bağlantı hatası.");
+                } finally {
+                  setStatusLoading(false);
+                }
+              }}
+            >
+              Ödemeyi Yap
+            </Button>
+            {statusError && (
+              <div className="mt-2 text-sm text-red-400">{statusError}</div>
+            )}
           </div>
         )}
 

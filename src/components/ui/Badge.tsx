@@ -19,20 +19,18 @@ interface BadgeProps {
 }
 
 const variants: Record<BadgeVariant, string> = {
-  neutral:
-    "bg-[var(--admin-neutral-soft)] text-[var(--admin-text-secondary)]",
-  default:
-    "bg-[var(--admin-neutral-soft)] text-[var(--admin-text-secondary)]",
-  info: "bg-[var(--admin-info-soft)] text-[var(--admin-info)]",
-  success: "bg-[var(--admin-success-soft)] text-[var(--admin-success)]",
-  warning: "bg-[var(--admin-warning-soft)] text-[var(--admin-warning)]",
-  danger: "bg-[var(--admin-danger-soft)] text-[var(--admin-danger)]",
-  premium: "bg-[var(--admin-premium-soft)] text-[var(--admin-premium)]",
+  neutral: "badge-neutral",
+  default: "badge-neutral",
+  info: "badge-info",
+  success: "badge-success",
+  warning: "badge-warning",
+  danger: "badge-danger",
+  premium: "badge-premium",
 };
 
 const sizes = {
-  sm: "px-2 py-0.5 text-[11px]",
-  md: "px-2.5 py-0.5 text-xs",
+  sm: "badge-sm",
+  md: "badge-md",
 };
 
 export default function Badge({
@@ -43,12 +41,7 @@ export default function Badge({
 }: BadgeProps) {
   return (
     <span
-      className={cn(
-        "inline-flex items-center font-medium rounded-full whitespace-nowrap",
-        variants[variant],
-        sizes[size],
-        className
-      )}
+      className={cn("badge", variants[variant], sizes[size], className)}
     >
       {children}
     </span>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logAdminAction, extractAdminId } from "@/lib/admin-audit";
 
 export async function GET() {
   const plans = await prisma.subscriptionPlan.findMany({
@@ -31,6 +32,13 @@ export async function POST(req: NextRequest) {
         badgeLabel: data.badgeLabel || null,
         badgeColor: data.badgeColor || "amber",
       },
+    });
+    await logAdminAction({
+      adminId: extractAdminId(session),
+      action: "create",
+      entity: "subscription_plan",
+      entityId: plan.id,
+      details: { name: plan.name, slug: plan.slug, price: plan.price },
     });
     return NextResponse.json(plan);
   } catch (error) {
@@ -62,6 +70,13 @@ export async function PATCH(req: NextRequest) {
         badgeColor: rest.badgeColor || "amber",
       },
     });
+    await logAdminAction({
+      adminId: extractAdminId(session),
+      action: "update",
+      entity: "subscription_plan",
+      entityId: plan.id,
+      details: { name: plan.name, slug: plan.slug, price: plan.price },
+    });
     return NextResponse.json(plan);
   } catch (error) {
     return NextResponse.json({ error: "Plan güncellenemedi" }, { status: 500 });
@@ -79,6 +94,12 @@ export async function DELETE(req: NextRequest) {
 
   try {
     await prisma.subscriptionPlan.delete({ where: { id } });
+    await logAdminAction({
+      adminId: extractAdminId(session),
+      action: "delete",
+      entity: "subscription_plan",
+      entityId: id,
+    });
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Plan silinemedi" }, { status: 500 });
