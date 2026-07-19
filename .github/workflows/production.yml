@@ -46,19 +46,6 @@ jobs:
           secrets: |
             "DATABASE_URL=${{ secrets.DATABASE_URL }}"
 
-      - name: Build & Push push-service image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./push-service
-          file: ./push-service/Dockerfile
-          target: runner
-          push: true
-          tags: |
-            ghcr.io/kontrol1453/montajimvar-push:${{ steps.meta.outputs.version }}
-            ghcr.io/kontrol1453/montajimvar-push:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
   deploy:
     name: Deploy to Production (Pi)
     runs-on: ubuntu-latest
