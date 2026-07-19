@@ -38,7 +38,9 @@ COPY . .
 
 # Build Next.js application
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build
+RUN --mount=type=secret,id=DATABASE_URL \
+    export DATABASE_URL=$(cat /run/secrets/DATABASE_URL) && \
+    npm run build
 
 # ============================================
 # STAGE 3: Runner - Production runtime
