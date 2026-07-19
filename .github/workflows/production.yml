@@ -45,6 +45,7 @@ jobs:
           sbom: true
           secrets: |
             "DATABASE_URL=${{ secrets.DATABASE_URL }}"
+            "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}"
 
       - name: Build & Push push-service image
         uses: docker/build-push-action@v6
