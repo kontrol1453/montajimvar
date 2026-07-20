@@ -19,9 +19,8 @@ import {
   ChevronDown,
   ChevronRight,
 } from "lucide-react";
-import type { SiteSettings } from "@/lib/site-settings";
-import { SETTING_GROUPS, DEFAULT_SETTINGS } from "@/lib/site-settings";
-import type { SettingGroupConfig } from "@/lib/site-settings";
+import type { SiteSettings, SettingGroupConfig } from "@/lib/site-settings-constants";
+import { SETTING_GROUPS, DEFAULT_SETTINGS } from "@/lib/site-settings-constants";
 
 type SettingsState = Partial<SiteSettings>;
 

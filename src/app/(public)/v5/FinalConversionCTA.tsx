@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, ShieldCheck } from "lucide-react";
-import type { SiteSettings } from "@/lib/site-settings";
+import type { SiteSettings } from "@/lib/site-settings-constants";
 
 export default function FinalConversionCTA({ settings }: { settings: SiteSettings }) {
   return (

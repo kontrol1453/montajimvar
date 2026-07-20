@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ShieldCheck, Star, Sparkles, MapPin, Search } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import type { SiteSettings } from "@/lib/site-settings";
+import type { SiteSettings } from "@/lib/site-settings-constants";
 import { TRUST_METRICS } from "./_lib/v5.constants";
 export default async function HeroV5({ settings }: { settings: SiteSettings }) {
   const popularCategories = await prisma.category.findMany({
