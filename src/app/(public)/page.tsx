@@ -80,51 +80,49 @@ export default async function HomePage() {
     getSiteSettings(),
   ]);
 
+  const vis = settings.visibility;
+  const d = settings.design;
+
   return (
-    <div className="overflow-hidden">
-      {/* ─── HERO (v5) ─── */}
-      <HeroV5 settings={settings} />
-
-      {/* ─── TRUST BAR (v5) ─── */}
-      <TrustBar />
-
-      {/* ─── HEDEF KİTLE (v5) ─── */}
-      <AudienceGateway />
-
-      {/* ─── HİZMET KEŞFİ (v5) ─── */}
-      <ServiceDiscovery categories={data.parentCategories} />
-
-      {/* ─── NASIL ÇALIŞIR (v5) ─── */}
-      <ProductWorkflow />
-
-      {/* ─── PLATFORM ÖZELLİKLERİ (v5) ─── */}
-      <PlatformCapabilities />
-
-      {/* ─── KURUMSAL (v5) ─── */}
-      <CorporateOperations />
-
-      {/* ─── İSTATİSTİKLER (v5) ─── */}
-      <VerifiedMetrics
-        profileCount={data.profileCount}
-        cityCount={data.cityCount}
-        avgRating={data.avgRating}
-        categoryCount={data.categoryCount}
-      />
-
-      {/* ─── AI TEASER (v5) ─── */}
-      <AITeaser />
-
-      {/* ─── NEDEN BİZ (v5) ─── */}
-      <WhyMontajimVar />
-
-      {/* ─── BLOG ─── */}
-      <BlogSection />
-
-      {/* ─── SSS (v5) ─── */}
-      <FAQv5 />
-
-      {/* ─── FİNAL CTA (v5) ─── */}
-      <FinalConversionCTA settings={settings} />
+    <div
+      className="overflow-hidden"
+      style={{
+        fontFamily: d?.fontFamily || "Inter, system-ui, sans-serif",
+        fontSize: d?.baseFontSize || "16px",
+        color: d?.textColor || "#18181b",
+        backgroundColor: d?.backgroundColor || "#ffffff",
+        ["--site-heading-font" as string]: d?.headingFont || "Inter, system-ui, sans-serif",
+        ["--site-heading-color" as string]: d?.headingColor || "#09090b",
+        ["--site-radius" as string]: d?.borderRadius || "12px",
+        ["--site-section-gap" as string]: d?.sectionGap || "4rem",
+        ["--site-primary" as string]: d?.primaryColor || "#0B5FFF",
+        ["--site-section-bg" as string]: d?.sectionBgColor || "#fafafa",
+        ["--site-card-bg" as string]: d?.cardBgColor || "#ffffff",
+        ["--site-accent" as string]: d?.accentColor || "#f59e0b",
+        ["--site-cta-bg" as string]: d?.ctaBgColor || "#0B5FFF",
+        ["--site-cta-text" as string]: d?.ctaTextColor || "#ffffff",
+      }}
+    >
+      {vis?.hero !== false && <HeroV5 settings={settings} />}
+      {vis?.trustBar !== false && <TrustBar />}
+      {vis?.audience !== false && <AudienceGateway />}
+      {vis?.services !== false && <ServiceDiscovery categories={data.parentCategories} />}
+      {vis?.workflow !== false && <ProductWorkflow />}
+      {vis?.capabilities !== false && <PlatformCapabilities />}
+      {vis?.corporate !== false && <CorporateOperations />}
+      {vis?.metrics !== false && (
+        <VerifiedMetrics
+          profileCount={data.profileCount}
+          cityCount={data.cityCount}
+          avgRating={data.avgRating}
+          categoryCount={data.categoryCount}
+        />
+      )}
+      {vis?.aiTeaser !== false && <AITeaser />}
+      {vis?.whyUs !== false && <WhyMontajimVar />}
+      {vis?.blog !== false && <BlogSection />}
+      {vis?.faq !== false && <FAQv5 />}
+      {vis?.finalCta !== false && <FinalConversionCTA settings={settings} />}
     </div>
   );
 }

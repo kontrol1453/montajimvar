@@ -18,6 +18,8 @@ import {
   Globe,
   ChevronDown,
   ChevronRight,
+  EyeOff,
+  ToggleLeft,
 } from "lucide-react";
 import type { SiteSettings, SettingGroupConfig } from "@/lib/site-settings-constants";
 import { SETTING_GROUPS, DEFAULT_SETTINGS } from "@/lib/site-settings-constants";
@@ -92,6 +94,8 @@ const GROUP_ICONS: Record<string, React.ReactNode> = {
   workflow: <Type className="h-4 w-4" />,
   finalCta: <Link2 className="h-4 w-4" />,
   footer: <Images className="h-4 w-4" />,
+  visibility: <EyeOff className="h-4 w-4" />,
+  design: <Palette className="h-4 w-4" />,
 };
 
 function UsersIcon(props: { className?: string }) {
@@ -173,6 +177,19 @@ export default function SiteSettingsClient() {
 
   const handleFieldChange = (group: string, fieldKey: string, value: string) => {
     setSettings((prev) => setFieldValue(prev, group, fieldKey, value));
+  };
+
+  const handleToggleChange = (fieldKey: string, checked: boolean) => {
+    setSettings((prev) => {
+      const current = prev.visibility || DEFAULT_SETTINGS.visibility;
+      return {
+        ...prev,
+        visibility: {
+          ...current,
+          [fieldKey]: checked,
+        } as SiteSettings["visibility"],
+      };
+    });
   };
 
   if (loading) {
@@ -263,6 +280,7 @@ export default function SiteSettingsClient() {
             group={currentGroup}
             settings={settings}
             onFieldChange={handleFieldChange}
+            onToggleChange={handleToggleChange}
             previewMode={previewMode}
           />
         </div>
@@ -286,11 +304,13 @@ function FieldGroup({
   group,
   settings,
   onFieldChange,
+  onToggleChange,
   previewMode,
 }: {
   group: SettingGroupConfig;
   settings: SettingsState;
   onFieldChange: (group: string, key: string, value: string) => void;
+  onToggleChange: (key: string, checked: boolean) => void;
   previewMode: boolean;
 }) {
   return (
@@ -306,51 +326,84 @@ function FieldGroup({
       <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
         {group.fields.map((field) => (
           <div key={field.key} className="px-5 py-4">
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
-              {field.label}
-            </label>
-            {field.description && !field.description.startsWith("{") && (
-              <p className="text-xs text-zinc-400 mb-2">{field.description}</p>
-            )}
-            {field.type === "color" ? (
-              <div className="flex items-center gap-3">
-                <input
-                  type="color"
-                  value={getFieldValue(settings, group.key, field.key) || "#0B5FFF"}
-                  onChange={(e) => onFieldChange(group.key, field.key, e.target.value)}
-                  className="h-9 w-9 rounded-md border border-zinc-300 dark:border-zinc-600 cursor-pointer"
+            {field.type === "toggle" ? (
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  {field.label}
+                </label>
+                <button
+                  type="button"
+                  role="switch"
                   disabled={previewMode}
-                />
-                <input
-                  type="text"
-                  value={getFieldValue(settings, group.key, field.key) || ""}
-                  onChange={(e) => onFieldChange(group.key, field.key, e.target.value)}
-                  className="flex-1 px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-600 bg-transparent text-zinc-900 dark:text-white focus:ring-2 focus:ring-montaj/20 focus:border-montaj outline-none"
-                  disabled={previewMode}
-                />
+                  onClick={() => {
+                    const vis = settings.visibility || DEFAULT_SETTINGS.visibility;
+                    const current = vis[field.key as keyof typeof vis] ?? true;
+                    onToggleChange(field.key, !current);
+                  }}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    (settings.visibility || DEFAULT_SETTINGS.visibility)[field.key as keyof SiteSettings["visibility"]] !== false
+                      ? "bg-montaj"
+                      : "bg-zinc-300 dark:bg-zinc-600"
+                  } ${previewMode ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      (settings.visibility || DEFAULT_SETTINGS.visibility)[field.key as keyof SiteSettings["visibility"]] !== false
+                        ? "translate-x-6"
+                        : "translate-x-1"
+                    }`}
+                  />
+                </button>
               </div>
-            ) : field.type === "textarea" ? (
-              <textarea
-                value={getFieldValue(settings, group.key, field.key) || ""}
-                onChange={(e) => onFieldChange(group.key, field.key, e.target.value)}
-                rows={3}
-                className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-600 bg-transparent text-zinc-900 dark:text-white focus:ring-2 focus:ring-montaj/20 focus:border-montaj outline-none resize-y"
-                disabled={previewMode}
-              />
-            ) : field.type === "link" ? (
-              <LinkField
-                value={getFieldValue(settings, group.key, field.key) || "{}"}
-                onChange={(v) => onFieldChange(group.key, field.key, v)}
-                disabled={previewMode}
-              />
             ) : (
-              <input
-                type="text"
-                value={getFieldValue(settings, group.key, field.key) || ""}
-                onChange={(e) => onFieldChange(group.key, field.key, e.target.value)}
-                className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-600 bg-transparent text-zinc-900 dark:text-white focus:ring-2 focus:ring-montaj/20 focus:border-montaj outline-none"
-                disabled={previewMode}
-              />
+              <>
+                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                  {field.label}
+                </label>
+                {field.description && !field.description.startsWith("{") && (
+                  <p className="text-xs text-zinc-400 mb-2">{field.description}</p>
+                )}
+                {field.type === "color" ? (
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={getFieldValue(settings, group.key, field.key) || "#0B5FFF"}
+                      onChange={(e) => onFieldChange(group.key, field.key, e.target.value)}
+                      className="h-9 w-9 rounded-md border border-zinc-300 dark:border-zinc-600 cursor-pointer"
+                      disabled={previewMode}
+                    />
+                    <input
+                      type="text"
+                      value={getFieldValue(settings, group.key, field.key) || ""}
+                      onChange={(e) => onFieldChange(group.key, field.key, e.target.value)}
+                      className="flex-1 px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-600 bg-transparent text-zinc-900 dark:text-white focus:ring-2 focus:ring-montaj/20 focus:border-montaj outline-none"
+                      disabled={previewMode}
+                    />
+                  </div>
+                ) : field.type === "textarea" ? (
+                  <textarea
+                    value={getFieldValue(settings, group.key, field.key) || ""}
+                    onChange={(e) => onFieldChange(group.key, field.key, e.target.value)}
+                    rows={3}
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-600 bg-transparent text-zinc-900 dark:text-white focus:ring-2 focus:ring-montaj/20 focus:border-montaj outline-none resize-y"
+                    disabled={previewMode}
+                  />
+                ) : field.type === "link" ? (
+                  <LinkField
+                    value={getFieldValue(settings, group.key, field.key) || "{}"}
+                    onChange={(v) => onFieldChange(group.key, field.key, v)}
+                    disabled={previewMode}
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    value={getFieldValue(settings, group.key, field.key) || ""}
+                    onChange={(e) => onFieldChange(group.key, field.key, e.target.value)}
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-600 bg-transparent text-zinc-900 dark:text-white focus:ring-2 focus:ring-montaj/20 focus:border-montaj outline-none"
+                    disabled={previewMode}
+                  />
+                )}
+              </>
             )}
           </div>
         ))}

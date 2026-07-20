@@ -71,6 +71,37 @@ export interface SiteSettings {
     sectionTitle: string;
     sectionDescription: string;
   };
+  visibility: {
+    hero: boolean;
+    trustBar: boolean;
+    audience: boolean;
+    services: boolean;
+    workflow: boolean;
+    capabilities: boolean;
+    corporate: boolean;
+    metrics: boolean;
+    aiTeaser: boolean;
+    whyUs: boolean;
+    blog: boolean;
+    faq: boolean;
+    finalCta: boolean;
+  };
+  design: {
+    fontFamily: string;
+    headingFont: string;
+    baseFontSize: string;
+    borderRadius: string;
+    sectionGap: string;
+    primaryColor: string;
+    textColor: string;
+    headingColor: string;
+    backgroundColor: string;
+    sectionBgColor: string;
+    cardBgColor: string;
+    accentColor: string;
+    ctaBgColor: string;
+    ctaTextColor: string;
+  };
 }
 
 export const DEFAULT_SETTINGS: SiteSettings = {
@@ -186,6 +217,37 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     sectionTitle: "Mağaza zincirlerinden üreticilere; sahadaki tek panonuz.",
     sectionDescription: "",
   },
+  visibility: {
+    hero: true,
+    trustBar: true,
+    audience: true,
+    services: true,
+    workflow: true,
+    capabilities: true,
+    corporate: true,
+    metrics: true,
+    aiTeaser: true,
+    whyUs: true,
+    blog: true,
+    faq: true,
+    finalCta: true,
+  },
+  design: {
+    fontFamily: "Inter, system-ui, sans-serif",
+    headingFont: "Inter, system-ui, sans-serif",
+    baseFontSize: "16px",
+    borderRadius: "12px",
+    sectionGap: "4rem",
+    primaryColor: "#0B5FFF",
+    textColor: "#18181b",
+    headingColor: "#09090b",
+    backgroundColor: "#ffffff",
+    sectionBgColor: "#fafafa",
+    cardBgColor: "#ffffff",
+    accentColor: "#f59e0b",
+    ctaBgColor: "#0B5FFF",
+    ctaTextColor: "#ffffff",
+  },
 };
 
 export interface SettingGroupConfig {
@@ -197,7 +259,7 @@ export interface SettingGroupConfig {
 export interface SettingFieldConfig {
   key: string;
   label: string;
-  type: "text" | "textarea" | "color" | "image" | "json" | "link";
+  type: "text" | "textarea" | "color" | "image" | "json" | "link" | "toggle";
   description?: string;
   placeholder?: string;
 }
@@ -279,6 +341,45 @@ export const SETTING_GROUPS: SettingGroupConfig[] = [
     fields: [
       { key: "description", label: "Açıklama Metni", type: "textarea" },
       { key: "copyright", label: "Telif Hakkı Metni", type: "text" },
+    ],
+  },
+  {
+    key: "visibility",
+    label: "Bölüm Görünürlüğü",
+    fields: [
+      { key: "hero", label: "Hero (Üst Banner)", type: "toggle" },
+      { key: "trustBar", label: "Güven Çubuğu", type: "toggle" },
+      { key: "audience", label: "Hedef Kitle", type: "toggle" },
+      { key: "services", label: "Hizmetler", type: "toggle" },
+      { key: "workflow", label: "Nasıl Çalışır", type: "toggle" },
+      { key: "capabilities", label: "Platform Özellikleri", type: "toggle" },
+      { key: "corporate", label: "Kurumsal", type: "toggle" },
+      { key: "metrics", label: "İstatistikler", type: "toggle" },
+      { key: "aiTeaser", label: "AI Tanıtımı", type: "toggle" },
+      { key: "whyUs", label: "Neden Biz", type: "toggle" },
+      { key: "blog", label: "Blog", type: "toggle" },
+      { key: "faq", label: "SSS", type: "toggle" },
+      { key: "finalCta", label: "Final CTA", type: "toggle" },
+    ],
+  },
+  {
+    key: "design",
+    label: "Tasarım",
+    fields: [
+      { key: "fontFamily", label: "Yazı Fontu (gövde)", type: "text", placeholder: "Inter, system-ui, sans-serif" },
+      { key: "headingFont", label: "Başlık Fontu", type: "text", placeholder: "Inter, system-ui, sans-serif" },
+      { key: "baseFontSize", label: "Temel Font Boyutu", type: "text", placeholder: "16px" },
+      { key: "borderRadius", label: "Köşe Yuvarlaklığı", type: "text", placeholder: "12px" },
+      { key: "sectionGap", label: "Bölüm Arası Boşluk", type: "text", placeholder: "4rem" },
+      { key: "primaryColor", label: "Ana Renk", type: "color" },
+      { key: "textColor", label: "Metin Rengi", type: "color" },
+      { key: "headingColor", label: "Başlık Rengi", type: "color" },
+      { key: "backgroundColor", label: "Arka Plan Rengi", type: "color" },
+      { key: "sectionBgColor", label: "Bölüm Arka Planı", type: "color" },
+      { key: "cardBgColor", label: "Kart Arka Planı", type: "color" },
+      { key: "accentColor", label: "Vurgu Rengi", type: "color" },
+      { key: "ctaBgColor", label: "CTA Buton Rengi", type: "color" },
+      { key: "ctaTextColor", label: "CTA Buton Yazı Rengi", type: "color" },
     ],
   },
 ];
