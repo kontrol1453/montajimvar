@@ -1080,6 +1080,67 @@ function SectionFooterPreview({ settings, onChange, design, previewMode }: {
   );
 }
 
+function SectionAiTeaserPreview({ settings, onChange, design, previewMode }: {
+  settings: SettingsState;
+  onChange: (g: string, f: string, v: string) => void;
+  design: SiteSettings["design"];
+  previewMode: boolean;
+}) {
+  const ai = settings.aiTeaser || DEFAULT_SETTINGS.aiTeaser;
+  return (
+    <section className="border-y border-border bg-gradient-to-r" style={{ backgroundColor: design.sectionBgColor, borderColor: design.textColor + "10" }}>
+      <div className="container-app py-16 md:py-22">
+        <div className="grid items-center gap-10 lg:grid-cols-2">
+          <div>
+            <span className="section-label mb-4 inline-flex items-center gap-1.5" style={{ color: design.primaryColor }}>
+              <SparklesIcon className="h-3.5 w-3.5" />
+              <ClickToEdit group="aiTeaser" field="sectionBadge" settings={settings} onChange={onChange} previewMode={previewMode} />
+            </span>
+            <h2 className="heading-lg mt-3 text-balance" style={{ fontFamily: design.headingFont, color: design.headingColor }}>
+              <ClickToEdit group="aiTeaser" field="headline" settings={settings} onChange={onChange} previewMode={previewMode} as="span" />
+            </h2>
+            <p className="mt-3 text-sm" style={{ color: design.textColor + "bb" }}>
+              <ClickToEditTextarea group="aiTeaser" field="description" settings={settings} onChange={onChange} previewMode={previewMode} />
+            </p>
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm" style={{ borderColor: design.textColor + "20", backgroundColor: design.cardBgColor }}>
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style={{ backgroundColor: design.accentColor }} />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full" style={{ backgroundColor: design.accentColor }} />
+              </span>
+              <span className="text-xs font-semibold" style={{ color: design.textColor }}>
+                <ClickToEdit group="aiTeaser" field="betaLabel" settings={settings} onChange={onChange} previewMode={previewMode} />
+              </span>
+              <span style={{ color: design.textColor + "44" }}>&middot;</span>
+              <span className="text-xs font-medium" style={{ color: design.primaryColor }}>
+                <ClickToEdit group="aiTeaser" field="ctaLabel" settings={settings} onChange={onChange} previewMode={previewMode} />
+              </span>
+            </div>
+          </div>
+          <div aria-hidden="true" className="rounded-card border p-6 shadow-elevated" style={{ backgroundColor: design.cardBgColor, borderColor: design.textColor + "10", borderRadius: design.borderRadius }}>
+            <div className="mb-4 text-xs font-medium uppercase tracking-wide" style={{ color: design.textColor + "88" }}>AI ön izleme (temsili)</div>
+            <div className="flex items-center gap-3 rounded-lg border border-dashed px-4 py-5" style={{ borderColor: design.textColor + "20", backgroundColor: design.backgroundColor, color: design.textColor + "88" }}>
+              <CameraIcon className="h-5 w-5" />
+              <span className="text-xs">Kullanıcı fotoğraf yükler</span>
+            </div>
+            <div className="mt-3 flex items-center gap-3 rounded-lg border px-4 py-3" style={{ borderColor: design.textColor + "15", backgroundColor: design.backgroundColor }}>
+              <SparklesIcon className="h-5 w-5" style={{ color: design.primaryColor }} />
+              <span className="text-xs font-medium" style={{ color: design.textColor }}>Tahmini: €240 - €320 · 4-7 saat</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SparklesIcon({ className, style }: { className?: string; style?: React.CSSProperties }) {
+  return <svg className={className} style={style} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" /></svg>;
+}
+
+function CameraIcon({ className, style }: { className?: string; style?: React.CSSProperties }) {
+  return <svg className={className} style={style} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" /><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" /></svg>;
+}
+
 function SectionStatsLabelsPreview({ design }: { design: SiteSettings["design"] }) {
   return (
     <section className="border-y border-border bg-surface/60" style={{ backgroundColor: design.sectionBgColor, borderColor: design.textColor + "10" }}>
@@ -1097,16 +1158,26 @@ function SectionStatsLabelsPreview({ design }: { design: SiteSettings["design"] 
   );
 }
 
-function SectionBlogPlaceholder({ design }: { design: SiteSettings["design"] }) {
+function SectionEditableBlogPreview({ settings, onChange, design, previewMode }: {
+  settings: SettingsState;
+  onChange: (g: string, f: string, v: string) => void;
+  design: SiteSettings["design"];
+  previewMode: boolean;
+}) {
   return (
     <section className="bg-surface" style={{ backgroundColor: design.sectionBgColor }}>
       <div className="container-app py-16 md:py-22">
-        <div className="text-center">
+        <div className="text-center max-w-2xl mx-auto">
           <span className="section-label mb-4 inline-flex items-center gap-1.5" style={{ color: design.primaryColor }}>
             <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: design.primaryColor }} />
-            Blog
+            <ClickToEdit group="blog" field="sectionBadge" settings={settings} onChange={onChange} previewMode={previewMode} />
           </span>
-          <h2 className="heading-xl" style={{ fontFamily: design.headingFont, color: design.headingColor }}>Son Yazılar</h2>
+          <h2 className="heading-xl" style={{ fontFamily: design.headingFont, color: design.headingColor }}>
+            <ClickToEdit group="blog" field="sectionTitle" settings={settings} onChange={onChange} previewMode={previewMode} as="span" />
+          </h2>
+          <p className="mt-4" style={{ color: design.textColor + "bb" }}>
+            <ClickToEditTextarea group="blog" field="sectionDescription" settings={settings} onChange={onChange} previewMode={previewMode} />
+          </p>
         </div>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {[1, 2, 3].map((i) => (
@@ -1120,6 +1191,12 @@ function SectionBlogPlaceholder({ design }: { design: SiteSettings["design"] }) 
               </div>
             </div>
           ))}
+        </div>
+        <div className="text-center mt-8">
+          <span className="btn-secondary inline-flex items-center gap-2 text-sm"
+            style={{ borderColor: design.textColor + "25", color: design.textColor, borderRadius: design.borderRadius }}>
+            <ClickToEdit group="blog" field="viewAllLabel" settings={settings} onChange={onChange} previewMode={previewMode} />
+          </span>
         </div>
       </div>
     </section>
@@ -1189,7 +1266,8 @@ function DesignPanel({
         {vis.corporate !== false && <SectionGenericPreview group="corporate" label="Kurumsal" settings={settings} onChange={onContentChange} design={design} previewMode={previewMode} />}
         {vis.metrics !== false && <SectionStatsLabelsPreview design={design} />}
         {vis.whyUs !== false && <SectionGenericPreview group="whyUs" label="Neden Biz" settings={settings} onChange={onContentChange} design={design} previewMode={previewMode} />}
-        {vis.blog !== false && <SectionBlogPlaceholder design={design} />}
+        {vis.aiTeaser !== false && <SectionAiTeaserPreview settings={settings} onChange={onContentChange} design={design} previewMode={previewMode} />}
+        {vis.blog !== false && <SectionEditableBlogPreview settings={settings} onChange={onContentChange} design={design} previewMode={previewMode} />}
         {vis.faq !== false && <SectionGenericPreview group="faq" label="SSS" settings={settings} onChange={onContentChange} design={design} previewMode={previewMode} />}
         {vis.finalCta !== false && <SectionFinalCTAPreview settings={settings} onChange={onContentChange} design={design} previewMode={previewMode} />}
         <SectionFooterPreview settings={settings} onChange={onContentChange} design={design} previewMode={previewMode} />

@@ -28,6 +28,7 @@ export interface SiteSettings {
     sectionDescription: string;
   };
   services: {
+    sectionBadge: string;
     sectionTitle: string;
     sectionDescription: string;
     viewAllLabel: string;
@@ -45,14 +46,17 @@ export interface SiteSettings {
     }[];
   };
   capabilities: {
+    sectionBadge: string;
     sectionTitle: string;
     sectionDescription: string;
   };
   whyUs: {
+    sectionBadge: string;
     sectionTitle: string;
     sectionDescription: string;
   };
   faq: {
+    sectionBadge: string;
     sectionTitle: string;
     sectionDescription: string;
   };
@@ -68,8 +72,22 @@ export interface SiteSettings {
     copyright: string;
   };
   corporate: {
+    sectionBadge: string;
     sectionTitle: string;
     sectionDescription: string;
+  };
+  aiTeaser: {
+    sectionBadge: string;
+    headline: string;
+    description: string;
+    betaLabel: string;
+    ctaLabel: string;
+  };
+  blog: {
+    sectionBadge: string;
+    sectionTitle: string;
+    sectionDescription: string;
+    viewAllLabel: string;
   };
   visibility: {
     hero: boolean;
@@ -142,6 +160,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
       "Bireyselden kurumsala, montaj ekibinden üreticiye kadar her role özel bir başlangıç noktası. Doğru yoldan ilerleyin.",
   },
   services: {
+    sectionBadge: "Hizmetlerimiz",
     sectionTitle: "Tek bir yerden, 8 ana hizmet kategorisi.",
     sectionDescription:
       "Evden kurumsala, beyaz eşyadan akıllı ev kurulumuna kadar ihtiyacınızı tanımlayın — geri kalanını platform halletsin.",
@@ -185,14 +204,17 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     ],
   },
   capabilities: {
+    sectionBadge: "Platform Özellikleri",
     sectionTitle: "Tek platform; pazar, operasyon, güven.",
     sectionDescription: "",
   },
   whyUs: {
+    sectionBadge: "Neden Biz",
     sectionTitle: "Neden Montajım Var?",
     sectionDescription: "",
   },
   faq: {
+    sectionBadge: "SSS",
     sectionTitle: "Sıkça Sorulan Sorular",
     sectionDescription: "",
   },
@@ -214,8 +236,22 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     copyright: "Montajım Var. Tüm hakları saklıdır.",
   },
   corporate: {
+    sectionBadge: "Kurumsal",
     sectionTitle: "Mağaza zincirlerinden üreticilere; sahadaki tek panonuz.",
     sectionDescription: "",
+  },
+  aiTeaser: {
+    sectionBadge: "AI · Yakında",
+    headline: "Görsel tanıma ile anında yaklaşık fiyat.",
+    description: "Ürünün fotoğrafını yükleyin. Sistem, montaj tipini tanısın, geçmiş iş verilerinden yaklaşık fiyat ve süre aralığı önersin.",
+    betaLabel: "Beta erişimi yakında",
+    ctaLabel: "İş açarak katıl",
+  },
+  blog: {
+    sectionBadge: "Blog",
+    sectionTitle: "Montaj Sektöründen Haberler",
+    sectionDescription: "Profesyonel montaj ipuçları, sektör haberleri ve rehberler.",
+    viewAllLabel: "Tüm Yazılar",
   },
   visibility: {
     hero: true,
@@ -310,6 +346,70 @@ export const SETTING_GROUPS: SettingGroupConfig[] = [
     key: "services",
     label: "Hizmetler Bölümü",
     fields: [
+      { key: "sectionTitle", label: "Bölüm Başlığı", type: "textarea" },
+      { key: "sectionDescription", label: "Bölüm Açıklaması", type: "textarea" },
+      { key: "viewAllLabel", label: "Tümünü Gör Butonu", type: "text" },
+    ],
+  },
+  {
+    key: "trustBar",
+    label: "Güven Çubuğu",
+    fields: [
+      { key: "items", label: "Öğeler (virgülle ayırın)", type: "text", description: "items[].label değerleri" },
+    ],
+  },
+  {
+    key: "capabilities",
+    label: "Platform Özellikleri",
+    fields: [
+      { key: "sectionBadge", label: "Bölüm Rozeti", type: "text" },
+      { key: "sectionTitle", label: "Bölüm Başlığı", type: "textarea" },
+      { key: "sectionDescription", label: "Bölüm Açıklaması", type: "textarea" },
+    ],
+  },
+  {
+    key: "corporate",
+    label: "Kurumsal Bölümü",
+    fields: [
+      { key: "sectionBadge", label: "Bölüm Rozeti", type: "text" },
+      { key: "sectionTitle", label: "Bölüm Başlığı", type: "textarea" },
+      { key: "sectionDescription", label: "Bölüm Açıklaması", type: "textarea" },
+    ],
+  },
+  {
+    key: "whyUs",
+    label: "Neden Biz Bölümü",
+    fields: [
+      { key: "sectionBadge", label: "Bölüm Rozeti", type: "text" },
+      { key: "sectionTitle", label: "Bölüm Başlığı", type: "textarea" },
+      { key: "sectionDescription", label: "Bölüm Açıklaması", type: "textarea" },
+    ],
+  },
+  {
+    key: "faq",
+    label: "SSS Bölümü",
+    fields: [
+      { key: "sectionBadge", label: "Bölüm Rozeti", type: "text" },
+      { key: "sectionTitle", label: "Bölüm Başlığı", type: "textarea" },
+      { key: "sectionDescription", label: "Bölüm Açıklaması", type: "textarea" },
+    ],
+  },
+  {
+    key: "aiTeaser",
+    label: "AI Tanıtım Bölümü",
+    fields: [
+      { key: "sectionBadge", label: "Bölüm Rozeti", type: "text" },
+      { key: "headline", label: "Başlık", type: "textarea" },
+      { key: "description", label: "Açıklama", type: "textarea" },
+      { key: "betaLabel", label: "Beta Etiketi", type: "text" },
+      { key: "ctaLabel", label: "CTA Buton Yazısı", type: "text" },
+    ],
+  },
+  {
+    key: "blog",
+    label: "Blog Bölümü",
+    fields: [
+      { key: "sectionBadge", label: "Bölüm Rozeti", type: "text" },
       { key: "sectionTitle", label: "Bölüm Başlığı", type: "textarea" },
       { key: "sectionDescription", label: "Bölüm Açıklaması", type: "textarea" },
       { key: "viewAllLabel", label: "Tümünü Gör Butonu", type: "text" },
