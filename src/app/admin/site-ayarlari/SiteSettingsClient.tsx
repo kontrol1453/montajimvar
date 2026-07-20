@@ -20,6 +20,7 @@ import {
   ChevronRight,
   EyeOff,
   ToggleLeft,
+  Sparkles,
 } from "lucide-react";
 import type { SiteSettings, SettingGroupConfig } from "@/lib/site-settings-constants";
 import { SETTING_GROUPS, DEFAULT_SETTINGS } from "@/lib/site-settings-constants";
@@ -192,6 +193,19 @@ export default function SiteSettingsClient() {
     });
   };
 
+  const handleDesignChange = (key: string, value: string) => {
+    setSettings((prev) => {
+      const current = prev.design || DEFAULT_SETTINGS.design;
+      return {
+        ...prev,
+        design: {
+          ...current,
+          [key]: value,
+        } as SiteSettings["design"],
+      };
+    });
+  };
+
   if (loading) {
     return (
       <div className="p-6 space-y-4">
@@ -274,7 +288,15 @@ export default function SiteSettingsClient() {
       </div>
 
       {/* Active Group Fields */}
-      {currentGroup && (
+      {activeTab === "design" ? (
+        <div className="mb-8">
+          <DesignPanel
+            design={settings.design || DEFAULT_SETTINGS.design}
+            onChange={handleDesignChange}
+            previewMode={previewMode}
+          />
+        </div>
+      ) : currentGroup && (
         <div className="mb-8">
           <FieldGroup
             group={currentGroup}
@@ -524,6 +546,366 @@ function PreviewPanel({ settings }: { settings: SettingsState }) {
           <span className="text-sm text-zinc-600 dark:text-zinc-400">
             {general.themeColor}
           </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Design Panel ──────────────────────────────────────────
+
+const DESIGN_PRESETS = [
+  {
+    name: "Montajım Var",
+    desc: "Varsayılan mavi tema",
+    design: {
+      fontFamily: "Inter, system-ui, sans-serif",
+      headingFont: "Inter, system-ui, sans-serif",
+      baseFontSize: "16px",
+      borderRadius: "12px",
+      sectionGap: "4rem",
+      primaryColor: "#0B5FFF",
+      textColor: "#18181b",
+      headingColor: "#09090b",
+      backgroundColor: "#ffffff",
+      sectionBgColor: "#fafafa",
+      cardBgColor: "#ffffff",
+      accentColor: "#f59e0b",
+      ctaBgColor: "#0B5FFF",
+      ctaTextColor: "#ffffff",
+    },
+  },
+  {
+    name: "Koyu Modern",
+    desc: "Koyu tema, turkuaz vurgu",
+    design: {
+      fontFamily: "Inter, system-ui, sans-serif",
+      headingFont: "Inter, system-ui, sans-serif",
+      baseFontSize: "16px",
+      borderRadius: "16px",
+      sectionGap: "4rem",
+      primaryColor: "#14b8a6",
+      textColor: "#e4e4e7",
+      headingColor: "#fafafa",
+      backgroundColor: "#09090b",
+      sectionBgColor: "#18181b",
+      cardBgColor: "#27272a",
+      accentColor: "#fbbf24",
+      ctaBgColor: "#14b8a6",
+      ctaTextColor: "#09090b",
+    },
+  },
+  {
+    name: "Minimal Beyaz",
+    desc: "Sade, minimalist, siyah-beyaz",
+    design: {
+      fontFamily: "Inter, system-ui, sans-serif",
+      headingFont: "Inter, system-ui, sans-serif",
+      baseFontSize: "16px",
+      borderRadius: "8px",
+      sectionGap: "5rem",
+      primaryColor: "#000000",
+      textColor: "#333333",
+      headingColor: "#000000",
+      backgroundColor: "#ffffff",
+      sectionBgColor: "#f5f5f5",
+      cardBgColor: "#ffffff",
+      accentColor: "#666666",
+      ctaBgColor: "#000000",
+      ctaTextColor: "#ffffff",
+    },
+  },
+  {
+    name: "Yeşil Doğa",
+    desc: "Doğal yeşil tonları, yumuşak",
+    design: {
+      fontFamily: "Inter, system-ui, sans-serif",
+      headingFont: "Inter, system-ui, sans-serif",
+      baseFontSize: "16px",
+      borderRadius: "14px",
+      sectionGap: "4rem",
+      primaryColor: "#16a34a",
+      textColor: "#1c1917",
+      headingColor: "#0c0a09",
+      backgroundColor: "#f0fdf4",
+      sectionBgColor: "#dcfce7",
+      cardBgColor: "#ffffff",
+      accentColor: "#65a30d",
+      ctaBgColor: "#16a34a",
+      ctaTextColor: "#ffffff",
+    },
+  },
+  {
+    name: "Sıcak Turuncu",
+    desc: "Enerjik turuncu, sıcak tonlar",
+    design: {
+      fontFamily: "Inter, system-ui, sans-serif",
+      headingFont: "Inter, system-ui, sans-serif",
+      baseFontSize: "16px",
+      borderRadius: "10px",
+      sectionGap: "4rem",
+      primaryColor: "#ea580c",
+      textColor: "#292524",
+      headingColor: "#1c1917",
+      backgroundColor: "#fff7ed",
+      sectionBgColor: "#ffedd5",
+      cardBgColor: "#ffffff",
+      accentColor: "#d97706",
+      ctaBgColor: "#ea580c",
+      ctaTextColor: "#ffffff",
+    },
+  },
+];
+
+const COLOR_LABELS: Record<string, string> = {
+  primaryColor: "Ana Renk",
+  textColor: "Metin Rengi",
+  headingColor: "Başlık Rengi",
+  backgroundColor: "Arkaplan",
+  sectionBgColor: "Bölüm Arkas\u0131",
+  cardBgColor: "Kart Arkas\u0131",
+  accentColor: "Vurgu Rengi",
+  ctaBgColor: "CTA Buton",
+  ctaTextColor: "CTA Yaz\u0131",
+};
+
+function DesignPanel({
+  design,
+  onChange,
+  previewMode,
+}: {
+  design: SiteSettings["design"];
+  onChange: (key: string, value: string) => void;
+  previewMode: boolean;
+}) {
+  return (
+    <div className="space-y-8">
+      {/* Presets */}
+      <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 overflow-hidden">
+        <div className="px-5 py-3.5 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-montaj" />
+            <h2 className="font-semibold text-zinc-900 dark:text-white text-sm">
+              Hazır Temalar
+            </h2>
+          </div>
+        </div>
+        <div className="p-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+          {DESIGN_PRESETS.map((preset) => (
+            <button
+              key={preset.name}
+              disabled={previewMode}
+              onClick={() => {
+                Object.entries(preset.design).forEach(([k, v]) => onChange(k, v));
+              }}
+              className="group relative rounded-xl border border-zinc-200 dark:border-zinc-700 p-4 text-left hover:border-montaj hover:shadow-md transition-all disabled:opacity-50"
+            >
+              <div className="flex gap-1.5 mb-3">
+                <div className="w-5 h-5 rounded-full" style={{ backgroundColor: preset.design.primaryColor }} />
+                <div className="w-5 h-5 rounded-full" style={{ backgroundColor: preset.design.accentColor }} />
+                <div className="w-5 h-5 rounded-full" style={{ backgroundColor: preset.design.backgroundColor }} />
+              </div>
+              <div className="text-sm font-medium text-zinc-900 dark:text-white">{preset.name}</div>
+              <div className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">{preset.desc}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Live Preview */}
+      <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+        <div className="px-5 py-3.5 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50">
+          <div className="flex items-center gap-2">
+            <Eye className="h-4 w-4 text-montaj" />
+            <h2 className="font-semibold text-zinc-900 dark:text-white text-sm">
+              Canlı Önizleme
+            </h2>
+          </div>
+        </div>
+        <div
+          className="p-6"
+          style={{
+            fontFamily: design.fontFamily,
+            fontSize: design.baseFontSize,
+            color: design.textColor,
+            backgroundColor: design.sectionBgColor,
+          }}
+        >
+          <div
+            className="p-5"
+            style={{
+              borderRadius: design.borderRadius,
+              backgroundColor: design.cardBgColor,
+              boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+            }}
+          >
+            <div
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium mb-3"
+              style={{
+                backgroundColor: design.primaryColor + "15",
+                color: design.primaryColor,
+              }}
+            >
+              <span
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ backgroundColor: design.primaryColor }}
+              />
+              Profesyonel Montaj Platformu
+            </div>
+            <h3
+              className="text-xl font-bold mb-2"
+              style={{
+                fontFamily: design.headingFont,
+                color: design.headingColor,
+              }}
+            >
+              Türkiye'nin montaj platformu
+            </h3>
+            <p className="text-sm mb-4" style={{ color: design.textColor + "cc" }}>
+              İşinizi 3 dakikada tanımlayın, güvenle tamamlayın.
+            </p>
+            <div className="flex gap-2">
+              <span
+                className="px-4 py-2 rounded-lg text-sm font-medium"
+                style={{
+                  backgroundColor: design.ctaBgColor,
+                  color: design.ctaTextColor,
+                  borderRadius: design.borderRadius,
+                }}
+              >
+                Ücretsiz İş Oluştur
+              </span>
+              <span
+                className="px-4 py-2 rounded-lg text-sm font-medium"
+                style={{
+                  border: `1px solid ${design.textColor}33`,
+                  color: design.textColor,
+                  borderRadius: design.borderRadius,
+                }}
+              >
+                Usta Olarak Katıl
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Colors */}
+      <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 overflow-hidden">
+        <div className="px-5 py-3.5 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50">
+          <div className="flex items-center gap-2">
+            <Palette className="h-4 w-4 text-montaj" />
+            <h2 className="font-semibold text-zinc-900 dark:text-white text-sm">
+              Renk Paleti
+            </h2>
+          </div>
+        </div>
+        <div className="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {Object.entries(COLOR_LABELS).map(([key, label]) => (
+            <div
+              key={key}
+              className="flex items-center gap-3 p-3 rounded-lg border border-zinc-100 dark:border-zinc-800"
+            >
+              <div className="relative">
+                <input
+                  type="color"
+                  value={(design as Record<string, string>)[key] || ""}
+                  onChange={(e) => onChange(key, e.target.value)}
+                  disabled={previewMode}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                <div
+                  className="w-10 h-10 rounded-lg border-2 border-zinc-200 dark:border-zinc-700"
+                  style={{ backgroundColor: (design as Record<string, string>)[key] }}
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-medium text-zinc-500 dark:text-zinc-400">{label}</div>
+                <input
+                  type="text"
+                  value={(design as Record<string, string>)[key] || ""}
+                  onChange={(e) => onChange(key, e.target.value)}
+                  disabled={previewMode}
+                  className="w-full text-sm font-mono text-zinc-900 dark:text-white bg-transparent border-none outline-none p-0"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Typography */}
+      <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 overflow-hidden">
+        <div className="px-5 py-3.5 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50">
+          <div className="flex items-center gap-2">
+            <Type className="h-4 w-4 text-montaj" />
+            <h2 className="font-semibold text-zinc-900 dark:text-white text-sm">
+              Tipografi
+            </h2>
+          </div>
+        </div>
+        <div className="p-5 space-y-5">
+          <div>
+            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">Gövde Fontu</label>
+            <input
+              type="text"
+              value={design.fontFamily}
+              onChange={(e) => onChange("fontFamily", e.target.value)}
+              disabled={previewMode}
+              className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-600 bg-transparent text-zinc-900 dark:text-white focus:ring-2 focus:ring-montaj/20 focus:border-montaj outline-none"
+            />
+            <p className="text-xs mt-1.5" style={{ fontFamily: design.fontFamily, color: design.textColor + "99" }}>
+              The quick brown fox jumps over the lazy dog. Türkiye'nin profesyonel montaj platformu.
+            </p>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">Başlık Fontu</label>
+            <input
+              type="text"
+              value={design.headingFont}
+              onChange={(e) => onChange("headingFont", e.target.value)}
+              disabled={previewMode}
+              className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-600 bg-transparent text-zinc-900 dark:text-white focus:ring-2 focus:ring-montaj/20 focus:border-montaj outline-none"
+            />
+            <h4
+              className="text-lg font-bold mt-1.5"
+              style={{ fontFamily: design.headingFont, color: design.headingColor }}
+            >
+              Montajım Var — Profesyonel Montaj Platformu
+            </h4>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">Font Boyutu</label>
+              <input
+                type="text"
+                value={design.baseFontSize}
+                onChange={(e) => onChange("baseFontSize", e.target.value)}
+                disabled={previewMode}
+                className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-600 bg-transparent text-zinc-900 dark:text-white focus:ring-2 focus:ring-montaj/20 focus:border-montaj outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">Köşe Yuvarlaklığı</label>
+              <input
+                type="text"
+                value={design.borderRadius}
+                onChange={(e) => onChange("borderRadius", e.target.value)}
+                disabled={previewMode}
+                className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-600 bg-transparent text-zinc-900 dark:text-white focus:ring-2 focus:ring-montaj/20 focus:border-montaj outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">Bölüm Arası Boşluk</label>
+              <input
+                type="text"
+                value={design.sectionGap}
+                onChange={(e) => onChange("sectionGap", e.target.value)}
+                disabled={previewMode}
+                className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-600 bg-transparent text-zinc-900 dark:text-white focus:ring-2 focus:ring-montaj/20 focus:border-montaj outline-none"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
