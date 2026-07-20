@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ========================================
 # Montajim Var - Remote Deployment Script
 # Runs on the Raspberry Pi
