@@ -797,33 +797,79 @@ function SectionHeroPreview({ settings, onChange, design, previewMode }: {
   design: SiteSettings["design"];
   previewMode: boolean;
 }) {
+  const h = settings.hero || DEFAULT_SETTINGS.hero;
   return (
-    <div className="px-6 py-12" style={{ backgroundColor: design.backgroundColor }}>
-      <div className="max-w-4xl mx-auto text-center" style={{ fontFamily: design.fontFamily }}>
-        <ClickToEdit group="hero" field="badge" settings={settings} onChange={onChange} previewMode={previewMode}
-          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium mb-4"
-          style={{ backgroundColor: design.primaryColor + "15", color: design.primaryColor }}
-          as="span"
-        />
-        <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: design.headingFont, color: design.headingColor }}>
-          <ClickToEdit group="hero" field="headline" settings={settings} onChange={onChange} previewMode={previewMode} as="span" />
-        </h1>
-        <p className="text-sm mb-6 max-w-2xl mx-auto" style={{ color: design.textColor + "cc" }}>
-          <ClickToEditTextarea group="hero" field="description" settings={settings} onChange={onChange} previewMode={previewMode} />
-        </p>
-        <div className="flex justify-center gap-3">
-          <span className="px-5 py-2.5 rounded-lg text-sm font-medium"
-            style={{ backgroundColor: design.ctaBgColor, color: design.ctaTextColor, borderRadius: design.borderRadius }}>
-            <ClickToEdit group="hero" field="primaryCta" settings={settings} onChange={onChange} previewMode={previewMode} />
-          </span>
-          <span className="px-5 py-2.5 rounded-lg text-sm font-medium"
-            style={{ border: `1px solid ${design.textColor}33`, color: design.textColor, borderRadius: design.borderRadius }}>
-            <ClickToEdit group="hero" field="secondaryCta" settings={settings} onChange={onChange} previewMode={previewMode} />
-          </span>
+    <section className="relative bg-gradient-to-b from-surface to-app/40 overflow-hidden" style={{ backgroundColor: design.backgroundColor }}>
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -top-20 right-[-10%] h-[24rem] w-[24rem] rounded-full blur-3xl" style={{ backgroundColor: design.primaryColor + "15" }} />
+        <div className="absolute -bottom-20 left-[-10%] h-[20rem] w-[20rem] rounded-full blur-3xl" style={{ backgroundColor: design.accentColor + "10" }} />
+      </div>
+      <div className="container-app py-16 md:py-22">
+        <div className="grid gap-10 lg:grid-cols-2 lg:items-center" style={{ fontFamily: design.fontFamily }}>
+          <div className="relative z-10">
+            <ClickToEdit group="hero" field="badge" settings={settings} onChange={onChange} previewMode={previewMode}
+              className="section-label mb-4 inline-flex items-center gap-1.5"
+              style={{ color: design.primaryColor }}
+              as="span"
+            />
+            <h1 id="hero-headline" className="heading-xl text-balance" style={{ fontFamily: design.headingFont, color: design.headingColor }}>
+              <ClickToEdit group="hero" field="headline" settings={settings} onChange={onChange} previewMode={previewMode} as="span" />
+            </h1>
+            <p className="mt-4 max-w-lg text-text-secondary" style={{ color: design.textColor + "cc" }}>
+              <ClickToEditTextarea group="hero" field="description" settings={settings} onChange={onChange} previewMode={previewMode} />
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <span className="btn-primary inline-flex items-center gap-2"
+                style={{ backgroundColor: design.ctaBgColor, color: design.ctaTextColor, borderRadius: design.borderRadius }}>
+                <span><ClickToEdit group="hero" field="primaryCta" settings={settings} onChange={onChange} previewMode={previewMode} /></span>
+                <ArrowRightIcon className="h-4 w-4" />
+              </span>
+              <span className="btn-secondary"
+                style={{ borderColor: design.textColor + "25", color: design.textColor, borderRadius: design.borderRadius }}>
+                <ClickToEdit group="hero" field="secondaryCta" settings={settings} onChange={onChange} previewMode={previewMode} />
+              </span>
+            </div>
+          </div>
+          <div className="relative hidden lg:block">
+            <div className="rounded-card border border-border p-6 shadow-elevated" style={{ backgroundColor: design.cardBgColor, borderRadius: design.borderRadius }}>
+              <div className="flex items-center gap-3 rounded-lg px-4 py-3" style={{ backgroundColor: design.textColor + "08" }}>
+                <SearchIcon className="h-4 w-4" style={{ color: design.textColor + "55" }} />
+                <span className="text-sm" style={{ color: design.textColor + "55" }}>
+                  {h.searchPlaceholder || "Hangi montaj hizmetini arıyorsunuz?"}
+                </span>
+              </div>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <span className="text-xs font-medium" style={{ color: design.textColor + "77" }}>{h.popularLabel || "Popüler:"}</span>
+                {(h as any).popularCategories || ["Mobilya", "Klima", "Elektrik", "Nakliye"].slice(0, 4).map((cat: string, i: number) => (
+                  <span key={i} className="rounded-full px-3 py-1 text-xs border" style={{ borderColor: design.textColor + "15", color: design.textColor + "88" }}>
+                    {cat}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-6 space-y-3">
+                {[{ label: "Aktif İlan", value: "2.4K", color: design.primaryColor }, { label: "Usta", value: "1.2K+", color: design.accentColor }, { label: "Ort. Puan", value: "4.8", color: design.accentColor }].map((stat) => (
+                  <div key={stat.label} className="rounded-lg p-3 border" style={{ backgroundColor: design.backgroundColor, borderColor: design.textColor + "10" }}>
+                    <div className="text-xs mb-1.5" style={{ color: design.textColor + "77" }}>{stat.label}</div>
+                    <div className="h-1.5 rounded-full" style={{ width: "75%", backgroundColor: stat.color + "25" }}>
+                      <div className="h-full rounded-full" style={{ width: "70%", backgroundColor: stat.color }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
+}
+
+function ArrowRightIcon({ className }: { className?: string }) {
+  return <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>;
+}
+
+function SearchIcon({ className, style }: { className?: string; style?: React.CSSProperties }) {
+  return <svg className={className} style={style} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>;
 }
 
 function SectionTrustBarPreview({ settings, onChange, design, previewMode }: {
@@ -833,20 +879,46 @@ function SectionTrustBarPreview({ settings, onChange, design, previewMode }: {
   previewMode: boolean;
 }) {
   const items = (settings.trustBar || DEFAULT_SETTINGS.trustBar).items;
+  const TRUST_ICONS = [WalletIcon, ShieldIcon, ClockIcon, FileIcon];
   return (
-    <div className="px-6 py-4" style={{ backgroundColor: design.sectionBgColor }}>
-      <div className="max-w-4xl mx-auto flex justify-center gap-6 flex-wrap">
-        {items.map((item, i) => (
-          <div key={i} className="flex items-center gap-2 text-xs" style={{ color: design.textColor + "aa" }}>
-            <svg className="w-3.5 h-3.5" style={{ color: design.primaryColor }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            {item.label}
-          </div>
-        ))}
+    <section className="border-y border-border bg-surface/60" style={{ backgroundColor: design.sectionBgColor, borderColor: design.textColor + "12" }}>
+      <div className="container-app py-6 md:py-8">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+          {items.map((item, i) => {
+            const Icon = TRUST_ICONS[i % TRUST_ICONS.length];
+            return (
+              <div key={item.id} className="flex items-start gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: design.primaryColor + "12", color: design.primaryColor }}>
+                  <Icon className="h-5 w-5" />
+                </span>
+                <div>
+                  <div className="text-sm font-semibold" style={{ color: design.headingColor }}>{item.label}</div>
+                  <div className="mt-0.5 text-xs leading-relaxed" style={{ color: design.textColor + "77" }}>
+                    {item.id === "escrow" ? "Ödeme iş teslimine kadar emanette" :
+                     item.id === "verified" ? "Kimlik ve referans kontrolleri" :
+                     item.id === "coverage" ? "81 ilde hizmet" : "Belirlenmiş süreler"}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </section>
   );
+}
+
+function WalletIcon({ className }: { className?: string }) {
+  return <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg>;
+}
+function ShieldIcon({ className }: { className?: string }) {
+  return <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>;
+}
+function ClockIcon({ className }: { className?: string }) {
+  return <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
+}
+function FileIcon({ className }: { className?: string }) {
+  return <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>;
 }
 
 function SectionGenericPreview({ group, label, settings, onChange, design, previewMode }: {
@@ -857,23 +929,26 @@ function SectionGenericPreview({ group, label, settings, onChange, design, previ
   design: SiteSettings["design"];
   previewMode: boolean;
 }) {
+  const isAlt = ["services", "whyUs", "audience"].includes(group);
+  const isFaq = group === "faq";
   return (
-    <div className="px-6 py-10 text-center" style={{ backgroundColor: design.backgroundColor }}>
-      <div className="max-w-3xl mx-auto" style={{ fontFamily: design.fontFamily }}>
-        {group !== "finalCta" && (
-          <span className="inline-block text-[10px] font-semibold tracking-widest uppercase mb-3"
-            style={{ color: design.primaryColor }}>
+    <section className={`relative ${isFaq ? "bg-gradient-to-b from-surface to-app/40" : isAlt ? "bg-surface" : "bg-app/40"}`}
+      style={{ backgroundColor: isAlt ? design.sectionBgColor : design.backgroundColor }}>
+      <div className="container-app py-16 md:py-22">
+        <div className={group === "corporate" || group === "capabilities" ? "max-w-2xl" : "max-w-2xl"}>
+          <span className="section-label mb-4 inline-flex items-center gap-1.5" style={{ color: design.primaryColor }}>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: design.primaryColor }} />
             <ClickToEdit group={group} field="sectionBadge" settings={settings} onChange={onChange} previewMode={previewMode} />
           </span>
-        )}
-        <h2 className="text-2xl font-bold mb-3" style={{ fontFamily: design.headingFont, color: design.headingColor }}>
-          <ClickToEdit group={group} field="sectionTitle" settings={settings} onChange={onChange} previewMode={previewMode} as="span" />
-        </h2>
-        <p className="text-sm max-w-2xl mx-auto" style={{ color: design.textColor + "bb" }}>
-          <ClickToEditTextarea group={group} field="sectionDescription" settings={settings} onChange={onChange} previewMode={previewMode} />
-        </p>
+          <h2 className="heading-xl text-balance" style={{ fontFamily: design.headingFont, color: design.headingColor }}>
+            <ClickToEdit group={group} field="sectionTitle" settings={settings} onChange={onChange} previewMode={previewMode} as="span" />
+          </h2>
+          <p className="mt-4 max-w-xl" style={{ color: design.textColor + "bb" }}>
+            <ClickToEditTextarea group={group} field="sectionDescription" settings={settings} onChange={onChange} previewMode={previewMode} />
+          </p>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -885,32 +960,49 @@ function SectionWorkflowPreview({ settings, onChange, design, previewMode }: {
 }) {
   const wf = settings.workflow || DEFAULT_SETTINGS.workflow;
   return (
-    <div className="px-6 py-10" style={{ backgroundColor: design.sectionBgColor }}>
-      <div className="max-w-4xl mx-auto" style={{ fontFamily: design.fontFamily }}>
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: design.headingFont, color: design.headingColor }}>
+    <section className="relative bg-gradient-to-b from-surface to-app/40" style={{ backgroundColor: design.sectionBgColor }}>
+      <div className="container-app py-16 md:py-22">
+        <div className="max-w-2xl">
+          <span className="section-label mb-4 inline-flex items-center gap-1.5" style={{ color: design.primaryColor }}>
+            <LayersIcon className="h-3.5 w-3.5" />
+            <ClickToEdit group="workflow" field="sectionBadge" settings={settings} onChange={onChange} previewMode={previewMode} />
+          </span>
+          <h2 className="heading-xl text-balance" style={{ fontFamily: design.headingFont, color: design.headingColor }}>
             <ClickToEdit group="workflow" field="sectionTitle" settings={settings} onChange={onChange} previewMode={previewMode} as="span" />
           </h2>
-          <p className="text-sm" style={{ color: design.textColor + "bb" }}>
+          <p className="mt-4 max-w-xl" style={{ color: design.textColor + "bb" }}>
             <ClickToEditTextarea group="workflow" field="sectionDescription" settings={settings} onChange={onChange} previewMode={previewMode} />
           </p>
         </div>
-        <div className="grid grid-cols-4 gap-4">
+        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {wf.steps.map((step, i) => (
-            <div key={i} className="p-4 rounded-xl text-center"
-              style={{ backgroundColor: design.cardBgColor, borderRadius: design.borderRadius, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
-              <div className="w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-2 text-xs font-bold"
-                style={{ backgroundColor: design.primaryColor + "15", color: design.primaryColor }}>
-                {step.step}
+            <div key={i} className="group flex h-full flex-col rounded-card border border-border p-5 shadow-card transition-all duration-200"
+              style={{ backgroundColor: design.cardBgColor, borderColor: design.textColor + "10", borderRadius: design.borderRadius }}>
+              <div className="flex items-center justify-between mb-3">
+                <span className="flex h-11 w-11 items-center justify-center rounded-lg text-sm font-bold"
+                  style={{ backgroundColor: design.primaryColor + "12", color: design.primaryColor }}>
+                  {step.step}
+                </span>
               </div>
-              <div className="text-sm font-semibold mb-1" style={{ color: design.headingColor }}>{step.title}</div>
-              <div className="text-xs" style={{ color: design.textColor + "99" }}>{step.description}</div>
+              <div className="text-sm font-semibold" style={{ color: design.headingColor }}>{step.title}</div>
+              <div className="mt-1 text-xs leading-relaxed" style={{ color: design.textColor + "88" }}>{step.description}</div>
+              <div className="mt-3 space-y-1">
+                {step.bullets.map((b, j) => (
+                  <div key={j} className="flex items-start gap-1.5 text-xs" style={{ color: design.textColor + "77" }}>
+                    <span style={{ color: design.accentColor }}>✓</span> {b}
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
+}
+
+function LayersIcon({ className }: { className?: string }) {
+  return <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3" /></svg>;
 }
 
 function SectionFinalCTAPreview({ settings, onChange, design, previewMode }: {
@@ -919,28 +1011,47 @@ function SectionFinalCTAPreview({ settings, onChange, design, previewMode }: {
   design: SiteSettings["design"];
   previewMode: boolean;
 }) {
+  const fc = settings.finalCta || DEFAULT_SETTINGS.finalCta;
   return (
-    <div className="px-6 py-12 text-center" style={{ backgroundColor: design.primaryColor + "08" }}>
-      <div className="max-w-2xl mx-auto" style={{ fontFamily: design.fontFamily }}>
-        <h2 className="text-2xl font-bold mb-3" style={{ fontFamily: design.headingFont, color: design.headingColor }}>
-          <ClickToEdit group="finalCta" field="title" settings={settings} onChange={onChange} previewMode={previewMode} as="span" />
-        </h2>
-        <p className="text-sm mb-6" style={{ color: design.textColor + "bb" }}>
-          <ClickToEditTextarea group="finalCta" field="description" settings={settings} onChange={onChange} previewMode={previewMode} />
-        </p>
-        <div className="flex justify-center gap-3">
-          <span className="px-5 py-2.5 rounded-lg text-sm font-medium"
-            style={{ backgroundColor: design.ctaBgColor, color: design.ctaTextColor, borderRadius: design.borderRadius }}>
-            <ClickToEdit group="finalCta" field="primary" settings={settings} onChange={onChange} previewMode={previewMode} />
-          </span>
-          <span className="px-5 py-2.5 rounded-lg text-sm font-medium"
-            style={{ border: `1px solid ${design.textColor}33`, color: design.textColor, borderRadius: design.borderRadius }}>
-            <ClickToEdit group="finalCta" field="secondary" settings={settings} onChange={onChange} previewMode={previewMode} />
-          </span>
+    <section className="relative bg-gradient-to-b from-surface to-app/40" style={{ backgroundColor: design.backgroundColor }}>
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -top-20 right-[-10%] h-[24rem] w-[24rem] rounded-full blur-3xl" style={{ backgroundColor: design.primaryColor + "15" }} />
+      </div>
+      <div className="container-app py-16 md:py-24">
+        <div className="rounded-card border border-border p-8 text-center shadow-elevated md:p-12"
+          style={{ backgroundColor: design.cardBgColor, borderColor: design.textColor + "10", borderRadius: design.borderRadius }}>
+          <h2 className="heading-xl text-balance" style={{ fontFamily: design.headingFont, color: design.headingColor }}>
+            <ClickToEdit group="finalCta" field="title" settings={settings} onChange={onChange} previewMode={previewMode} as="span" />
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl" style={{ color: design.textColor + "bb" }}>
+            <ClickToEditTextarea group="finalCta" field="description" settings={settings} onChange={onChange} previewMode={previewMode} />
+          </p>
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+            <span className="btn-primary inline-flex items-center gap-2"
+              style={{ backgroundColor: design.ctaBgColor, color: design.ctaTextColor, borderRadius: design.borderRadius }}>
+              <ClickToEdit group="finalCta" field="primary" settings={settings} onChange={onChange} previewMode={previewMode} />
+              <ArrowRightIcon className="h-4 w-4" />
+            </span>
+            <span className="btn-secondary" style={{ borderColor: design.textColor + "25", color: design.textColor, borderRadius: design.borderRadius }}>
+              <ClickToEdit group="finalCta" field="secondary" settings={settings} onChange={onChange} previewMode={previewMode} />
+            </span>
+          </div>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs" style={{ color: design.textColor + "77" }}>
+            <ShieldCheckIcon className="h-3.5 w-3.5" style={{ color: design.accentColor }} />
+            {fc.trustSignals.map((s, i) => (
+              <span key={i} className="inline-flex items-center gap-1.5">
+                <span>{s}</span>
+              </span>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
+}
+
+function ShieldCheckIcon({ className, style }: { className?: string; style?: React.CSSProperties }) {
+  return <svg className={className} style={style} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>;
 }
 
 function SectionFooterPreview({ settings, onChange, design, previewMode }: {
@@ -950,52 +1061,68 @@ function SectionFooterPreview({ settings, onChange, design, previewMode }: {
   previewMode: boolean;
 }) {
   return (
-    <div className="px-6 py-6 text-center border-t" style={{ backgroundColor: design.backgroundColor, borderColor: design.textColor + "15" }}>
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-center gap-1 text-lg font-bold mb-2" style={{ fontFamily: design.headingFont, color: design.headingColor }}>
+    <section className="border-t border-border" style={{ backgroundColor: design.backgroundColor, borderColor: design.textColor + "12" }}>
+      <div className="container-app py-10 text-center">
+        <div className="flex items-center justify-center gap-1 text-lg font-bold" style={{ fontFamily: design.headingFont, color: design.headingColor }}>
           <ClickToEdit group="general" field="logoText" settings={settings} onChange={onChange} previewMode={previewMode} as="span" />
           <span style={{ color: design.primaryColor }}>
             <ClickToEdit group="general" field="logoAccentText" settings={settings} onChange={onChange} previewMode={previewMode} as="span" />
           </span>
         </div>
-        <p className="text-xs mb-3" style={{ color: design.textColor + "99" }}>
+        <p className="mt-3 text-sm max-w-md mx-auto" style={{ color: design.textColor + "99" }}>
           <ClickToEditTextarea group="footer" field="description" settings={settings} onChange={onChange} previewMode={previewMode} />
         </p>
-        <p className="text-[10px]" style={{ color: design.textColor + "77" }}>
+        <p className="mt-4 text-xs" style={{ color: design.textColor + "66" }}>
           <ClickToEdit group="footer" field="copyright" settings={settings} onChange={onChange} previewMode={previewMode} as="span" />
         </p>
       </div>
-    </div>
+    </section>
   );
 }
 
 function SectionStatsLabelsPreview({ design }: { design: SiteSettings["design"] }) {
   return (
-    <div className="px-6 py-8" style={{ backgroundColor: design.sectionBgColor }}>
-      <div className="max-w-4xl mx-auto flex justify-center gap-8">
-        {[{ num: "1.200+", label: "Usta" }, { num: "81", label: "İl" }, { num: "4.8", label: "Puan" }].map((s, i) => (
-          <div key={i} className="text-center">
-            <div className="text-2xl font-bold" style={{ fontFamily: design.headingFont, color: design.primaryColor }}>{s.num}</div>
-            <div className="text-xs" style={{ color: design.textColor + "99" }}>{s.label}</div>
-          </div>
-        ))}
+    <section className="border-y border-border bg-surface/60" style={{ backgroundColor: design.sectionBgColor, borderColor: design.textColor + "10" }}>
+      <div className="container-app py-8 md:py-10">
+        <div className="flex justify-center gap-8 md:gap-16">
+          {[{ num: "1.200+", label: "Kayıtlı Usta" }, { num: "81", label: "İl" }, { num: "4.8", label: "Ort. Puan" }, { num: "10K+", label: "Tamamlanan İş" }].map((s, i) => (
+            <div key={i} className="text-center">
+              <div className="text-2xl md:text-3xl font-bold" style={{ fontFamily: design.headingFont, color: design.primaryColor }}>{s.num}</div>
+              <div className="text-xs mt-1" style={{ color: design.textColor + "88" }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
 function SectionBlogPlaceholder({ design }: { design: SiteSettings["design"] }) {
   return (
-    <div className="px-6 py-10 text-center" style={{ backgroundColor: design.backgroundColor }}>
-      <div className="max-w-4xl mx-auto">
-        <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: design.headingFont, color: design.headingColor }}>Blog</h2>
-        <div className="grid grid-cols-3 gap-4">
+    <section className="bg-surface" style={{ backgroundColor: design.sectionBgColor }}>
+      <div className="container-app py-16 md:py-22">
+        <div className="text-center">
+          <span className="section-label mb-4 inline-flex items-center gap-1.5" style={{ color: design.primaryColor }}>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: design.primaryColor }} />
+            Blog
+          </span>
+          <h2 className="heading-xl" style={{ fontFamily: design.headingFont, color: design.headingColor }}>Son Yazılar</h2>
+        </div>
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-28 rounded-xl" style={{ backgroundColor: design.textColor + "0a", borderRadius: design.borderRadius }} />
+            <div key={i} className="rounded-card border border-border overflow-hidden shadow-card"
+              style={{ backgroundColor: design.cardBgColor, borderColor: design.textColor + "10", borderRadius: design.borderRadius }}>
+              <div className="h-40" style={{ backgroundColor: design.textColor + "08" }} />
+              <div className="p-5 space-y-2">
+                <div className="h-4 w-3/4 rounded" style={{ backgroundColor: design.textColor + "10" }} />
+                <div className="h-3 w-full rounded" style={{ backgroundColor: design.textColor + "08" }} />
+                <div className="h-3 w-2/3 rounded" style={{ backgroundColor: design.textColor + "08" }} />
+              </div>
+            </div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
